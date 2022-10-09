@@ -7,6 +7,7 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.ResolverStyle;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
@@ -196,7 +197,7 @@ public class Main extends Application {
    * @return List of Pairs of Time and Value
    * @throws IOException
    */
-  public List<Pair<String, Double>> weatherInformation(ArrayList<String> places, ArrayList<String> params) throws IOException {
+  public List<Pair<String, Double>> weatherInformation(ArrayList<String> places, ArrayList<String> params, String startingTime, String endingTime) throws IOException {
     String url = FMIBaseURL + dailyObservation;
     //String url = FMIBaseURL + instObservation;
     if(places.size() > 0) {
@@ -210,6 +211,13 @@ public class Main extends Application {
         url += p + ",";
       }
       url = url.substring(0, url.length() - 1);
+    }
+
+    if(startingTime.length() > 0) {
+      url += starttime + startingTime;
+    }
+    if(endingTime.length() > 0) {
+      url += endtime + endingTime;
     }
     System.out.println(url);
     JSONObject jo = XML.toJSONObject(getRequest(url));
@@ -234,7 +242,14 @@ public class Main extends Application {
     }
   }
 
-  // For timevaluepair weather data
+  /**
+   * Created by Miikka Venäläinen
+   * Method which goes through the data and gets necessary values
+   *
+   * @param jo JSONObject from API call
+   * @param multipleParams Boolean which tells whether JSONObject contains data from multiple cities and/or parameters
+   * @return Returns a list of dates/times and respected values
+   */
   public List<Pair<String, Double>> filterTemperatureTimeValuePair(JSONObject jo, Boolean multipleParams) {
     List<JSONObject> jsonObjects = new ArrayList<>();
     JSONObject info = jo.getJSONObject("wfs:FeatureCollection");
@@ -249,8 +264,15 @@ public class Main extends Application {
 
     List<Pair<String, Double>> list = new ArrayList<>();
 
+    String city = "";
     for (JSONObject j : jsonObjects) {
       JSONObject observation = j.getJSONObject("omso:PointTimeSeriesObservation");
+      JSONObject interest = observation.getJSONObject("om:featureOfInterest");
+      JSONObject sampling = interest.getJSONObject("sams:SF_SpatialSamplingFeature");
+      JSONObject shape = sampling.getJSONObject("sams:shape");
+      JSONObject point = shape.getJSONObject("gml:Point");
+      city = point.get("gml:name").toString();
+
       JSONObject results = observation.getJSONObject("om:result");
       JSONObject timeSeries = results.getJSONObject("wml2:MeasurementTimeseries");
       JSONArray points = timeSeries.getJSONArray("wml2:point");
@@ -260,20 +282,24 @@ public class Main extends Application {
         JSONObject innerElement = (JSONObject) element.get("wml2:MeasurementTVP");
         String time = (String) innerElement.get("wml2:time");
         String value = innerElement.get("wml2:value").toString();
-        System.out.println(dateSplitter(time, "time") + " - " + value);
+        //System.out.println(dateSplitter(time, "time") + " - " + value);
         list.add(new Pair<>(time, Double.valueOf(value)));
       }
     }
+    averageTemperature(list, city);
+    minMaxTemperature(list, city);
     return list;
   }
 
   /**
+   *
    * Created by Miikka Venäläinen
    * Method for calculations of daily average values like temperature
    *
    * @param list List of Pair which contains time and value information
+   * @param city Name of the city
    */
-  public void averageTemperature(List<Pair<String, Double>> list) {
+  public void averageTemperature(List<Pair<String, Double>> list, String city) {
     Double allValues = 0.0;
     int divider = 0;
     String previousDay = "";
@@ -295,7 +321,44 @@ public class Main extends Application {
       divider++;
     }
     for (Pair<String, Double> r : dailyAverages) {
-      System.out.println("Day: " + r.getKey() + "   Average temperature: " + Math.round(r.getValue() * 10) / 10.0);
+      System.out.println("Day: " + r.getKey() + "   Average temperature of " + city + " : " + Math.round(r.getValue() * 10) / 10.0);
+    }
+  }
+
+  /**
+   * Created by Miikka Venäläinen
+   * Method for calculating daily minimum and maximum temperatures
+   *
+   * @param list List of Pair which contains time and value information
+   * @param city Name of the city
+   */
+  public void minMaxTemperature(List<Pair<String, Double>> list, String city) {
+    double highPoint = -100.0;
+    double lowPoint = 100.0;
+    String previousDay = "";
+    HashMap<String, HashMap<String, Double>> temps = new HashMap<>();
+
+    for (Pair<String, Double> pair : list) {
+      String day = dateSplitter(pair.getKey(), "day");
+      if(previousDay.equals("")) {
+        previousDay = day;
+      }
+      if(!previousDay.equals(day)) {
+        HashMap<String, Double> t = new HashMap<>();
+        t.put("highPoint", highPoint);
+        t.put("lowPoint", lowPoint);
+        temps.put(day, t);
+        System.out.println(day + " in " + city + " highest temperature: " + highPoint + "c and lowest temperature: " + lowPoint + "c");
+        highPoint = -100.0;
+        lowPoint = 100.0;
+        previousDay = day;
+      }
+      if(pair.getValue() > highPoint) {
+        highPoint = pair.getValue();
+      }
+      if(pair.getValue() < lowPoint) {
+        lowPoint = pair.getValue();
+      }
     }
   }
 
@@ -310,15 +373,17 @@ public class Main extends Application {
     root.getChildren().add(btn);
 
     ArrayList<String> places = new ArrayList<>();
-    places.add("Tampere");
+    places.add("Joensuu");
     //places.add("Kuopio");
 
     ArrayList<String> params = new ArrayList<>();
     params.add("temperature");
     //params.add("windspeedms");
 
-    List<Pair<String, Double>> list = weatherInformation(places, params);
-    averageTemperature(list);
+    String stime = dateFormatter(2021, 6, 1, 0, 0); //starttime
+    String etime = dateFormatter(2021, 7, 24, 0, 0); //endtime
+
+    List<Pair<String, Double>> list = weatherInformation(places, params, "" , "");
     System.exit(0);
   }
 
