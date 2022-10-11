@@ -92,6 +92,9 @@ public class Main extends Application {
   final String geoid = "&geoid=";
   final String wmo = "&wmo=";
 
+  //Base URL
+  final String FMIBaseURL = "https://opendata.fmi.fi/wfs?service=WFS&version=2.0.0&request=getFeature&storedquery_id=";
+
   //Weather observations for cities as time value pairs
   final String cityObservation = "fmi::observations::weather::cities::timevaluepair";
 
@@ -113,7 +116,10 @@ public class Main extends Application {
   //Radioactivity in outdoor air
   final String radioActivity = "stuk::observations::air::radionuclide-activity-concentration::latest::simple";
 
-  final String FMIBaseURL = "https://opendata.fmi.fi/wfs?service=WFS&version=2.0.0&request=getFeature&storedquery_id=";
+  /* FMI FORECAST */
+
+  //Forecast for cities
+  final String forecast = "ecmwf::forecast::surface::point::timevaluepair";
 
   /**
    * Created by Miikka Venäläinen
@@ -198,7 +204,7 @@ public class Main extends Application {
    * @throws IOException
    */
   public List<Pair<String, Double>> weatherInformation(ArrayList<String> places, ArrayList<String> params, String startingTime, String endingTime) throws IOException {
-    String url = FMIBaseURL + dailyObservation;
+    String url = FMIBaseURL + forecast;
     //String url = FMIBaseURL + instObservation;
     if(places.size() > 0) {
       for(String p : places) {
@@ -221,7 +227,7 @@ public class Main extends Application {
     }
     System.out.println(url);
     JSONObject jo = XML.toJSONObject(getRequest(url));
-    return filterTemperatureTimeValuePair(jo, params.size() > 1);
+    return filterTemperatureTimeValuePair(jo, params.size() > 1 || places.size() > 1);
   }
 
   // For simple weather data
@@ -262,44 +268,71 @@ public class Main extends Application {
       jsonObjects.add(info.getJSONObject("wfs:member"));
     }
 
-    List<Pair<String, Double>> list = new ArrayList<>();
-
-    String city = "";
+    String city;
+    String currentCity = "";
+    List<Pair<String, List<Pair<String, List<Pair<String, Double>>>>>> allData = new ArrayList<>();
+    List<Pair<String, List<Pair<String, Double>>>> parameterDateValueListList = new ArrayList<>(); // List for parameter + (date + value) list pairs
     for (JSONObject j : jsonObjects) {
+
       JSONObject observation = j.getJSONObject("omso:PointTimeSeriesObservation");
       JSONObject interest = observation.getJSONObject("om:featureOfInterest");
       JSONObject sampling = interest.getJSONObject("sams:SF_SpatialSamplingFeature");
-      JSONObject shape = sampling.getJSONObject("sams:shape");
-      JSONObject point = shape.getJSONObject("gml:Point");
-      city = point.get("gml:name").toString();
+      JSONObject sampledFeature = sampling.getJSONObject("sam:sampledFeature");
+      JSONObject locCollection = sampledFeature.getJSONObject("target:LocationCollection");
+      JSONObject member = locCollection.getJSONObject("target:member");
+      JSONArray location = (JSONArray) member.getJSONObject("target:Location").get("gml:name");
+      JSONObject locContent = (JSONObject) location.get(0);
+      city = locContent.get("content").toString();
+      if(currentCity.equals("")) {
+        currentCity = city;
+      }
 
       JSONObject results = observation.getJSONObject("om:result");
       JSONObject timeSeries = results.getJSONObject("wml2:MeasurementTimeseries");
+      String parameter = sampling.get("gml:id").toString().split("-")[sampling.get("gml:id").toString().split("-").length - 1];
       JSONArray points = timeSeries.getJSONArray("wml2:point");
 
+      List<Pair<String, Double>> list = new ArrayList<>(); // List for date + value pairs
       for(int i = 0; i < points.length(); i++) {
         JSONObject element = (JSONObject) points.get(i);
         JSONObject innerElement = (JSONObject) element.get("wml2:MeasurementTVP");
         String time = (String) innerElement.get("wml2:time");
         String value = innerElement.get("wml2:value").toString();
-        //System.out.println(dateSplitter(time, "time") + " - " + value);
-        list.add(new Pair<>(time, Double.valueOf(value)));
+        Pair<String, Double> pair = new Pair<>(time, Double.valueOf(value)); // Pair of date + value
+        list.add(pair); // Add date + value to list
+      }
+
+      Pair<String, List<Pair<String, Double>>> parameterDateValuePair = new Pair<>(parameter, list); // Pair for parameter + (date + value) list
+      if(!city.equals(currentCity)) {
+        Pair<String, List<Pair<String, List<Pair<String, Double>>>>> pair = new Pair<>(currentCity, parameterDateValueListList);
+        allData.add(pair);
+        parameterDateValueListList = new ArrayList<>();
+      }
+      currentCity = city;
+      parameterDateValueListList.add(parameterDateValuePair);
+    }
+    Pair<String, List<Pair<String, List<Pair<String, Double>>>>> pair = new Pair<>(currentCity, parameterDateValueListList);
+    allData.add(pair);
+    for (Pair<String, List<Pair<String, List<Pair<String, Double>>>>> p : allData) {
+      String cityCopy = p.getKey();
+      for (Pair<String, List<Pair<String, Double>>> q : p.getValue()) {
+        String parameterCopy = q.getKey();
+        averageTemperature(q.getValue(), cityCopy, parameterCopy);
+        minMaxTemperature(q.getValue(), cityCopy, parameterCopy);
+        System.out.println();
       }
     }
-    averageTemperature(list, city);
-    minMaxTemperature(list, city);
-    return list;
+    return null;
   }
 
   /**
-   *
    * Created by Miikka Venäläinen
    * Method for calculations of daily average values like temperature
    *
    * @param list List of Pair which contains time and value information
    * @param city Name of the city
    */
-  public void averageTemperature(List<Pair<String, Double>> list, String city) {
+  public void averageTemperature(List<Pair<String, Double>> list, String city, String parameter) {
     Double allValues = 0.0;
     int divider = 0;
     String previousDay = "";
@@ -321,7 +354,7 @@ public class Main extends Application {
       divider++;
     }
     for (Pair<String, Double> r : dailyAverages) {
-      System.out.println("Day: " + r.getKey() + "   Average temperature of " + city + " : " + Math.round(r.getValue() * 10) / 10.0);
+      System.out.println("Day: " + r.getKey() + "   Average " + parameter + " of " + city + " : " + Math.round(r.getValue() * 10) / 10.0);
     }
   }
 
@@ -332,7 +365,7 @@ public class Main extends Application {
    * @param list List of Pair which contains time and value information
    * @param city Name of the city
    */
-  public void minMaxTemperature(List<Pair<String, Double>> list, String city) {
+  public void minMaxTemperature(List<Pair<String, Double>> list, String city, String parameter) {
     double highPoint = -100.0;
     double lowPoint = 100.0;
     String previousDay = "";
@@ -348,15 +381,15 @@ public class Main extends Application {
         t.put("highPoint", highPoint);
         t.put("lowPoint", lowPoint);
         temps.put(day, t);
-        System.out.println(day + " in " + city + " highest temperature: " + highPoint + "c and lowest temperature: " + lowPoint + "c");
+        System.out.println("Day: " + day + " in " + city + " highest " + parameter + ": " + highPoint + " and lowest " + parameter + ": " + lowPoint);
         highPoint = -100.0;
         lowPoint = 100.0;
         previousDay = day;
       }
-      if(pair.getValue() > highPoint) {
+      if(pair.getValue() > highPoint || highPoint == -100.0) {
         highPoint = pair.getValue();
       }
-      if(pair.getValue() < lowPoint) {
+      if(pair.getValue() < lowPoint || lowPoint == 100.0) {
         lowPoint = pair.getValue();
       }
     }
@@ -373,17 +406,22 @@ public class Main extends Application {
     root.getChildren().add(btn);
 
     ArrayList<String> places = new ArrayList<>();
-    places.add("Joensuu");
-    //places.add("Kuopio");
+    places.add("Tampere");
+    places.add("Kuopio");
 
     ArrayList<String> params = new ArrayList<>();
     params.add("temperature");
-    //params.add("windspeedms");
+    params.add("windspeedms");
+    params.add("winddirection");
+    params.add("pressure");
+    params.add("humidity");
+    params.add("windgust");
+    params.add("totalcloudcover");
 
-    String stime = dateFormatter(2021, 6, 1, 0, 0); //starttime
-    String etime = dateFormatter(2021, 7, 24, 0, 0); //endtime
+    String stime = dateFormatter(2022, 10, 11, 0, 0); //starttime
+    String etime = dateFormatter(2022, 10, 13, 0, 0); //endtime
 
-    List<Pair<String, Double>> list = weatherInformation(places, params, "" , "");
+    List<Pair<String, Double>> list = weatherInformation(places, params, stime , etime);
     System.exit(0);
   }
 
