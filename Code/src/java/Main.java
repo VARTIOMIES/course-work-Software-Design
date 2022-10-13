@@ -7,10 +7,12 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.ResolverStyle;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
+import java.util.zip.GZIPInputStream;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -121,6 +123,39 @@ public class Main extends Application {
   //Forecast for cities
   final String forecast = "ecmwf::forecast::surface::point::timevaluepair";
 
+
+  @Override
+  public void start(Stage stage) throws IOException {
+    stage.setTitle("Hello World!");
+    Button btn = new Button();
+    btn.setText("Say 'Hello World'");
+    btn.setOnAction(event -> System.out.println("Hello World!"));
+
+    StackPane root = new StackPane();
+    root.getChildren().add(btn);
+
+    ArrayList<String> places = new ArrayList<>();
+    places.add("Tampere");
+    places.add("Rovaniemi");
+
+    ArrayList<String> params = new ArrayList<>();
+    params.add("temperature");
+    params.add("windspeedms");
+    params.add("winddirection");
+    params.add("pressure");
+    params.add("humidity");
+    params.add("windgust");
+    params.add("totalcloudcover");
+
+    String stime = dateFormatter(2022, 10, 6, 0, 0); //starttime
+    String etime = dateFormatter(2022, 10, 13, 0, 0); //endtime
+
+    getAllCities();
+    getAllTasks();
+    weatherInformation(places, params, stime , etime);
+    System.exit(0);
+  }
+
   /**
    * Created by Miikka Venäläinen
    * A method for GET requests
@@ -129,13 +164,22 @@ public class Main extends Application {
    * @return Returns API request return value as a String
    * @throws IOException
    */
-  public static String getRequest(String u) throws IOException {
+  public static String getRequest(String u, Boolean isDigiTraffic) throws IOException {
     URL url = new URL(u);
     HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-    connection.setRequestMethod("GET");
-    connection.setRequestProperty("accept", "application/json");
-    BufferedReader br = new BufferedReader(new InputStreamReader(url.openStream(), StandardCharsets.UTF_8));
-    StringBuilder sb = new StringBuilder();
+    connection.setReadTimeout(20000);
+    connection.setConnectTimeout(20000);
+    BufferedReader br;
+    if(isDigiTraffic) {
+      connection.setRequestMethod("GET");
+      //connection.setRequestProperty("Accept", "application/json");
+      //connection.setRequestProperty("Content-Type", "application/json");
+      connection.setRequestProperty("Accept-Encoding", "gzip");
+      br = new BufferedReader(new InputStreamReader(new GZIPInputStream(connection.getInputStream())));
+    } else {
+      br = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+    }
+    StringBuffer sb = new StringBuffer();
     String line;
     while ((line = br.readLine()) != null) {
       sb.append(line).append("\n");
@@ -203,9 +247,8 @@ public class Main extends Application {
    * @return List of Pairs of Time and Value
    * @throws IOException
    */
-  public List<Pair<String, Double>> weatherInformation(ArrayList<String> places, ArrayList<String> params, String startingTime, String endingTime) throws IOException {
-    String url = FMIBaseURL + forecast;
-    //String url = FMIBaseURL + instObservation;
+  public void weatherInformation(ArrayList<String> places, ArrayList<String> params, String startingTime, String endingTime) throws IOException {
+    String url = FMIBaseURL + dailyObservation;
     if(places.size() > 0) {
       for(String p : places) {
         url += place + p;
@@ -225,9 +268,129 @@ public class Main extends Application {
     if(endingTime.length() > 0) {
       url += endtime + endingTime;
     }
+    JSONObject jo = XML.toJSONObject(getRequest(url, false));
+    filterTemperatureTimeValuePair(jo, params.size() > 1 || places.size() > 1);
+  }
+
+  public void roadInformation(ArrayList<String> places, ArrayList<String> params, String startingTime, String endingTime) throws IOException {
+    String url = FMIBaseURL + dailyObservation;
+    if(places.size() > 0) {
+      for(String p : places) {
+        url += place + p;
+      }
+    }
+    if(params.size() > 0) {
+      url += parameters;
+      for(String p : params) {
+        url += p + ",";
+      }
+      url = url.substring(0, url.length() - 1);
+    }
+
+    if(startingTime.length() > 0) {
+      url += starttime + startingTime;
+    }
+    if(endingTime.length() > 0) {
+      url += endtime + endingTime;
+    }
+    JSONObject jo = new JSONObject(getRequest(url, false));
+    filterTemperatureTimeValuePair(jo, params.size() > 1 || places.size() > 1);
+  }
+
+  public List<String> getAllTasks() throws IOException {
+    JSONArray ja = new JSONArray(getRequest(maintenanceTasks, true));
+    List<String> tasks = new ArrayList<>();
+    for(int i = 0; i < ja.length(); i++) {
+      JSONObject jo = (JSONObject) ja.get(i);
+      tasks.add(jo.get("nameEn").toString());
+    }
+    System.out.println(tasks);
+    double minLong = 25.72088;
+    double minLat = 62.24147;
+    double maxLong = 25.8;
+    double maxLat = 62.3;
+
+    String url = roadForecast + "/" + minLong + "/" + minLat + "/" + maxLong + "/" + maxLat;
     System.out.println(url);
-    JSONObject jo = XML.toJSONObject(getRequest(url));
-    return filterTemperatureTimeValuePair(jo, params.size() > 1 || places.size() > 1);
+    JSONObject data = new JSONObject(getRequest(url, true));
+    getRoadConditions(data);
+    return tasks;
+  }
+
+  /**
+   * Created by Miikka Venäläinen
+   * Function to get all the necessary road forecast data from JSON data
+   *
+   * @param data Data contains all JSON data of the query
+   */
+  public void getRoadConditions(JSONObject data) {
+    JSONArray weatherData = data.getJSONArray("weatherData");
+    for(int i = 0; i < weatherData.length(); i++) {
+      JSONObject cond = (JSONObject) weatherData.get(i);
+      String roadNumber = cond.get("id").toString().split("_")[0];
+      System.out.println("--" + roadNumber + "--");
+      JSONArray roadConditions = cond.getJSONArray("roadConditions");
+      for(int j = 0; j < roadConditions.length(); j++) {
+        JSONObject condition= (JSONObject) roadConditions.get(j);
+        String forecastTime = condition.getString("forecastName");
+        String roadTemperature = condition.getString("roadTemperature");
+        String temperature = condition.getString("temperature");
+        String overallRoadCondition = condition.getString("overallRoadCondition");
+        boolean dayLight = condition.getBoolean("daylight");
+        System.out.println("In " + forecastTime + " road temperature is " + roadTemperature + " and temperature is " + temperature);
+        if(dayLight) {
+          System.out.println("Sun is shining");
+        } else {
+          System.out.println("Sun is not shining");
+        }
+        System.out.print("Overall road condition is " + overallRoadCondition);
+        if(condition.has("forecastConditionReason")) {
+          JSONObject jsonObject = condition.getJSONObject("forecastConditionReason");
+          if(jsonObject.has("roadCondition")) {
+            String roadSurface = jsonObject.getString("roadCondition");
+            System.out.println(" and surface of the road is " + roadSurface.toLowerCase());
+          } else {
+            System.out.println();
+          }
+        } else {
+          System.out.println();
+        }
+        System.out.println();
+      }
+    }
+  }
+
+  /**
+   * Created by Miikka Venäläinen
+   * Function gets all the biggest cities where data can be queried
+   *
+   * @return Returns a sorted list of cities
+   * @throws IOException
+   */
+  public List<String> getAllCities() throws IOException {
+    String url = "https://opendata.fmi.fi/wfs?service=WFS&version=2.0.0&request=getFeature&storedquery_id=ecmwf::forecast::surface::cities::timevaluepair&parameters=temperature";
+    JSONObject jo = XML.toJSONObject(getRequest(url, false));
+    List<JSONObject> jsonObjects = new ArrayList<>();
+    List<String> cities = new ArrayList<>();
+    JSONObject info = jo.getJSONObject("wfs:FeatureCollection");
+
+    for(int i = 0; i < info.getJSONArray("wfs:member").length(); i++) {
+      jsonObjects.add((JSONObject) info.getJSONArray("wfs:member").get(i));
+    }
+    for (JSONObject j : jsonObjects) {
+      JSONObject observation = j.getJSONObject("omso:PointTimeSeriesObservation");
+      JSONObject interest = observation.getJSONObject("om:featureOfInterest");
+      JSONObject sampling = interest.getJSONObject("sams:SF_SpatialSamplingFeature");
+      JSONObject sampledFeature = sampling.getJSONObject("sam:sampledFeature");
+      JSONObject locCollection = sampledFeature.getJSONObject("target:LocationCollection");
+      JSONObject member = locCollection.getJSONObject("target:member");
+      JSONArray location = (JSONArray) member.getJSONObject("target:Location").get("gml:name");
+      JSONObject locContent = (JSONObject) location.get(0);
+      cities.add(locContent.get("content").toString());
+    }
+    cities.sort(Comparator.naturalOrder());
+    System.out.println(cities);
+    return cities;
   }
 
   // For simple weather data
@@ -256,8 +419,9 @@ public class Main extends Application {
    * @param multipleParams Boolean which tells whether JSONObject contains data from multiple cities and/or parameters
    * @return Returns a list of dates/times and respected values
    */
-  public List<Pair<String, Double>> filterTemperatureTimeValuePair(JSONObject jo, Boolean multipleParams) {
+  public List<Pair<String, List<Pair<String, List<Pair<String, Double>>>>>> filterTemperatureTimeValuePair(JSONObject jo, Boolean multipleParams) {
     List<JSONObject> jsonObjects = new ArrayList<>();
+    System.out.println(jo.length());
     JSONObject info = jo.getJSONObject("wfs:FeatureCollection");
 
     if(multipleParams) {
@@ -322,7 +486,7 @@ public class Main extends Application {
         System.out.println();
       }
     }
-    return null;
+    return allData;
   }
 
   /**
@@ -332,7 +496,7 @@ public class Main extends Application {
    * @param list List of Pair which contains time and value information
    * @param city Name of the city
    */
-  public void averageTemperature(List<Pair<String, Double>> list, String city, String parameter) {
+  public List<Pair<String, Double>> averageTemperature(List<Pair<String, Double>> list, String city, String parameter) {
     Double allValues = 0.0;
     int divider = 0;
     String previousDay = "";
@@ -356,6 +520,7 @@ public class Main extends Application {
     for (Pair<String, Double> r : dailyAverages) {
       System.out.println("Day: " + r.getKey() + "   Average " + parameter + " of " + city + " : " + Math.round(r.getValue() * 10) / 10.0);
     }
+    return dailyAverages;
   }
 
   /**
@@ -365,7 +530,7 @@ public class Main extends Application {
    * @param list List of Pair which contains time and value information
    * @param city Name of the city
    */
-  public void minMaxTemperature(List<Pair<String, Double>> list, String city, String parameter) {
+  public HashMap<String, HashMap<String, Double>> minMaxTemperature(List<Pair<String, Double>> list, String city, String parameter) {
     double highPoint = -100.0;
     double lowPoint = 100.0;
     String previousDay = "";
@@ -393,36 +558,7 @@ public class Main extends Application {
         lowPoint = pair.getValue();
       }
     }
-  }
-
-  @Override
-  public void start(Stage stage) throws IOException {
-    stage.setTitle("Hello World!");
-    Button btn = new Button();
-    btn.setText("Say 'Hello World'");
-    btn.setOnAction(event -> System.out.println("Hello World!"));
-
-    StackPane root = new StackPane();
-    root.getChildren().add(btn);
-
-    ArrayList<String> places = new ArrayList<>();
-    places.add("Tampere");
-    places.add("Kuopio");
-
-    ArrayList<String> params = new ArrayList<>();
-    params.add("temperature");
-    params.add("windspeedms");
-    params.add("winddirection");
-    params.add("pressure");
-    params.add("humidity");
-    params.add("windgust");
-    params.add("totalcloudcover");
-
-    String stime = dateFormatter(2022, 10, 11, 0, 0); //starttime
-    String etime = dateFormatter(2022, 10, 13, 0, 0); //endtime
-
-    List<Pair<String, Double>> list = weatherInformation(places, params, stime , etime);
-    System.exit(0);
+    return temps;
   }
 
   public static void main(String[] args) {
