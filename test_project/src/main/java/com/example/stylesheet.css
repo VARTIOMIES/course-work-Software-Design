@@ -1,0 +1,25 @@
+.root { 
+    
+}
+#title {
+    -fx-font-size: 20px;
+    -fx-color: wheat;
+}
+
+#box {
+    -fx-background-color: rgb(75, 75, 75);
+}
+
+#feed-element {
+    -fx-width: 100%;
+    -fx-background-color: white;
+    -fx-padding: 10px;
+    -fx-margin: 10px;
+    -fx-border-color:  rgba(255, 255,  255,  .80);
+    
+    
+}
+
+.text {
+    -fx-text-fill: white; 
+}
