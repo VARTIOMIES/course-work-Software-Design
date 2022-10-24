@@ -1,7 +1,7 @@
+package com.example;
+
 import java.io.BufferedReader;
-import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -9,59 +9,51 @@ import java.time.format.ResolverStyle;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.zip.GZIPInputStream;
-import javafx.application.Application;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.scene.Group;
-import javafx.scene.Scene;
-import javafx.scene.chart.CategoryAxis;
-import javafx.scene.chart.NumberAxis;
-import javafx.scene.chart.XYChart;
-import javafx.scene.control.Button;
-import javafx.scene.layout.StackPane;
-import javafx.scene.text.Text;
-import javafx.stage.Stage;
+
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.Scanner;
 
 import javafx.util.Pair;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.XML;
 
-import javafx.scene.chart.LineChart;
-
 /**
  * JavaFX App
  */
-public class Main extends Application {
+public class APItest{
+
+
+  private static APItest single_instance = null;
+
+  private APItest(){
+
+  }
 
   // Digitraffic URL
-  final String baseURL = "https://tie.digitraffic.fi";
+  static final String baseURL = "https://tie.digitraffic.fi";
 
   /* ROAD CAMERA */
 
   // Data from road cameras. Add "/{id}" if spesific camera
-  final String cameraData = "https://tie.digitraffic.fi/api/v1/data/camera-data";
+  static final String cameraData = "https://tie.digitraffic.fi/api/v1/data/camera-data";
 
   // Search for camera image history "={preset or camera id}". Returns link to
   // images
-  final String cameraHistory = "https://tie.digitraffic.fi/api/v3/data/camera-history/history?id=";
+  static final String cameraHistory = "https://tie.digitraffic.fi/api/v3/data/camera-history/history?id=";
 
   /* ROAD WEATHER */
 
   // Weather data. Add "/{id}"
-  final String weatherData = "https://tie.digitraffic.fi/api/v1/data/weather-data";
+  static final String weatherData = "https://tie.digitraffic.fi/api/v1/data/weather-data";
 
   // Weather data history. Add "/{stationId}"
-  final String weatherHistory = "https://tie.digitraffic.fi/api/beta/weather-history-data";
+  static final String weatherHistory = "https://tie.digitraffic.fi/api/beta/weather-history-data";
 
   /* ROAD CONDITION */
 
@@ -69,70 +61,70 @@ public class Main extends Application {
   // For coordinates use
   // "/{minLongitude}/{minLatitude}/{maxLongitude}/{maxLatitude}"
   // For spesific road use "/{roadNumber}"
-  final String roadForecast = "https://tie.digitraffic.fi/api/v3/data/road-conditions";
+  static final String roadForecast = "https://tie.digitraffic.fi/api/v3/data/road-conditions";
 
   /* Maintenance API calls */
-  final String maintenanceTasks = baseURL + "/api/maintenance/v1/tracking/tasks";
-  final String maintenanceRoutes = baseURL + "/api/maintenance/v1/tracking/routes";
+  static final String maintenanceTasks = baseURL + "/api/maintenance/v1/tracking/tasks";
+  static final String maintenanceRoutes = baseURL + "/api/maintenance/v1/tracking/routes";
 
   /* Traffic message API calls */
-  final String message = baseURL + "/api/traffic-message/v1/messages";
+  static final String message = baseURL + "/api/traffic-message/v1/messages";
 
 
   /* FMI WEATHER DATA */
 
   /* Search id  + simple/timevaluepair + & + place/starttime/endtime/timestep/parameters/crs/bbox/fmisid/maxlocation/geoid/wmo */
-  final String place = "&place=";
-  final String starttime = "&starttime=";
-  final String endtime = "&endtime=";
-  final String timestep = "&timestep=";
-  final String parameters = "&parameters="; //temperature, windspeedms
-  final String crs = "&crs=";
-  final String bbox = "&bbox=";
-  final String fmisid = "&fmisid=";
-  final String maxlocation = "&maxlocation=";
-  final String geoid = "&geoid=";
-  final String wmo = "&wmo=";
+  static final String place = "&place=";
+  static final String starttime = "&starttime=";
+  static final String endtime = "&endtime=";
+  static final String timestep = "&timestep=";
+  static final String parameters = "&parameters="; //temperature, windspeedms
+  static final String crs = "&crs=";
+  static final String bbox = "&bbox=";
+  static final String fmisid = "&fmisid=";
+  static final String maxlocation = "&maxlocation=";
+  static final String geoid = "&geoid=";
+  static final String wmo = "&wmo=";
 
   //Base URL
-  final String FMIBaseURL = "https://opendata.fmi.fi/wfs?service=WFS&version=2.0.0&request=getFeature&storedquery_id=";
+  static final String FMIBaseURL = "https://opendata.fmi.fi/wfs?service=WFS&version=2.0.0&request=getFeature&storedquery_id=";
 
   //Weather observations for cities as time value pairs
-  final String cityObservation = "fmi::observations::weather::cities::timevaluepair";
+  static final String cityObservation = "fmi::observations::weather::cities::timevaluepair";
 
   //Daily Weather Observations
-  final String dailyObservation = "fmi::observations::weather::daily::timevaluepair";
+  static final String dailyObservation = "fmi::observations::weather::daily::timevaluepair";
 
   //Hourly Weather Observations
-  final String hourlyObservation = "fmi::observations::weather::hourly::timevaluepair";
+  static final String hourlyObservation = "fmi::observations::weather::hourly::timevaluepair";
 
   //Instantaneous Weather Observations
-  final String instObservation = "fmi::observations::weather::timevaluepair";
+  static final String instObservation = "fmi::observations::weather::timevaluepair";
 
   //Instantaneous Road Weather Observations
-  final String roadObservation = "livi::observations::road::default::timevaluepair";
+  static final String roadObservation = "livi::observations::road::default::timevaluepair";
 
   //Hourly Air Quality Observations
-  final String airQuality = "urban::observations::airquality::hourly::timevaluepair";
+  static final String airQuality = "urban::observations::airquality::hourly::timevaluepair";
 
   //Radioactivity in outdoor air
-  final String radioActivity = "stuk::observations::air::radionuclide-activity-concentration::latest::simple";
+  static final String radioActivity = "stuk::observations::air::radionuclide-activity-concentration::latest::simple";
 
   /* FMI FORECAST */
 
   //Forecast for cities
-  final String forecast = "ecmwf::forecast::surface::point::timevaluepair";
+  static final String forecast = "ecmwf::forecast::surface::point::timevaluepair";
+
+  public static APItest getInstance(){
+    if (single_instance == null)
+      single_instance = new APItest();
+
+    return single_instance;
+  }
 
 
-  @Override
-  public void start(Stage stage) throws IOException {
-    stage.setTitle("Hello World!");
-    Button btn = new Button();
-    btn.setText("Say 'Hello World'");
-    btn.setOnAction(event -> System.out.println("Hello World!"));
-
-    StackPane root = new StackPane();
-    root.getChildren().add(btn);
+  // This was start(Stage stage) before (not needed)
+  public void testing() throws IOException {
 
     ArrayList<String> places = new ArrayList<>();
     places.add("Tampere");
@@ -153,7 +145,8 @@ public class Main extends Application {
     getAllCities();
     getAllTasks();
     weatherInformation(places, params, stime , etime);
-    System.exit(0);
+
+    //System.exit(0);
   }
 
   /**
@@ -164,7 +157,7 @@ public class Main extends Application {
    * @return Returns API request return value as a String
    * @throws IOException
    */
-  public static String getRequest(String u, Boolean isDigiTraffic) throws IOException {
+  public String getRequest(String u, Boolean isDigiTraffic) throws IOException {
     URL url = new URL(u);
     HttpURLConnection connection = (HttpURLConnection) url.openConnection();
     connection.setReadTimeout(20000);
@@ -196,7 +189,7 @@ public class Main extends Application {
    * @param argument Is either "day" or "time"
    * @return Returns "2022-10-06" if argument is "day", "00:50:00" if argument is "time"
    */
-  public static String dateSplitter(String date, String argument) {
+  public String dateSplitter(String date, String argument) {
     if(argument.equals("day")) {
       return date.split("T")[0];
     }
@@ -214,13 +207,15 @@ public class Main extends Application {
    * @param minutes User's selection for the minutes
    * @return Returns correctly formatted date t.ex 2022-10-06T00:50:00Z
    */
-  public static String dateFormatter(int year, int month, int day, int hours, int minutes) {
+  public String dateFormatter(int year, int month, int day, int hours, int minutes) {
     String date;
     DateTimeFormatter dateForm = DateTimeFormatter.ofPattern("uuuu-MM-dd", Locale.US).withResolverStyle(ResolverStyle.STRICT);
     date = dateForm.format(LocalDate.of(year, month, day)) + "T" + LocalTime.of(hours, minutes) + ":00Z";
     return date;
   }
 
+
+/*
   public static void createChart() {
     NumberAxis xaxis = new NumberAxis();
     CategoryAxis yaxis = new CategoryAxis();
@@ -236,7 +231,8 @@ public class Main extends Application {
     group.getChildren().add(linechart);
     //stage.setScene(new Scene(group, 800, 500));
     //stage.show();
-  }
+  }*/
+
 
   /**
    * Created by Miikka Venäläinen
@@ -561,8 +557,8 @@ public class Main extends Application {
     return temps;
   }
 
-  public static void main(String[] args) {
+  /*public static void main(String[] args) {
     launch();
-  }
+  }*/
 
 }
