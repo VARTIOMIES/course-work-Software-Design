@@ -71,6 +71,22 @@ public class RoadDataProvider {
   final static String sitType = "&situationType=";
 
 
+  /**
+   * Created by Miikka Venäläinen
+   *
+   * Method searches for maintenance data from given coordinates.
+   * It is also possible to give a list of task types and/or a starting time
+   * and/or ending time.
+   * Time between From and To -parameter values must be less or equal to 24 hours.
+   *
+   * @param coords A list of coordinates
+   * @param taskIds A list of tasks user wants to see
+   * @param from From a given time. Time format 2022-10-11T00:00:00Z
+   * @param to To a given time. Time format 2022-10-11T00:00:00Z
+   * @return Returns a list of maintenance tasks. List contains MaintenanceTask
+   * objects and those objects include all the data
+   * @throws IOException In case of an exception
+   */
   public static List<MaintenanceTask> getMaintenanceData(ArrayList<Double> coords, ArrayList<String> taskIds, String from, String to) throws IOException {
 
     getAllTasks();
@@ -274,6 +290,14 @@ public class RoadDataProvider {
   }
 
 
+  /**
+   * Created by Miikka Venäläinen
+   *
+   * Method gets all possible maintenance types and their meanings
+   * and saves them for further usage
+   *
+   * @throws IOException In case of an exception
+   */
   public static void getAllTasks() throws IOException {
     JSONArray ja = new JSONArray(APICall.getRequest(maintenanceTasks, true));
     for(int i = 0; i < ja.length(); i++) {
@@ -285,6 +309,9 @@ public class RoadDataProvider {
 
   /**
    * Created by Miikka Venäläinen
+   *
+   * Function to get all traffic related messages of certain type and from
+   * certain time
    *
    * @param hours How many hours ago
    * @param situationType What kind of situation data user wants to see
