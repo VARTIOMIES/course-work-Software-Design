@@ -1,5 +1,6 @@
 package fi.tuni.compse110.project;
 
+import fi.tuni.compse110.project.API.MaintenanceTask;
 import fi.tuni.compse110.project.API.RoadDataProvider;
 import fi.tuni.compse110.project.API.Utility;
 import javafx.application.Application;
@@ -16,6 +17,9 @@ import java.io.IOException;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 import org.jfree.chart.fx.ChartViewer;
@@ -23,44 +27,38 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import fi.tuni.compse110.project.components.Feed;
 
-
-
 /**
  * JavaFX App
  */
 public class UITest extends Application {
 
     private static Scene scene;
+
     @Override
     public void start(Stage stage) throws IOException {
         testCase();
         ArrayList<Double> coords = new ArrayList<>(Arrays.asList(25.72088, 62.24147, 25.8, 62.3));
-        
-        File file = new File("./data/road_conditions.json");
-        Scanner myReader = new Scanner(file);
-        StringBuilder str = new StringBuilder();
-        while (myReader.hasNextLine()) {
-            String data = myReader.nextLine();
-            str.append(data);
+
+        List<MaintenanceTask> tasks = RoadDataProvider.getMaintenanceData(coords, new ArrayList<>(), "", "");
+        Map<ArrayList<String>, ArrayList<String>> task_list = new HashMap<ArrayList<String>, ArrayList<String>>();
+        // get necessary data for feed
+        for (MaintenanceTask t : tasks) {
+            task_list.put(t.getTasks(), new ArrayList<String>(Arrays.asList(t.getStartTime(), t.getEndTime())));
         }
-        myReader.close();
-        JSONObject obj = new JSONObject(str.toString());
-        Feed feed = new Feed(obj);
+        Feed feed = new Feed(task_list);
 
-
-        
         scene = new Scene(feed.getElement(), 640, 480);
 
-
         /*
-        *
-        * EXAMPLE ON HOW TO GET AND USE THE CHART
-        *
-        *
+         *
+         * EXAMPLE ON HOW TO GET AND USE THE CHART
+         *
+         *
          */
-        /*ChartViewer viewer = Graph.getChart();
-        scene = new Scene(viewer);*/
-
+        /*
+         * ChartViewer viewer = Graph.getChart();
+         * scene = new Scene(viewer);
+         */
 
         // Possible nullPointerException throwing from .toExternalForm()
         scene.getStylesheets().add(UITest.class.getResource("/stylesheet.css").toExternalForm());
@@ -88,14 +86,14 @@ public class UITest extends Application {
         ArrayList<String> params = new ArrayList<>();
         params.add("temperature");
         params.add("windspeedms");
-        //params.add("winddirection");
-        //params.add("pressure");
-        //params.add("humidity");
-        //params.add("windgust");
-        //params.add("totalcloudcover");
+        // params.add("winddirection");
+        // params.add("pressure");
+        // params.add("humidity");
+        // params.add("windgust");
+        // params.add("totalcloudcover");
 
-        String stime = Utility.dateFormatter(2022, 10, 12, 0, 0); //starttime
-        String etime = Utility.dateFormatter(2022, 10, 13, 0, 0); //endtime
+        String stime = Utility.dateFormatter(2022, 10, 12, 0, 0); // starttime
+        String etime = Utility.dateFormatter(2022, 10, 13, 0, 0); // endtime
 
         double minLong = 24;
         double minLat = 61;
@@ -115,8 +113,10 @@ public class UITest extends Application {
         RoadDataProvider.getTrafficMessages(3, "TRAFFIC_ANNOUNCEMENT");
     }
 
-   /* public static void main(String[] args) {
-        launch();
-    }*/
+    /*
+     * public static void main(String[] args) {
+     * launch();
+     * }
+     */
 
 }

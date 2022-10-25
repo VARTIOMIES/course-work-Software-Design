@@ -1,5 +1,7 @@
 package fi.tuni.compse110.project.components;
 
+import java.util.ArrayList;
+
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 
@@ -7,6 +9,7 @@ public class FeedElement {
     private Text title_obj;
     private VBox feed_obj;
     private VBox info_box;
+    private String bg_color;
 
     public FeedElement() {
         feed_obj = new VBox();
@@ -20,8 +23,12 @@ public class FeedElement {
         info_box.getChildren().add(new Text(info));
     }
 
-    public void addAllInfo(String... list){
-        for(String text : list){
+    public void setBackgroundColor(String color){
+        bg_color = color;
+    }
+
+    public void addAllInfo(ArrayList<String> info){
+        for(String text : info){
             Text t = new Text(text);
             info_box.getChildren().add(t);
         }
@@ -32,6 +39,7 @@ public class FeedElement {
     }
 
     public VBox getObject(){
+        feed_obj.setStyle(("-fx-background-color: " + bg_color));
         feed_obj.getChildren().add(title_obj);
         feed_obj.getChildren().add(info_box);
 
