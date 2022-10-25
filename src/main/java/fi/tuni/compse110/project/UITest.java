@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
 
+import org.jfree.chart.fx.ChartViewer;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -44,8 +45,42 @@ public class UITest extends Application {
         JSONObject obj = new JSONObject(str.toString());
         Feed feed = new Feed(obj);
 
+<<<<<<< HEAD
         
         scene = new Scene(feed.getElement(), 640, 480);
+=======
+            JSONArray raodConditions = location.getJSONArray("roadConditions");
+
+            // loop one location
+            for (Object location_datapoint : raodConditions) {
+
+                FeedElement feed_element = new FeedElement();
+
+                JSONObject point = (JSONObject) location_datapoint;
+                feed_element.setTitle("this is title");
+                feed_element.addAllInfo(point.getString("type"), point.getString("forecastName"), "temperature: ",
+                        point.getString("temperature"));
+                feed.getChildren().add(feed_element.getObject());
+            }
+
+        }
+        ScrollPane scrollable = new ScrollPane();
+        scrollable.setId("scroll");
+        scrollable.setContent(feed);
+
+
+        scene = new Scene(scrollable, 640, 480);
+>>>>>>> 6f18172736280ea44c278b55b2c9d842e348ff3c
+
+        /*
+        *
+        * EXAMPLE ON HOW TO GET AND USE THE CHART
+        *
+        *
+         */
+        /*ChartViewer viewer = Graph.getChart();
+        scene = new Scene(viewer);*/
+
 
         // Possible nullPointerException throwing from .toExternalForm()
         scene.getStylesheets().add(UITest.class.getResource("/stylesheet.css").toExternalForm());
