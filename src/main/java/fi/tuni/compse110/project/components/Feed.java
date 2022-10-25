@@ -33,7 +33,7 @@ public class Feed {
             
 
         }
-        
+        root.setMaxHeight(400);
         root.setId("scroll");
         root.setContent(feed);
     }
