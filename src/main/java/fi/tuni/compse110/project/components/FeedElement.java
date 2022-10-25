@@ -1,4 +1,4 @@
-package com.example;
+package fi.tuni.compse110.project.components;
 
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;

@@ -1,7 +1,5 @@
-package com.example;
+package fi.tuni.compse110.project;
 
-import com.example.APItest;
-import com.example.UITest;
 import javafx.application.Application;
 
 import java.io.IOException;

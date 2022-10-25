@@ -1,4 +1,4 @@
-package com.example;
+package fi.tuni.compse110.project;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;

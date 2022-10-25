@@ -1,4 +1,4 @@
-package com.example;
+package fi.tuni.compse110.project;
 
 import java.io.IOException;
 import javafx.fxml.FXML;

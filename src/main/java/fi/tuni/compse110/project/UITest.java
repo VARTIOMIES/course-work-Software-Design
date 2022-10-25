@@ -1,4 +1,4 @@
-package com.example;
+package fi.tuni.compse110.project;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -10,11 +10,14 @@ import javafx.stage.Stage;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
+
 import java.util.Scanner;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+
+import fi.tuni.compse110.project.components.FeedElement;
+
 
 /**
  * JavaFX App
