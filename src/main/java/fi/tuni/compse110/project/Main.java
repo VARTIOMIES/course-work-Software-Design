@@ -1,6 +1,7 @@
 package fi.tuni.compse110.project;
 
 import fi.tuni.compse110.project.API.APItest;
+import fi.tuni.compse110.project.API.RoadDataProvider;
 import javafx.application.Application;
 
 import java.io.IOException;
@@ -12,7 +13,6 @@ import java.io.IOException;
     public static void main(String[] args) throws IOException {
         APItest apitestSingleton = APItest.getInstance();
         apitestSingleton.testing();
-
         Application.launch(UITest.class,args);
     }
 }

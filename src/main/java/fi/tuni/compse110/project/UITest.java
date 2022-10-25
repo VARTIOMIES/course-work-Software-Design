@@ -1,6 +1,7 @@
 package fi.tuni.compse110.project;
 
-import fi.tuni.compse110.project.API.RoadData;
+import fi.tuni.compse110.project.API.RoadDataProvider;
+import fi.tuni.compse110.project.API.Utility;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -32,6 +33,7 @@ public class UITest extends Application {
     private static Scene scene;
     @Override
     public void start(Stage stage) throws IOException {
+        testCase();
         ArrayList<Double> coords = new ArrayList<>(Arrays.asList(25.72088, 62.24147, 25.8, 62.3));
         
         File file = new File("./data/road_conditions.json");
@@ -75,6 +77,41 @@ public class UITest extends Application {
     private static Parent loadFXML(String fxml) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(UITest.class.getResource(fxml + ".fxml"));
         return fxmlLoader.load();
+    }
+
+    // For test usage of RoadDataProvider's and WeatherDataProvider's functions
+    private static void testCase() throws IOException {
+        ArrayList<String> places = new ArrayList<>();
+        places.add("Tampere");
+        places.add("Rovaniemi");
+
+        ArrayList<String> params = new ArrayList<>();
+        params.add("temperature");
+        params.add("windspeedms");
+        //params.add("winddirection");
+        //params.add("pressure");
+        //params.add("humidity");
+        //params.add("windgust");
+        //params.add("totalcloudcover");
+
+        String stime = Utility.dateFormatter(2022, 10, 12, 0, 0); //starttime
+        String etime = Utility.dateFormatter(2022, 10, 13, 0, 0); //endtime
+
+        double minLong = 24;
+        double minLat = 61;
+        double maxLong = 24.5;
+        double maxLat = 61.4;
+        ArrayList<Double> coord = new ArrayList<>();
+        coord.add(minLong);
+        coord.add(minLat);
+        coord.add(maxLong);
+        coord.add(maxLat);
+
+        ArrayList<String> taskIds = new ArrayList<>();
+        taskIds.add("ROAD_STATE_CHECKING");
+        taskIds.add("DITCHING");
+
+        RoadDataProvider.getMaintenanceData(coord, taskIds, stime, etime);
     }
 
    /* public static void main(String[] args) {

@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import java.util.List;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -69,8 +70,9 @@ public class RoadDataProvider {
   final static String sitType = "&situationType=";
 
 
-  public static HashMap<String, Integer> getMaintenanceData(ArrayList<Double> coords, ArrayList<String> taskIds, String from, String to) throws IOException {
+  public static List<MaintenanceTask> getMaintenanceData(ArrayList<Double> coords, ArrayList<String> taskIds, String from, String to) throws IOException {
 
+    getAllTasks();
     String url = maintenanceRoutes;
     if(coords.size() == 4) {
       url += "?xMin=" + coords.get(0) + "&yMin=" + coords.get(1) + "&xMax" + coords.get(2) + "&yMax=" + coords.get(3);
@@ -96,33 +98,43 @@ public class RoadDataProvider {
     }
 
     HashMap<String, Integer> amounts = new HashMap<>();
-    HashMap<String, ArrayList<String>> allTasks = new HashMap<>();
+    List<MaintenanceTask> allTasks = new ArrayList<>();
 
     JSONArray list = maintenance.getJSONArray("features");
     for(int i = 0; i < list.length(); i++) {
       JSONObject feature = list.getJSONObject(i);
       JSONObject properties = feature.getJSONObject("properties");
+      MaintenanceTask maintenanceTask = new MaintenanceTask();
       String startTime = properties.getString("startTime");
+      maintenanceTask.setStartTime(startTime);
       String endTime = properties.getString("endTime");
+      maintenanceTask.setEndTime(endTime);
       String source  = properties.getString("source");
+      maintenanceTask.setSource(source);
       System.out.println(startTime + " - " + endTime);
       System.out.println(source);
+      ArrayList<String> maintTasks = new ArrayList<>();
       for (int j = 0; j < properties.getJSONArray("tasks").length(); j++) {
         String task = tasks.get(properties.getJSONArray("tasks").get(j).toString());
         System.out.print(task);
+        maintTasks.add(task);
         System.out.print(", ");
         if(!amounts.containsKey(task)) {
           amounts.put(task, 1);
         } else {
           amounts.replace(task, amounts.get(task) + 1);
         }
-
       }
+      maintenanceTask.setTasks(maintTasks);
+      allTasks.add(maintenanceTask);
       System.out.println();
       System.out.println();
     }
     amounts.forEach((key, value) -> System.out.println(key + " : " + value));
-    return amounts;
+    allTasks.forEach((e) -> {
+      System.out.println(e.getTasks());
+    });
+    return allTasks;
   }
 
 
