@@ -43,7 +43,7 @@ public class UITest extends Application {
         Map<ArrayList<String>, ArrayList<String>> task_list = new HashMap<ArrayList<String>, ArrayList<String>>();
         // get necessary data for feed
         for (MaintenanceTask t : tasks) {
-            task_list.put(t.getTasks(), new ArrayList<String>(Arrays.asList(t.getStartTime(), t.getEndTime())));
+            task_list.put(t.getTasks(), new ArrayList<String>(Arrays.asList(t.getPrettyTimeRange())));
         }
         Feed feed = new Feed(task_list);
 
