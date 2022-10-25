@@ -71,7 +71,7 @@ public class RoadData {
   final static String sitType = "&situationType=";
 
 
-  public static void getMaintenanceData(ArrayList<Double> coords, ArrayList<String> taskIds, String from, String to) throws IOException {
+  public static HashMap<String, Integer> getMaintenanceData(ArrayList<Double> coords, ArrayList<String> taskIds, String from, String to) throws IOException {
 
     String url = maintenanceRoutes;
     if(coords.size() == 4) {
@@ -98,6 +98,7 @@ public class RoadData {
     }
 
     HashMap<String, Integer> amounts = new HashMap<>();
+    HashMap<String, ArrayList<String>> allTasks = new HashMap<>();
 
     JSONArray list = maintenance.getJSONArray("features");
     for(int i = 0; i < list.length(); i++) {
@@ -123,6 +124,7 @@ public class RoadData {
       System.out.println();
     }
     amounts.forEach((key, value) -> System.out.println(key + " : " + value));
+    return amounts;
   }
 
 
@@ -131,8 +133,9 @@ public class RoadData {
    * Created by Miikka Venäläinen
    * Function to get all the necessary road forecast data from JSON data
    *
+   * @return
    */
-  public static HashMap<Integer, ArrayList<HashMap<Integer, RoadCondition>>> getRoadConditions(int roadNum, ArrayList<Double> coords) throws IOException {
+  public static void getRoadConditions(int roadNum, ArrayList<Double> coords) throws IOException {
     String url = roadForecast;
     HashMap<Integer, ArrayList<HashMap<Integer, RoadCondition>>> allValues = new HashMap<>();
     if(roadNum > 0) {
@@ -243,7 +246,6 @@ public class RoadData {
       System.out.println();
     });
     //WindDirectionGraph.graphDrawer(allValues);
-    return allValues;
   }
 
 
