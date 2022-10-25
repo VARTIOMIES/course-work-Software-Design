@@ -10,7 +10,6 @@ public class Feed {
     public Feed(JSONObject data) {
         root = new ScrollPane();
         
-        
         JSONArray weather_data = data.getJSONArray("weatherData");
         VBox feed = new VBox(10);
         feed.setId("box");
