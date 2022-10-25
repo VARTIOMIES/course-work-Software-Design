@@ -13,6 +13,7 @@ import java.io.IOException;
 
 import java.util.Scanner;
 
+import org.jfree.chart.fx.ChartViewer;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -64,7 +65,19 @@ public class UITest extends Application {
         ScrollPane scrollable = new ScrollPane();
         scrollable.setId("scroll");
         scrollable.setContent(feed);
+
+
         scene = new Scene(scrollable, 640, 480);
+
+        /*
+        *
+        * EXAMPLE ON HOW TO GET AND USE THE CHART
+        *
+        *
+         */
+        /*ChartViewer viewer = Graph.getChart();
+        scene = new Scene(viewer);*/
+
 
         // Possible nullPointerException throwing from .toExternalForm()
         scene.getStylesheets().add(UITest.class.getResource("/stylesheet.css").toExternalForm());
