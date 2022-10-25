@@ -7,12 +7,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import fi.tuni.compse110.project.API.APICall;
-import fi.tuni.compse110.project.API.RoadCondition;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-public class RoadData {
+public class RoadDataProvider {
 
   private static HashMap<String, String> tasks = new HashMap<>();
 

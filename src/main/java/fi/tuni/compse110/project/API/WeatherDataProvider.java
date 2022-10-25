@@ -13,7 +13,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.XML;
 
-public class WeatherData {
+public class WeatherDataProvider {
   final static String place = "&place=";
   final static String starttime = "&starttime=";
   final static String endtime = "&endtime=";
