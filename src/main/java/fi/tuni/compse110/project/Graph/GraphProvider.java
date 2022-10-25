@@ -8,9 +8,14 @@ import org.jfree.chart.JFreeChart;
 import org.jfree.data.statistics.HistogramDataset;
 import org.jfree.chart.fx.ChartViewer;
 
-public class Graph {
+/**
+ * Provides ChartViews from data. Idea is that the raw data could be given to this provider class,
+ * and the data would be then parsed to wanted form by parameters given with
+ * the function calls
+ */
+public class GraphProvider {
 
-    public Graph(){
+    public GraphProvider(){
 
     }
 

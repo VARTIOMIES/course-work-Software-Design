@@ -55,7 +55,7 @@ public class UITest extends Application {
         *
         *
          */
-        /*ChartViewer viewer = Graph.getChart();
+        /*ChartViewer viewer = GraphProvider.getChart();
         scene = new Scene(viewer);*/
 
 
