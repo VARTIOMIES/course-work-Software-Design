@@ -8,14 +8,18 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+import java.io.Console;
 import java.io.File;
 import java.io.IOException;
-
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Scanner;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import fi.tuni.compse110.project.components.Feed;
 import fi.tuni.compse110.project.components.FeedElement;
 
 
@@ -25,10 +29,10 @@ import fi.tuni.compse110.project.components.FeedElement;
 public class UITest extends Application {
 
     private static Scene scene;
-
     @Override
     public void start(Stage stage) throws IOException {
-
+        ArrayList<Double> coords = new ArrayList<>(Arrays.asList(25.72088, 62.24147, 25.8, 62.3));
+        
         File file = new File("./data/road_conditions.json");
         Scanner myReader = new Scanner(file);
         StringBuilder str = new StringBuilder();
@@ -37,34 +41,11 @@ public class UITest extends Application {
             str.append(data);
         }
         myReader.close();
-
         JSONObject obj = new JSONObject(str.toString());
-        JSONArray weather_data = obj.getJSONArray("weatherData");
-        VBox feed = new VBox(10);
-        feed.setId("box");
-        for (Object datapoint_obj : weather_data) {
+        Feed feed = new Feed(obj);
 
-            JSONObject location = (JSONObject) datapoint_obj;
-
-            JSONArray raodConditions = location.getJSONArray("roadConditions");
-
-            // loop one location
-            for (Object location_datapoint : raodConditions) {
-
-                FeedElement feed_element = new FeedElement();
-
-                JSONObject point = (JSONObject) location_datapoint;
-                feed_element.setTitle("this is title");
-                feed_element.addAllInfo(point.getString("type"), point.getString("forecastName"), "temperature: ",
-                        point.getString("temperature"));
-                feed.getChildren().add(feed_element.getObject());
-            }
-
-        }
-        ScrollPane scrollable = new ScrollPane();
-        scrollable.setId("scroll");
-        scrollable.setContent(feed);
-        scene = new Scene(scrollable, 640, 480);
+        
+        scene = new Scene(feed.getElement(), 640, 480);
 
         // Possible nullPointerException throwing from .toExternalForm()
         scene.getStylesheets().add(UITest.class.getResource("/stylesheet.css").toExternalForm());
