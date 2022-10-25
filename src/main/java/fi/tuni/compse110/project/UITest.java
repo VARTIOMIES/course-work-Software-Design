@@ -112,6 +112,7 @@ public class UITest extends Application {
         taskIds.add("DITCHING");
 
         RoadDataProvider.getMaintenanceData(coord, taskIds, stime, etime);
+        RoadDataProvider.getTrafficMessages(3, "TRAFFIC_ANNOUNCEMENT");
     }
 
    /* public static void main(String[] args) {
