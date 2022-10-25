@@ -1,4 +1,4 @@
-module com.example {
+module fi.tuni.compse110.project {
     requires javafx.controls;
     requires transitive javafx.graphics;
     requires javafx.fxml;
