@@ -1,4 +1,4 @@
-package fi.tuni.compse110.project;
+package fi.tuni.compse110.project.API;
 /*
  * Creator Miikka Venäläinen
  */

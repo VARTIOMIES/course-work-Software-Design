@@ -1,4 +1,4 @@
-package fi.tuni.compse110.project;
+package fi.tuni.compse110.project.API;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;

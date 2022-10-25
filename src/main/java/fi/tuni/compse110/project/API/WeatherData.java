@@ -1,4 +1,4 @@
-package fi.tuni.compse110.project;
+package fi.tuni.compse110.project.API;
 /*
  * Creator Miikka Venäläinen
  */
@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
 import javafx.util.Pair;
 import org.json.JSONArray;
 import org.json.JSONObject;

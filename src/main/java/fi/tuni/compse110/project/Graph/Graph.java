@@ -1,4 +1,4 @@
-package fi.tuni.compse110.project;
+package fi.tuni.compse110.project.Graph;
 /*
     @author - Onni Merila , onni.merila@tuni.fi , H299725
  */

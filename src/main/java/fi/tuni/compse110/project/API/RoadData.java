@@ -1,4 +1,4 @@
-package fi.tuni.compse110.project;
+package fi.tuni.compse110.project.API;
 /*
  * Creator Miikka Venäläinen
  */
@@ -6,6 +6,9 @@ package fi.tuni.compse110.project;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import fi.tuni.compse110.project.API.APICall;
+import fi.tuni.compse110.project.API.RoadCondition;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
