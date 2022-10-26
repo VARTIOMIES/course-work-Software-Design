@@ -3,6 +3,7 @@ package fi.tuni.compse110.project;
 import fi.tuni.compse110.project.API.MaintenanceTask;
 import fi.tuni.compse110.project.API.RoadDataProvider;
 import fi.tuni.compse110.project.API.Utility;
+import fi.tuni.compse110.project.Graph.GraphProvider;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
@@ -70,12 +71,20 @@ public class UITest extends Application {
         HBox row = new HBox();
         
         row.setId("row");
-        // graph not yet implemented
+
+        /*
+        Graph: ChartViewer is the wanted UI element
+            (Node is in the hierarchy tree)
+
+         */
         Pane graph = new Pane();
         graph.setId("graph");
-        graph.setMinSize(400, 200);
+        ChartViewer testChartViewer = GraphProvider.getTestChart(500,400);
+        graph.getChildren().add(testChartViewer);
+
+
         Region filler = new Region();
-        filler.setPrefWidth(100);
+        filler.setPrefWidth(50);
         row.getChildren().addAll(graph,filler, taskFeed.getElement());
         
         vLayout.getChildren().addAll(searchBar, row);
@@ -83,18 +92,7 @@ public class UITest extends Application {
         
         
         scene = new Scene(window, 1024, 720);
-        
 
-        /*
-         *
-         * EXAMPLE ON HOW TO GET AND USE THE CHART
-         *
-         *
-         */
-        /*
-         * ChartViewer viewer = Graph.getChart();
-         * scene = new Scene(viewer);
-         */
 
         // Possible nullPointerException throwing from .toExternalForm()
         scene.getStylesheets().add(UITest.class.getResource("/stylesheet.css").toExternalForm());
