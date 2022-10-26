@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import java.util.List;
+import javafx.util.Pair;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -69,8 +71,25 @@ public class RoadDataProvider {
   final static String sitType = "&situationType=";
 
 
-  public static void getMaintenanceData(ArrayList<Double> coords, ArrayList<String> taskIds, String from, String to) throws IOException {
+  /**
+   * Created by Miikka Venäläinen
+   *
+   * Method searches for maintenance data from given coordinates.
+   * It is also possible to give a list of task types and/or a starting time
+   * and/or ending time.
+   * Time between From and To -parameter values must be less or equal to 24 hours.
+   *
+   * @param coords A list of coordinates
+   * @param taskIds A list of tasks user wants to see
+   * @param from From a given time. Time format 2022-10-11T00:00:00Z
+   * @param to To a given time. Time format 2022-10-11T00:00:00Z
+   * @return Returns a list of maintenance tasks. List contains MaintenanceTask
+   * objects and those objects include all the data
+   * @throws IOException In case of an exception
+   */
+  public static List<MaintenanceTask> getMaintenanceData(ArrayList<Double> coords, ArrayList<String> taskIds, String from, String to) throws IOException {
 
+    getAllTasks();
     String url = maintenanceRoutes;
     if(coords.size() == 4) {
       url += "?xMin=" + coords.get(0) + "&yMin=" + coords.get(1) + "&xMax" + coords.get(2) + "&yMax=" + coords.get(3);
@@ -96,31 +115,40 @@ public class RoadDataProvider {
     }
 
     HashMap<String, Integer> amounts = new HashMap<>();
+    List<MaintenanceTask> allTasks = new ArrayList<>();
 
     JSONArray list = maintenance.getJSONArray("features");
     for(int i = 0; i < list.length(); i++) {
       JSONObject feature = list.getJSONObject(i);
       JSONObject properties = feature.getJSONObject("properties");
+      MaintenanceTask maintenanceTask = new MaintenanceTask();
       String startTime = properties.getString("startTime");
+      maintenanceTask.setStartTime(startTime);
       String endTime = properties.getString("endTime");
+      maintenanceTask.setEndTime(endTime);
       String source  = properties.getString("source");
+      maintenanceTask.setSource(source);
       System.out.println(startTime + " - " + endTime);
       System.out.println(source);
+      ArrayList<String> maintTasks = new ArrayList<>();
       for (int j = 0; j < properties.getJSONArray("tasks").length(); j++) {
         String task = tasks.get(properties.getJSONArray("tasks").get(j).toString());
         System.out.print(task);
+        maintTasks.add(task);
         System.out.print(", ");
         if(!amounts.containsKey(task)) {
           amounts.put(task, 1);
         } else {
           amounts.replace(task, amounts.get(task) + 1);
         }
-
       }
+      maintenanceTask.setTasks(maintTasks);
+      allTasks.add(maintenanceTask);
       System.out.println();
       System.out.println();
     }
     amounts.forEach((key, value) -> System.out.println(key + " : " + value));
+    return allTasks;
   }
 
 
@@ -129,9 +157,27 @@ public class RoadDataProvider {
    * Created by Miikka Venäläinen
    * Function to get all the necessary road forecast data from JSON data
    *
+   * @return Returns a HashMap which contains road numbers and for each road number
+   * there is a list of its road sections and forecasts for each of the section in a HashMap
+   *
+   * {roadNumber : sections {{
+   *                          section 1 : forecast 0h
+   *                          section 1 : forecast 2h
+   *                          ...
+   *                        },{
+   *                          section 2 : forecast 0h
+   *                          section 2 : forecast 2h
+   *                          ...
+   *                        },{
+   *                          ....
+   *                        }
+   *                       }
+   *  }
+   *
    */
   public static HashMap<Integer, ArrayList<HashMap<Integer, RoadCondition>>> getRoadConditions(int roadNum, ArrayList<Double> coords) throws IOException {
     String url = roadForecast;
+    //For every road, list of road sections + its forecasts
     HashMap<Integer, ArrayList<HashMap<Integer, RoadCondition>>> allValues = new HashMap<>();
     if(roadNum > 0) {
       url += "/" + roadNum;
@@ -231,7 +277,7 @@ public class RoadDataProvider {
       }
     }
     allValues.forEach((key, value) -> {
-      System.out.println(key);
+      //System.out.println(key);
       for(HashMap<Integer, RoadCondition> values : value){
         values.forEach((k, v) -> {
           //System.out.println(v.getWindSpeed());
@@ -240,11 +286,18 @@ public class RoadDataProvider {
       }
       System.out.println();
     });
-    //WindDirectionGraph.graphDrawer(allValues);
     return allValues;
   }
 
 
+  /**
+   * Created by Miikka Venäläinen
+   *
+   * Method gets all possible maintenance types and their meanings
+   * and saves them for further usage
+   *
+   * @throws IOException In case of an exception
+   */
   public static void getAllTasks() throws IOException {
     JSONArray ja = new JSONArray(APICall.getRequest(maintenanceTasks, true));
     for(int i = 0; i < ja.length(); i++) {
@@ -254,47 +307,71 @@ public class RoadDataProvider {
     System.out.println(tasks);
   }
 
-
-  public static void getTrafficMessages(int hours, String situationType) throws IOException {
+  /**
+   * Created by Miikka Venäläinen
+   *
+   * Function to get all traffic related messages of certain type and from
+   * certain time
+   *
+   * @param hours How many hours ago
+   * @param situationType What kind of situation data user wants to see
+   * @return Returns a list of traffic messages. Type is TrafficMessage which contains
+   * all necessary data
+   * @throws IOException If error occurs
+   */
+  public static List<TrafficMessage> getTrafficMessages(int hours, String situationType) throws IOException {
 
     String url = message + iHours + hours + "&includeAreaGeometry=false" + sitType + situationType;
     System.out.println("GET TRAFFIC MESSAGES");
     System.out.println(url);
     JSONObject messages = new JSONObject(APICall.getRequest(url, true));
 
+    List<TrafficMessage> allMessages = new ArrayList<>();
+
     JSONArray features = messages.getJSONArray("features");
     for(int i = 0; i < features.length(); i++) {
       JSONObject properties = features.getJSONObject(i).getJSONObject("properties");
       JSONArray announcements = properties.getJSONArray("announcements");
       for (int j = 0; j < announcements.length(); j++) {
+        TrafficMessage trafficMessage = new TrafficMessage();
         JSONObject announcement = announcements.getJSONObject(j);
         String title = announcement.get("title").toString();
+        trafficMessage.setTitle(title);
         System.out.println(title);
         JSONObject location = announcement.getJSONObject("location");
         String description = location.getString("description");
+        trafficMessage.setDescription(description);
         System.out.println(description);
-        if(announcement.has("comment")) System.out.println(announcement.get("comment").toString());
+        if(announcement.has("comment")) {
+          System.out.println(announcement.get("comment").toString());
+          trafficMessage.setComment(announcement.get("comment").toString());
+        }
         JSONObject locationDetail = announcement.getJSONObject("locationDetails");
         if(locationDetail.has("roadAddressLocation")) {
           JSONObject addressLocation = locationDetail.getJSONObject("roadAddressLocation");
           JSONObject primaryPoint = addressLocation.getJSONObject("primaryPoint");
           System.out.println(primaryPoint.getString("municipality"));
+          trafficMessage.setMunicipality(primaryPoint.getString("municipality"));
         }
         JSONObject time = announcement.getJSONObject("timeAndDuration");
         String startTime = time.getString("startTime");
+        trafficMessage.setStartTime(startTime);
         System.out.println("Time stamp: " + startTime);
         JSONArray feats = announcement.getJSONArray("features");
+        ArrayList<String> f = new ArrayList<>();
         for (int k = 0; k < feats.length(); k++) {
           JSONObject name = feats.getJSONObject(k);
+          f.add(name.getString("name"));
           System.out.println(name.get("name"));
         }
+        trafficMessage.setFeatures(f);
+        allMessages.add(trafficMessage);
       }
       System.out.println();
       System.out.println();
     }
-
+    allMessages.forEach(e -> System.out.println(e.getTitle()));
+    return allMessages;
   }
-
-
 }
 
