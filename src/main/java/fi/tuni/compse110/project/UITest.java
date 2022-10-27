@@ -1,6 +1,7 @@
 package fi.tuni.compse110.project;
 
 import fi.tuni.compse110.project.API.MaintenanceTask;
+import fi.tuni.compse110.project.API.RoadCondition;
 import fi.tuni.compse110.project.API.RoadDataProvider;
 import fi.tuni.compse110.project.API.Utility;
 import fi.tuni.compse110.project.Graph.GraphProvider;
@@ -44,7 +45,7 @@ public class UITest extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
-        testCase();
+        //testCase();
         ArrayList<Double> coords = new ArrayList<>(Arrays.asList(25.72088, 62.24147, 25.8, 62.3));
 
         List<MaintenanceTask> tasks = RoadDataProvider.getMaintenanceData(coords, new ArrayList<>(), "", "");
@@ -79,9 +80,35 @@ public class UITest extends Application {
          */
         Pane graph = new Pane();
         graph.setId("graph");
-        ChartViewer testChartViewer = GraphProvider.getTestChart(500,400);
-        graph.getChildren().add(testChartViewer);
 
+        List<RoadCondition> test = new ArrayList<>();
+        RoadCondition r1 = new RoadCondition("1",1);
+        RoadCondition r2 = new RoadCondition("2",1);
+        RoadCondition r3 = new RoadCondition("3",1);
+        RoadCondition r4 = new RoadCondition("4",1);
+        RoadCondition r5 = new RoadCondition("5",1);
+
+        r1.setTemperature("20");
+        r2.setTemperature("19");
+        r3.setTemperature("18");
+        r4.setTemperature("20");
+        r5.setTemperature("50");
+        r1.setForecastTime("0");
+        r2.setForecastTime("2");
+        r3.setForecastTime("4");
+        r4.setForecastTime("6");
+        r5.setForecastTime("8");
+
+
+        test.add(r1);
+        test.add(r2);
+        test.add(r3);
+        test.add(r4);
+        test.add(r5);
+
+        ChartViewer actualShit = GraphProvider.getRoadConditionChart(500,400,test);
+        ChartViewer testChartViewer = GraphProvider.getTestChart(500,400);
+        graph.getChildren().add(actualShit);
 
         Region filler = new Region();
         filler.setPrefWidth(50);
