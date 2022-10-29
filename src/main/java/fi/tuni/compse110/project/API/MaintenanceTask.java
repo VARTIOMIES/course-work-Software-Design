@@ -16,6 +16,20 @@ public class MaintenanceTask {
 
   }
 
+  
+  /** 
+   * Get datetime string from start to end of task
+   * @return String
+   */
+  public String getPrettyTimeRange() {
+    // surprisingly, after trying multiple different methods, this was the most simple/robust
+    String startingTime = startTime.substring(11,16);
+    String endingTime = endTime.substring(11,16);
+    String[] dateParts = endTime.substring(0,10).split("-");
+
+    return startingTime + " - " + endingTime + " " + dateParts[2] + "." + dateParts[1] + "." + dateParts[0];
+  }
+
   public String getSendingTime() {
     return sendingTime;
   }

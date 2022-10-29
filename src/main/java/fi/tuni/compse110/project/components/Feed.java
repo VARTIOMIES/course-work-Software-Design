@@ -1,4 +1,8 @@
 package fi.tuni.compse110.project.components;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 import javafx.scene.control.ScrollPane;
@@ -7,32 +11,29 @@ import javafx.scene.layout.VBox;
 public class Feed {
     private ScrollPane root;
     
-    public Feed(JSONObject data) {
+    public Feed(Map<ArrayList<String>, ArrayList<String>> data) {
         root = new ScrollPane();
-        
-        JSONArray weather_data = data.getJSONArray("weatherData");
+        int index = 0;
         VBox feed = new VBox(10);
         feed.setId("box");
-        for (Object datapoint_obj : weather_data) {
+        for (Map.Entry<ArrayList<String>, ArrayList<String>>location : data.entrySet()) {
 
-            JSONObject location = (JSONObject) datapoint_obj;
+            FeedElement feed_element = new FeedElement();
+            
+            //temporarely only gets the 1st task
+            feed_element.setTitle(location.getKey().get(0));
 
-            JSONArray roadConditions = location.getJSONArray("roadConditions");
-
-            // loop one location
-            for (Object location_datapoint : roadConditions) {
-
-                FeedElement feed_element = new FeedElement();
-
-                JSONObject point = (JSONObject) location_datapoint;
-                feed_element.setTitle("this is title");
-                feed_element.addAllInfo(point.getString("type"), point.getString("forecastName"), "temperature: ",
-                        point.getString("temperature"));
-                feed.getChildren().add(feed_element.getObject());
+            feed_element.addAllInfo(location.getValue());
+            if(index % 2 == 0){feed_element.setBackgroundColor("white");}
+            else{
+                feed_element.setBackgroundColor("grey");
             }
+            feed.getChildren().add(feed_element.getObject());
+            index++;
+            
 
         }
-        
+        root.setMaxHeight(400);
         root.setId("scroll");
         root.setContent(feed);
     }

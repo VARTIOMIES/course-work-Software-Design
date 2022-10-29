@@ -1,12 +1,21 @@
 .root { 
     
 }
+
+#background{
+    -fx-background-color: rgb(195, 195, 195);
+    -fx-padding: 20;
+}
+
+#search-bar, #graph {
+    -fx-background-color: white;
+}
 #title {
     -fx-font-size: 20px;
     -fx-color: wheat;
 }
 
-#box {
+#box, #row {
     -fx-background-color: rgb(75, 75, 75);
 }
 
