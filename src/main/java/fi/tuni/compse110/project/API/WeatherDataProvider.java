@@ -58,7 +58,9 @@ public class WeatherDataProvider {
 
   /**
    * Created by Miikka Venäläinen
-   * Method for a query with user given parameters
+   * Method to create URL with user given parameters which are then passed onto
+   * another method (createParameterTimeValuePair()) which can then be used to
+   * calculate average parameters or min-max parameters.
    *
    * @param places List of cities
    * @param params List of wanted parameters

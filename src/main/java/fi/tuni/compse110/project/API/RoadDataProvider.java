@@ -92,7 +92,7 @@ public class RoadDataProvider {
     getAllTasks();
     String url = maintenanceRoutes;
     if(coords.size() == 4) {
-      url += "?xMin=" + coords.get(0) + "&yMin=" + coords.get(1) + "&xMax" + coords.get(2) + "&yMax=" + coords.get(3);
+      url += "?xMin=" + coords.get(0) + "&yMin=" + coords.get(1) + "&xMax=" + coords.get(2) + "&yMax=" + coords.get(3);
     }
     if(!from.equals("")) {
       url += "&endFrom=" + from;
