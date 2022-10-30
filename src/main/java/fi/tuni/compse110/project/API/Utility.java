@@ -21,7 +21,8 @@ public class Utility {
    */
   public static String dateSplitter(String date, boolean getDay) {
     if(getDay) {
-      return date.split("T")[0];
+      String[] day = date.split("T")[0].split("-");
+      return day[2] + "." + day[1] + "." + day[0];
     }
     return date.split("T")[1].substring(0, date.split("T")[1].length() - 1);
   }

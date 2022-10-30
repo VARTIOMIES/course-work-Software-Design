@@ -3,6 +3,7 @@ package fi.tuni.compse110.project;
 import fi.tuni.compse110.project.API.MaintenanceTask;
 import fi.tuni.compse110.project.API.RoadDataProvider;
 import fi.tuni.compse110.project.API.Utility;
+import fi.tuni.compse110.project.API.WeatherDataProvider;
 import fi.tuni.compse110.project.Graph.GraphProvider;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -145,7 +146,8 @@ public class UITest extends Application {
         taskIds.add("DITCHING");
 
         RoadDataProvider.getMaintenanceData(coord, taskIds, stime, etime);
-        RoadDataProvider.getTrafficMessages(3, "TRAFFIC_ANNOUNCEMENT");
+        RoadDataProvider.getTrafficMessages(1, "TRAFFIC_ANNOUNCEMENT");
+        WeatherDataProvider.weatherURLCreator(places, new ArrayList<Double>(), params, stime, etime);
     }
 
     /*

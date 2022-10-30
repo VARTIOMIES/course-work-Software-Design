@@ -1,5 +1,9 @@
 package fi.tuni.compse110.project.API;
 
+/*
+This file is for testing purposes only
+ */
+
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.time.LocalDate;

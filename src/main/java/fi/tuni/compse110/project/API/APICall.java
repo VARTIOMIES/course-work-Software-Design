@@ -14,9 +14,14 @@ public class APICall {
 
   /**
    * Created by Miikka Venäläinen
+   *
    * A method for GET requests
+   * This method is used every time user searches for new information
    *
    * @param u URL address for a request
+   * @param isDigiTraffic Value is True if the url (u) is for digitraffic data.
+   *                      This is used to prevent runtime errors because some of
+   *                      the digitraffic data is in gzip mode.
    * @return Returns API request return value as a String
    * @throws IOException Throws an exception if something is wrong with the request
    */
