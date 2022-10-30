@@ -5,6 +5,7 @@ module fi.tuni.compse110.project {
     requires transitive org.json;
     requires jfreechart.fx;
     requires org.jfree.jfreechart;
+    requires java.desktop;
     opens fi.tuni.compse110.project to javafx.fxml;
     exports fi.tuni.compse110.project;
     exports fi.tuni.compse110.project.API;
