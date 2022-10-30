@@ -8,13 +8,18 @@ import org.jfree.chart.JFreeChart;
 import org.jfree.data.statistics.HistogramDataset;
 import org.jfree.chart.fx.ChartViewer;
 
-public class Graph {
+/**
+ * Provides ChartViews from data. Idea is that the raw data could be given to this provider class,
+ * and the data would be then parsed to wanted form by parameters given with
+ * the function calls
+ */
+public class GraphProvider {
 
-    public Graph(){
+    public GraphProvider(){
 
     }
 
-    public static JFreeChart createChart() {
+    public static JFreeChart createTestChart() {
 
         double[] values = { 95, 49, 14, 59, 50, 66, 47, 40, 1, 67,
                 12, 58, 28, 63, 14, 9, 31, 17, 94, 71,
@@ -29,13 +34,21 @@ public class Graph {
 
         JFreeChart histogram = ChartFactory.createHistogram("JFreeChart Histogram",
                 "y values", "x values", dataset);
-
         return histogram;
     }
 
-
-    public static ChartViewer getChart(){
-        return new ChartViewer(createChart());
+    /**
+     * Use this function in testing! Returns a hardcoded example of a
+     * (Node) Chart to be used in UI. Size can be controlled by parameters.
+     *
+     * @param width
+     * @param height
+     * @return ChartViewer , a class that behaves lovely with javafx
+     */
+    public static ChartViewer getTestChart(int width,int height){
+        ChartViewer viewer =  new ChartViewer(createTestChart());
+        viewer.setPrefSize(width,height);
+        return viewer;
     }
 
 

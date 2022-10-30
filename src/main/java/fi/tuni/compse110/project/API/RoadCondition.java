@@ -1,6 +1,11 @@
 package fi.tuni.compse110.project.API;
 /*
  * Creator Miikka Venäläinen
+ *
+ * This class is used to save road condition related data from digitraffic.
+ * Objects made from this class have all the needed data which can be
+ * changed or requested.
+ * Based on the user preferences needed information is used from this class.
  */
 
 public class RoadCondition {

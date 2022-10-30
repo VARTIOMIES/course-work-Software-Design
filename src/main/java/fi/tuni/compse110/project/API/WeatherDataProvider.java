@@ -1,19 +1,22 @@
 package fi.tuni.compse110.project.API;
 /*
  * Creator Miikka Venäläinen
+ *
+ * This file contains all the logic related to FMI data
  */
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
 import javafx.util.Pair;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.XML;
 
 public class WeatherDataProvider {
+
+  // For URL creation
   final static String place = "&place=";
   final static String starttime = "&starttime=";
   final static String endtime = "&endtime=";
@@ -58,11 +61,18 @@ public class WeatherDataProvider {
 
   /**
    * Created by Miikka Venäläinen
-   * Method for a query with user given parameters
+   *
+   * Method to create URL with user given parameters which are then passed onto
+   * another method (createParameterTimeValuePair()) which can then be used to
+   * calculate average parameters or min-max parameters.
    *
    * @param places List of cities
+   * @param coordinates List of coordinates
    * @param params List of wanted parameters
-   * @return List of Pairs of Time and Value
+   * @param startingTime Starting date
+   * @param endingTime Ending date. Ending date must be after starting day
+   * @return List of Pairs of Time and Value for every parameter and for every city.
+   *         See the structure down below in createParameterTimeValuePair() function
    * @throws IOException In case of an error
    */
   public static List<Pair<String, List<Pair<String, List<Pair<String, Double>>>>>> weatherURLCreator(ArrayList<String> places, ArrayList<Double> coordinates,
@@ -98,11 +108,35 @@ public class WeatherDataProvider {
 
   /**
    * Created by Miikka Venäläinen
+   *
    * Method which goes through the data and gets necessary values
+   * This function first collects date + value pairs. Those are saved in a list.
+   * Then this list is paired with the parameter name and this parameter name is the type of previously mentioned values.
+   * After that all different parameters and their values are paired with city its gathered from.
+   * And lastly these cities are saved in list.
    *
    * @param jo JSONObject from API call
-   * @param multipleParams Boolean which tells whether JSONObject contains data from multiple cities and/or parameters
-   * @return Returns a list of dates/times and respected values
+   * @param multipleParams Boolean which tells if JSONObject contains data from multiple cities and/or parameters
+   * @return Returns a list of dates/times and respected values for every city
+   *
+   * {city : parameters {
+   *                      parameter1 : {
+   *                                    { time1 : value1 },
+   *                                    { time2 : value2 },
+   *                                    { time3 : value3 },
+   *                                    ...
+   *                                   },
+   *                      parameter2 : {
+   *                                    { time1 : value1 },
+   *                                    { time2 : value2 },
+   *                                    { time3 : value3 },
+   *                                    ...
+   *                                   },
+   *                                   ...
+   *                    }
+   * },{
+   *   ...
+   * }
    */
   public static List<Pair<String, List<Pair<String, List<Pair<String, Double>>>>>> createParameterTimeValuePair(JSONObject jo, Boolean multipleParams) {
     List<JSONObject> jsonObjects = new ArrayList<>();
@@ -175,10 +209,13 @@ public class WeatherDataProvider {
 
   /**
    * Created by Miikka Venäläinen
+   *
    * Method for calculations of daily average values like temperature
    *
    * @param list List of Pair which contains time and value information
    * @param city Name of the city
+   * @param parameter Name of the parameter
+   * @return Returns a list of day + average value pairs.
    */
   public static List<Pair<String, Double>> averageTemperature(List<Pair<String, Double>> list, String city, String parameter) {
     Double allValues = 0.0;
@@ -209,17 +246,20 @@ public class WeatherDataProvider {
 
   /**
    * Created by Miikka Venäläinen
+   *
    * Method for calculating daily minimum and maximum temperatures
    *
    * @param list List of Pair which contains time and value information
    * @param city Name of the city
+   * @param parameter Name of the parameter
+   * @return Returns a HashMap which contains min and max values for each day
    */
-  public static HashMap<String, HashMap<String, Double>> minMaxTemperature(
+  public static HashMap<String, Pair<Double, Double>> minMaxTemperature(
       List<Pair<String, Double>> list, String city, String parameter) {
     double highPoint = -100.0;
     double lowPoint = 100.0;
     String previousDay = "";
-    HashMap<String, HashMap<String, Double>> temps = new HashMap<>();
+    HashMap<String, Pair<Double, Double>> temps = new HashMap<>();
 
     for (Pair<String, Double> pair : list) {
       String day = Utility.dateSplitter(pair.getKey(), true);
@@ -227,9 +267,7 @@ public class WeatherDataProvider {
         previousDay = day;
       }
       if(!previousDay.equals(day)) {
-        HashMap<String, Double> t = new HashMap<>();
-        t.put("highPoint", highPoint);
-        t.put("lowPoint", lowPoint);
+        Pair<Double, Double> t = new Pair<>(lowPoint, highPoint);
         temps.put(day, t);
         System.out.println("Day: " + day + " in " + city + " highest " + parameter + ": " + highPoint + " and lowest " + parameter + ": " + lowPoint);
         highPoint = -100.0;
@@ -245,5 +283,4 @@ public class WeatherDataProvider {
     }
     return temps;
   }
-
 }

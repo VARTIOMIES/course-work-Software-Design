@@ -1,14 +1,14 @@
 package fi.tuni.compse110.project.API;
 /*
  * Creator Miikka Venäläinen
+ *
+ * This file contains all the logic related to digitraffic data
  */
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-
 import java.util.List;
-import javafx.util.Pair;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -92,7 +92,7 @@ public class RoadDataProvider {
     getAllTasks();
     String url = maintenanceRoutes;
     if(coords.size() == 4) {
-      url += "?xMin=" + coords.get(0) + "&yMin=" + coords.get(1) + "&xMax" + coords.get(2) + "&yMax=" + coords.get(3);
+      url += "?xMin=" + coords.get(0) + "&yMin=" + coords.get(1) + "&xMax=" + coords.get(2) + "&yMax=" + coords.get(3);
     }
     if(!from.equals("")) {
       url += "&endFrom=" + from;
@@ -155,8 +155,11 @@ public class RoadDataProvider {
 
   /**
    * Created by Miikka Venäläinen
-   * Function to get all the necessary road forecast data from JSON data
    *
+   * Function to get all the necessary road forecast data from JSON data.
+   *
+   * @param roadNum Integer value of the road number where user wants road condition data from
+   * @param coords List of coordinates where user wants road condition data from
    * @return Returns a HashMap which contains road numbers and for each road number
    * there is a list of its road sections and forecasts for each of the section in a HashMap
    *
@@ -172,12 +175,14 @@ public class RoadDataProvider {
    *                          ....
    *                        }
    *                       }
+   *  },{
+   *    ...
    *  }
    *
    */
   public static HashMap<Integer, ArrayList<HashMap<Integer, RoadCondition>>> getRoadConditions(int roadNum, ArrayList<Double> coords) throws IOException {
     String url = roadForecast;
-    //For every road, list of road sections + its forecasts
+    //For every road, list of road sections + its forecasts'
     HashMap<Integer, ArrayList<HashMap<Integer, RoadCondition>>> allValues = new HashMap<>();
     if(roadNum > 0) {
       url += "/" + roadNum;
