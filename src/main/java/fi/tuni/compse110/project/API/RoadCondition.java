@@ -11,6 +11,7 @@ package fi.tuni.compse110.project.API;
 public class RoadCondition {
 
   private String id;
+  private String section;
   private int roadNumber;
   private String forecastTime;
   private String roadTemperature;
@@ -31,6 +32,7 @@ public class RoadCondition {
   public RoadCondition(String id, int roadNumber) {
     setId(id);
     setRoadNumber(roadNumber);
+    setSection(id);
   }
 
   public String getId() {
@@ -40,6 +42,11 @@ public class RoadCondition {
   public void setId(String id) {
     this.id = id;
   }
+
+  public String getSection() { return section; }
+
+  public void setSection(String section) {
+    this.section = section.split("_")[1] + "_" + section.split("_")[2]; }
 
   public int getRoadNumber() {
     return roadNumber;

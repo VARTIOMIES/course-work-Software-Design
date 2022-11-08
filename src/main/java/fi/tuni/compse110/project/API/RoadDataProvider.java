@@ -7,8 +7,11 @@ package fi.tuni.compse110.project.API;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.TreeMap;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -70,6 +73,76 @@ public class RoadDataProvider {
   final static String iHours = "?inactiveHours=";
   final static String sitType = "&situationType=";
 
+
+  /* Weather logos */
+
+  final static HashMap<String, String> weatherSymbols = new HashMap<>();
+  final static String symbolBaseURL = "https://www.vaisala.com/sites/default/files/2021-05/";
+
+  private static void addSymbols(String symbol) throws IOException {
+    weatherSymbols.clear();
+    weatherSymbols.put("D000", "https://www.vaisala.com/sites/default/files/images/d000_0.png");
+    weatherSymbols.put("D100", "https://www.vaisala.com/sites/default/files/2021-04/d100_0.png");
+    weatherSymbols.put("D200", "https://www.vaisala.com/sites/default/files/2021-04/d200.png");
+    weatherSymbols.put("D300", "https://www.vaisala.com/sites/default/files/images/d300.png");
+    weatherSymbols.put("D400", "https://www.vaisala.com/sites/default/files/images/d400.png");
+    weatherSymbols.put("D500", "https://www.vaisala.com/sites/default/files/2021-05/d500.png");
+    weatherSymbols.put("D600", "https://www.vaisala.com/sites/default/files/2021-05/d600.png");
+    weatherSymbols.put("D210", "https://www.vaisala.com/sites/default/files/2021-05/d210.png");
+    weatherSymbols.put("D310", "https://www.vaisala.com/sites/default/files/2021-05/d310.png");
+    weatherSymbols.put("D410", "https://www.vaisala.com/sites/default/files/2021-05/d410.png");
+    weatherSymbols.put("D220", "https://www.vaisala.com/sites/default/files/2021-05/d220.png");
+    weatherSymbols.put("D320", "https://www.vaisala.com/sites/default/files/2021-05/d320.png");
+    weatherSymbols.put("D420", "https://www.vaisala.com/sites/default/files/2021-05/d420.png");
+    weatherSymbols.put("D430", "https://www.vaisala.com/sites/default/files/2021-05/d430.png");
+    weatherSymbols.put("D240", "https://www.vaisala.com/sites/default/files/2021-05/d240.png");
+    weatherSymbols.put("D340", "https://www.vaisala.com/sites/default/files/2021-05/d340.png");
+    weatherSymbols.put("D440", "https://www.vaisala.com/sites/default/files/2021-05/d440.png");
+    weatherSymbols.put("D311", "https://www.vaisala.com/sites/default/files/2021-05/d311.png");
+    weatherSymbols.put("D411", "https://www.vaisala.com/sites/default/files/2021-05/d411.png");
+    weatherSymbols.put("D221", "https://www.vaisala.com/sites/default/files/2021-05/d221.png");
+    weatherSymbols.put("D421", "https://www.vaisala.com/sites/default/files/2021-05/d421.png");
+    weatherSymbols.put("D431", "https://www.vaisala.com/sites/default/files/2021-05/d431.png");
+    weatherSymbols.put("D212", "https://www.vaisala.com/sites/default/files/2021-05/d212.png");
+    weatherSymbols.put("D312", "https://www.vaisala.com/sites/default/files/2021-05/d312.png");
+    weatherSymbols.put("D412", "https://www.vaisala.com/sites/default/files/2021-05/d412.png");
+    weatherSymbols.put("D222", "https://www.vaisala.com/sites/default/files/2021-05/d222.png");
+    weatherSymbols.put("D322", "https://www.vaisala.com/sites/default/files/2021-05/d322.png");
+    weatherSymbols.put("D422", "https://www.vaisala.com/sites/default/files/2021-05/d422.png");
+    weatherSymbols.put("D432", "https://www.vaisala.com/sites/default/files/2021-05/d432.png");
+
+    weatherSymbols.put("N000", "https://www.vaisala.com/sites/default/files/2021-05/n000.png");
+    weatherSymbols.put("N100", "https://www.vaisala.com/sites/default/files/2021-05/n100.png");
+    weatherSymbols.put("N200", "https://www.vaisala.com/sites/default/files/2021-05/n200.png");
+    weatherSymbols.put("N300", "https://www.vaisala.com/sites/default/files/2021-05/n300.png");
+    weatherSymbols.put("N400", "https://www.vaisala.com/sites/default/files/2021-05/n400.png");
+    weatherSymbols.put("N500", "https://www.vaisala.com/sites/default/files/2021-05/n500.png");
+    weatherSymbols.put("N600", "https://www.vaisala.com/sites/default/files/2021-05/n600.png");
+    weatherSymbols.put("N210", "https://www.vaisala.com/sites/default/files/2021-05/n210.png");
+    weatherSymbols.put("N310", "https://www.vaisala.com/sites/default/files/2021-05/n310.png");
+    weatherSymbols.put("N410", "https://www.vaisala.com/sites/default/files/2021-05/n410.png");
+    weatherSymbols.put("N220", "https://www.vaisala.com/sites/default/files/2021-05/n220.png");
+    weatherSymbols.put("N320", "https://www.vaisala.com/sites/default/files/2021-05/n320.png");
+    weatherSymbols.put("N420", "https://www.vaisala.com/sites/default/files/2021-05/n420.png");
+    weatherSymbols.put("N430", "https://www.vaisala.com/sites/default/files/2021-05/n430.png");
+    weatherSymbols.put("N240", "https://www.vaisala.com/sites/default/files/2021-05/n240.png");
+    weatherSymbols.put("N340", "https://www.vaisala.com/sites/default/files/2021-05/n340.png");
+    weatherSymbols.put("N440", "https://www.vaisala.com/sites/default/files/2021-05/n440.png");
+    weatherSymbols.put("N311", "https://www.vaisala.com/sites/default/files/2021-05/n311.png");
+    weatherSymbols.put("N411", "https://www.vaisala.com/sites/default/files/2021-05/n411.png");
+    weatherSymbols.put("N221", "https://www.vaisala.com/sites/default/files/2021-05/n221.png");
+    weatherSymbols.put("N421", "https://www.vaisala.com/sites/default/files/2021-05/n421.png");
+    weatherSymbols.put("N431", "https://www.vaisala.com/sites/default/files/2021-05/n431.png");
+    weatherSymbols.put("N212", "https://www.vaisala.com/sites/default/files/2021-05/n212.png");
+    weatherSymbols.put("N312", "https://www.vaisala.com/sites/default/files/2021-05/n312.png");
+    weatherSymbols.put("N412", "https://www.vaisala.com/sites/default/files/2021-05/n412.png");
+    weatherSymbols.put("N222", "https://www.vaisala.com/sites/default/files/2021-05/n222.png");
+    weatherSymbols.put("N322", "https://www.vaisala.com/sites/default/files/2021-05/n322.png");
+    weatherSymbols.put("N422", "https://www.vaisala.com/sites/default/files/2021-05/n422.png");
+    weatherSymbols.put("N432", "https://www.vaisala.com/sites/default/files/2021-05/n432.png");
+
+    APICall.getRequest(symbolBaseURL + symbol + ".png", false);
+  }
 
   /**
    * Created by Miikka Venäläinen
@@ -151,6 +224,13 @@ public class RoadDataProvider {
     return allTasks;
   }
 
+  static class AccordingTime implements Comparator<RoadCondition> {
+    public int compare(RoadCondition r1, RoadCondition r2)
+    {
+      return r1.getForecastTime().compareTo(r2.getForecastTime());
+    }
+  }
+
 
 
   /**
@@ -180,10 +260,13 @@ public class RoadDataProvider {
    *  }
    *
    */
-  public static HashMap<Integer, ArrayList<HashMap<Integer, RoadCondition>>> getRoadConditions(int roadNum, ArrayList<Double> coords) throws IOException {
+  public static TreeMap<Integer, LinkedHashMap<String, ArrayList<RoadCondition>>> getRoadConditions(int roadNum, ArrayList<Double> coords) throws IOException {
     String url = roadForecast;
     //For every road, list of road sections + its forecasts'
     HashMap<Integer, ArrayList<HashMap<Integer, RoadCondition>>> allValues = new HashMap<>();
+
+    TreeMap<Integer, LinkedHashMap<String, ArrayList<RoadCondition>>> testValues = new TreeMap<>();
+
     if(roadNum > 0) {
       url += "/" + roadNum;
     } else if(coords.size() == 4) {
@@ -279,16 +362,55 @@ public class RoadDataProvider {
           a.add(h);
           allValues.put(Integer.parseInt(cond.get("id").toString().split("_")[0]), a);
         }
+        if(testValues.containsKey(Integer.parseInt(cond.get("id").toString().split("_")[0]))) {
+          if(testValues.get(Integer.parseInt(cond.get("id").toString().split("_")[0])).containsKey(forecastTime)){
+            testValues.get(Integer.parseInt(cond.get("id").toString().split("_")[0])).get(forecastTime).add(roadCondition);
+          } else {
+            ArrayList<RoadCondition> r = new ArrayList<>();
+            r.add(roadCondition);
+            testValues.get(Integer.parseInt(cond.get("id").toString().split("_")[0])).put(forecastTime, r);
+          }
+        } else {
+          LinkedHashMap<String, ArrayList<RoadCondition>> a = new LinkedHashMap<>();
+          ArrayList<RoadCondition> r = new ArrayList<>();
+          r.add(roadCondition);
+          a.put(forecastTime, r);
+          testValues.put(Integer.parseInt(cond.get("id").toString().split("_")[0]), a);
+        }
       }
     }
     allValues.forEach((key, value) -> {
-      //System.out.println(key);
+      System.out.println(key);
       for(HashMap<Integer, RoadCondition> values : value){
         values.forEach((k, v) -> {
           //System.out.println(v.getWindSpeed());
           //System.out.println(v.getWindDirection());
         });
       }
+      System.out.println();
+    });
+    testValues.forEach((key, value) -> {
+      System.out.println("KEY IS " + key);
+      value.forEach( (k, v) -> {
+        System.out.println("FORECAST TIME " + k);
+        for(RoadCondition r : v) {
+          System.out.println(r.getForecastTime() + " " + r.getSection());
+        }
+      });
+      System.out.println();
+    });
+    return sortRoadConditions(testValues);
+  }
+
+  private static TreeMap<Integer, LinkedHashMap<String, ArrayList<RoadCondition>>> sortRoadConditions(TreeMap<Integer, LinkedHashMap<String, ArrayList<RoadCondition>>> allValues) {
+    allValues.forEach((k,v) -> {
+      System.out.println("Road: " + k);
+      v.forEach((key, value) -> {
+        System.out.println("Forecast time: " + key);
+        value.sort(Comparator.comparing(RoadCondition::getSection));
+        value.forEach(ke -> System.out.println("Road condition object's id: " + ke.getId()));
+        System.out.println();
+      });
       System.out.println();
     });
     return allValues;
