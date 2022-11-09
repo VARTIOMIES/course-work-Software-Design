@@ -15,11 +15,14 @@ import org.jfree.data.xy.XYDataset;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 /**
  * Provides ChartViews from data. Idea is that the raw data could be given to this provider class,
  * and the data would be then parsed to wanted form by parameters given with
  * the function calls
+ * @author Onni Merilä
  */
 public class GraphProvider {
 
@@ -37,32 +40,55 @@ public class GraphProvider {
         return singleInstance;
     }
 
-    protected enum XYPlottable {
+    public enum Plottable {
         ROAD_TEMPERATURE,
         TEMPERATURE,
         WIND_SPEED
     }
 
-    public static ChartViewer getRoadConditionChart(int width,int height,List<RoadCondition> sameLocationConditions){
+    public static ChartViewer getRoadConditionChart(int width,int height,
+                                                    List<RoadCondition> sameLocationConditions,
+                                                    Plottable plottedData,
+                                                    String title){
+        //function = (r)-> RoadCondition.getRoadTemperature();
 
         // Get values
         ArrayList<String> xdata = new ArrayList<>();
 
-        ArrayList<String> ydata = new ArrayList<>();
+        ArrayList<Object> ydata = new ArrayList<>();
+        String valueLabel = "";
+        switch (plottedData) {
+            case ROAD_TEMPERATURE:
+                for (RoadCondition r : sameLocationConditions){
+                    ydata.add(r.getRoadTemperature());
+                }
+                valueLabel = "Tien lämpötila";
+                break;
+            case TEMPERATURE:
+                for (RoadCondition r : sameLocationConditions){
+                    ydata.add(r.getTemperature());
+                }
+                valueLabel = "Ilman lämpötila";
+                break;
+            case WIND_SPEED:
+                for (RoadCondition r : sameLocationConditions){
+                    ydata.add(r.getWindSpeed());
+                }
+                valueLabel = "Tuulen nopeus";
+                break;
+
+        }
 
         for (RoadCondition r : sameLocationConditions){
-            ydata.add(r.getTemperature());
             xdata.add(r.getForecastTime());
         }
 
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
 
         for (int i = 0;i<5;i++){
-
-            dataset.addValue(Double.parseDouble(ydata.get(i)),"Category",xdata.get(i));
-
+            dataset.addValue(Double.parseDouble(ydata.get(i).toString()),"Dataset",xdata.get(i));
         }
-        JFreeChart forecast = ChartFactory.createLineChart("Testi","Tunnit","Tuulen nopeus",dataset);
+        JFreeChart forecast = ChartFactory.createLineChart(title,"Tunnit",valueLabel,dataset);
 
         ChartViewer viewer = new ChartViewer(forecast);
         viewer.setPrefSize(width,height);

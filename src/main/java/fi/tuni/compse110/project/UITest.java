@@ -25,12 +25,7 @@ import java.io.Console;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
 
 import org.jfree.chart.fx.ChartViewer;
 import org.json.JSONArray;
@@ -74,42 +69,31 @@ public class UITest extends Application {
         
         row.setId("row");
 
-        /*
-        Graph: ChartViewer is the wanted UI element
-            (Node is in the hierarchy tree)
 
-         */
         Pane graph = new Pane();
         graph.setId("graph");
 
-        List<RoadCondition> test = new ArrayList<>();
-        RoadCondition r1 = new RoadCondition("1",1);
-        RoadCondition r2 = new RoadCondition("2",1);
-        RoadCondition r3 = new RoadCondition("3",1);
-        RoadCondition r4 = new RoadCondition("4",1);
-        RoadCondition r5 = new RoadCondition("5",1);
+        /*
+            Here are some easily modifiable parameters to get different kinds of data,
+            These are useful especially for the begin-phase of the program
+         */
+        int roadNumber = 5;
+        int sectionArrayListIndex = 3;
+        GraphProvider.Plottable wantedData = GraphProvider.Plottable.ROAD_TEMPERATURE;
+        String titleForChart = "Road:" + roadNumber + "  Section:" + sectionArrayListIndex;
 
-        r1.setTemperature("20");
-        r2.setTemperature("19");
-        r3.setTemperature("18");
-        r4.setTemperature("20");
-        r5.setTemperature("50");
-        r1.setForecastTime("0");
-        r2.setForecastTime("2");
-        r3.setForecastTime("4");
-        r4.setForecastTime("6");
-        r5.setForecastTime("8");
+        try {
+            List<RoadCondition> specificRCData = RoadDataProvider.getSpecificSectionRoadCondition(roadNumber,sectionArrayListIndex,coords);
+            ChartViewer dataChartViewer = GraphProvider.getRoadConditionChart(500,400,specificRCData, wantedData,titleForChart);
+            graph.getChildren().add(dataChartViewer);
+        }
+        catch (Exception e){ // If there occurs any errors while creating the chart
+            // from API data, creates a hardcoded chart to act as a placeholder
+            System.out.println("error");
+            ChartViewer testChartViewer = GraphProvider.getTestChart(500,400);
+            graph.getChildren().add(testChartViewer);
+        }
 
-
-        test.add(r1);
-        test.add(r2);
-        test.add(r3);
-        test.add(r4);
-        test.add(r5);
-
-        ChartViewer actualShit = GraphProvider.getRoadConditionChart(500,400,test);
-        ChartViewer testChartViewer = GraphProvider.getTestChart(500,400);
-        graph.getChildren().add(actualShit);
 
         Region filler = new Region();
         filler.setPrefWidth(50);

@@ -416,6 +416,31 @@ public class RoadDataProvider {
     return allValues;
   }
 
+  /**
+   * @author Onni Merilä
+   * Function used to parse the wanted data from the bigger data structure
+   *
+   * @param roadNumber the number of the road (used to get the data of the whole road from the above function
+   * @param sectionArrayIndex ,index of the section in the sorte darraylist of all sections
+   * @param coords, coordinates used for the data fetching from getRoadConditions() function
+   * @return Returns a list of one specific sections roadcondition data.
+   *
+   */
+  public static List<RoadCondition> getSpecificSectionRoadCondition(int roadNumber,
+                                                                    int sectionArrayIndex,
+                                                                    ArrayList<Double> coords) throws IOException {
+
+    TreeMap<Integer, LinkedHashMap<String, ArrayList<RoadCondition>>> roadConditionData = RoadDataProvider.getRoadConditions(roadNumber,coords);
+    LinkedHashMap<String, ArrayList<RoadCondition>> forecastList = roadConditionData.get(roadNumber);
+
+    List<RoadCondition> specificSectionForecast = new ArrayList<>();
+    for (ArrayList<RoadCondition> allSections:forecastList.values()) {
+      specificSectionForecast.add(allSections.get(sectionArrayIndex));
+    }
+
+    return specificSectionForecast;
+  }
+
 
   /**
    * Created by Miikka Venäläinen
