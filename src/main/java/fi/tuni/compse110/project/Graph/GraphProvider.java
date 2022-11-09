@@ -3,10 +3,18 @@ package fi.tuni.compse110.project.Graph;
     @author - Onni Merila , onni.merila@tuni.fi , H299725
  */
 
+import fi.tuni.compse110.project.API.APItest;
+import fi.tuni.compse110.project.API.RoadCondition;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
+import org.jfree.data.category.DefaultCategoryDataset;
+import org.jfree.data.statistics.BoxAndWhiskerItem;
 import org.jfree.data.statistics.HistogramDataset;
 import org.jfree.chart.fx.ChartViewer;
+import org.jfree.data.xy.XYDataset;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Provides ChartViews from data. Idea is that the raw data could be given to this provider class,
@@ -15,7 +23,50 @@ import org.jfree.chart.fx.ChartViewer;
  */
 public class GraphProvider {
 
-    public GraphProvider(){
+    private GraphProvider singleInstance = null;
+
+    private GraphProvider(){
+
+    }
+
+
+    public GraphProvider getInstance(){
+        if (singleInstance == null)
+            singleInstance = new GraphProvider();
+
+        return singleInstance;
+    }
+
+    protected enum XYPlottable {
+        ROAD_TEMPERATURE,
+        TEMPERATURE,
+        WIND_SPEED
+    }
+
+    public static ChartViewer getRoadConditionChart(int width,int height,List<RoadCondition> sameLocationConditions){
+
+        // Get values
+        ArrayList<String> xdata = new ArrayList<>();
+
+        ArrayList<String> ydata = new ArrayList<>();
+
+        for (RoadCondition r : sameLocationConditions){
+            ydata.add(r.getTemperature());
+            xdata.add(r.getForecastTime());
+        }
+
+        DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+
+        for (int i = 0;i<5;i++){
+
+            dataset.addValue(Double.parseDouble(ydata.get(i)),"Category",xdata.get(i));
+
+        }
+        JFreeChart forecast = ChartFactory.createLineChart("Testi","Tunnit","Tuulen nopeus",dataset);
+
+        ChartViewer viewer = new ChartViewer(forecast);
+        viewer.setPrefSize(width,height);
+        return viewer;
 
     }
 
@@ -41,8 +92,8 @@ public class GraphProvider {
      * Use this function in testing! Returns a hardcoded example of a
      * (Node) Chart to be used in UI. Size can be controlled by parameters.
      *
-     * @param width
-     * @param height
+     * @param width (px) int, the width of the ChartViewer in pixels
+     * @param height (px) int, the height of the ChartViewer in pixels
      * @return ChartViewer , a class that behaves lovely with javafx
      */
     public static ChartViewer getTestChart(int width,int height){

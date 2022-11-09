@@ -12,7 +12,7 @@ import java.io.IOException;
 
     public static void main(String[] args) throws IOException {
         APItest apitestSingleton = APItest.getInstance();
-        apitestSingleton.testing();
+        //apitestSingleton.testing();
         Application.launch(UITest.class,args);
     }
 }
