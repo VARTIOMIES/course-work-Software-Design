@@ -14,7 +14,7 @@ public class Feed {
     public Feed(Map<ArrayList<String>, ArrayList<String>> data) {
         root = new ScrollPane();
         int index = 0;
-        VBox feed = new VBox(10);
+        VBox feed = new VBox();
         feed.setId("box");
         for (Map.Entry<ArrayList<String>, ArrayList<String>>location : data.entrySet()) {
 
@@ -22,18 +22,18 @@ public class Feed {
             
             //temporarely only gets the 1st task
             feed_element.setTitle(location.getKey().get(0));
-
+            
             feed_element.addAllInfo(location.getValue());
             if(index % 2 == 0){feed_element.setBackgroundColor("white");}
             else{
-                feed_element.setBackgroundColor("grey");
+                feed_element.setBackgroundColor("rgb(211,211,211)");
             }
             feed.getChildren().add(feed_element.getObject());
             index++;
             
 
         }
-        root.setMaxHeight(400);
+        root.setPrefSize(550, 300);
         root.setId("scroll");
         root.setContent(feed);
     }

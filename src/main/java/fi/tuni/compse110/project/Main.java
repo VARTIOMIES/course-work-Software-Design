@@ -18,6 +18,7 @@ import java.io.IOException;
         //APItest apitestSingleton = APItest.getInstance();
         //apitestSingleton.testing();
         launch();
+
         
     }
 
