@@ -304,14 +304,14 @@ public class APItest{
       JSONObject jo = (JSONObject) ja.get(i);
       tasks.add(jo.get("nameEn").toString());
     }
-    System.out.println(tasks);
+   // //System.out.println(tasks);
     double minLong = 25.72088;
     double minLat = 62.24147;
     double maxLong = 25.8;
     double maxLat = 62.3;
 
     String url = roadForecast + "/" + minLong + "/" + minLat + "/" + maxLong + "/" + maxLat;
-    System.out.println(url);
+    ////System.out.println(url);
     JSONObject data = new JSONObject(getRequest(url, true));
     getRoadConditions(data);
     return tasks;
@@ -328,7 +328,7 @@ public class APItest{
     for(int i = 0; i < weatherData.length(); i++) {
       JSONObject cond = (JSONObject) weatherData.get(i);
       String roadNumber = cond.get("id").toString().split("_")[0];
-      System.out.println("--" + roadNumber + "--");
+      ////System.out.println("--" + roadNumber + "--");
       JSONArray roadConditions = cond.getJSONArray("roadConditions");
       for(int j = 0; j < roadConditions.length(); j++) {
         JSONObject condition= (JSONObject) roadConditions.get(j);
@@ -337,25 +337,25 @@ public class APItest{
         String temperature = condition.getString("temperature");
         String overallRoadCondition = condition.getString("overallRoadCondition");
         boolean dayLight = condition.getBoolean("daylight");
-        System.out.println("In " + forecastTime + " road temperature is " + roadTemperature + " and temperature is " + temperature);
+        ////System.out.println("In " + forecastTime + " road temperature is " + roadTemperature + " and temperature is " + temperature);
         if(dayLight) {
-          System.out.println("Sun is shining");
+          ////System.out.println("Sun is shining");
         } else {
-          System.out.println("Sun is not shining");
+          ////System.out.println("Sun is not shining");
         }
-        System.out.print("Overall road condition is " + overallRoadCondition);
+        //System.out.print("Overall road condition is " + overallRoadCondition);
         if(condition.has("forecastConditionReason")) {
           JSONObject jsonObject = condition.getJSONObject("forecastConditionReason");
           if(jsonObject.has("roadCondition")) {
             String roadSurface = jsonObject.getString("roadCondition");
-            System.out.println(" and surface of the road is " + roadSurface.toLowerCase());
+            ////System.out.println(" and surface of the road is " + roadSurface.toLowerCase());
           } else {
-            System.out.println();
+            ////System.out.println();
           }
         } else {
-          System.out.println();
+          ////System.out.println();
         }
-        System.out.println();
+        ////System.out.println();
       }
     }
   }
@@ -389,7 +389,7 @@ public class APItest{
       cities.add(locContent.get("content").toString());
     }
     cities.sort(Comparator.naturalOrder());
-    System.out.println(cities);
+    ////System.out.println(cities);
     return cities;
   }
 
@@ -397,8 +397,8 @@ public class APItest{
   public void filterTemperatureSimple(JSONObject jo) {
     JSONObject info = jo.getJSONObject("wfs:FeatureCollection");
     JSONArray member = info.getJSONArray("wfs:member");
-    System.out.println(member.length());
-    System.out.println(dateFormatter(2025, 8, 10, 12, 34));
+    ////System.out.println(member.length());
+    ////System.out.println(dateFormatter(2025, 8, 10, 12, 34));
     for(int i = 0; i < member.length(); i++) {
       JSONObject element = (JSONObject) member.get(i);
       JSONObject innerElement = (JSONObject) element.get("BsWfs:BsWfsElement");
@@ -406,7 +406,7 @@ public class APItest{
       if(name.equals("temperature")) {
         String t = (String) innerElement.get("BsWfs:Time");
         String value = innerElement.get("BsWfs:ParameterValue").toString();
-        System.out.println(dateSplitter(t, "time") + " - " + value);
+        ////System.out.println(dateSplitter(t, "time") + " - " + value);
       }
     }
   }
@@ -421,7 +421,7 @@ public class APItest{
    */
   public List<Pair<String, List<Pair<String, List<Pair<String, Double>>>>>> filterTemperatureTimeValuePair(JSONObject jo, Boolean multipleParams) {
     List<JSONObject> jsonObjects = new ArrayList<>();
-    System.out.println(jo.length());
+    ////System.out.println(jo.length());
     JSONObject info = jo.getJSONObject("wfs:FeatureCollection");
 
     if(multipleParams) {
@@ -483,7 +483,7 @@ public class APItest{
         String parameterCopy = q.getKey();
         averageTemperature(q.getValue(), cityCopy, parameterCopy);
         minMaxTemperature(q.getValue(), cityCopy, parameterCopy);
-        System.out.println();
+        ////System.out.println();
       }
     }
     return allData;
@@ -518,7 +518,7 @@ public class APItest{
       divider++;
     }
     for (Pair<String, Double> r : dailyAverages) {
-      System.out.println("Day: " + r.getKey() + "   Average " + parameter + " of " + city + " : " + Math.round(r.getValue() * 10) / 10.0);
+      ////System.out.println("Day: " + r.getKey() + "   Average " + parameter + " of " + city + " : " + Math.round(r.getValue() * 10) / 10.0);
     }
     return dailyAverages;
   }
@@ -546,7 +546,7 @@ public class APItest{
         t.put("highPoint", highPoint);
         t.put("lowPoint", lowPoint);
         temps.put(day, t);
-        System.out.println("Day: " + day + " in " + city + " highest " + parameter + ": " + highPoint + " and lowest " + parameter + ": " + lowPoint);
+        ////System.out.println("Day: " + day + " in " + city + " highest " + parameter + ": " + highPoint + " and lowest " + parameter + ": " + lowPoint);
         highPoint = -100.0;
         lowPoint = 100.0;
         previousDay = day;

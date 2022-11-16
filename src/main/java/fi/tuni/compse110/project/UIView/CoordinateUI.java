@@ -1,9 +1,14 @@
 package fi.tuni.compse110.project.UIView;
 
 import javax.swing.*;
+
+import javafx.application.Application;
+import javafx.stage.Stage;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 
 public class CoordinateUI implements ActionListener {
 
@@ -86,12 +91,17 @@ public class CoordinateUI implements ActionListener {
             minLonField.setText("");
             maxLonField.setText("");
         } else if (e.getSource()== SearchButton){
+            // add null safety
             Integer minLat = Integer.valueOf(minLatField.getText());
             Integer maxLat = Integer.valueOf(maxLatField.getText());
             Integer minLon = Integer.valueOf(minLonField.getText());
             Integer maxLon = Integer.valueOf(maxLonField.getText());
 
-            System.out.println(minLat + maxLat + minLon + maxLon);
+            //System.out.println(minLat + maxLat + minLon + maxLon);
+            frame.dispose();
+
+
+           
         }
     }
 }

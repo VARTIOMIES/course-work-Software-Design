@@ -1,4 +1,4 @@
-package fi.tuni.compse110.project;
+package fi.tuni.compse110.project.UIView;
 
 import fi.tuni.compse110.project.API.MaintenanceTask;
 import fi.tuni.compse110.project.API.RoadCondition;
@@ -35,16 +35,24 @@ import fi.tuni.compse110.project.components.Feed;
 /**
  * JavaFX App
  */
-public class UITest extends Application {
+public class TrafficPage extends Application {
 
     private static Scene scene;
+    
 
     @Override
-    public void start(Stage stage) throws IOException {
+    public void start(Stage stage)  {
+        System.out.println("hep");
         //testCase();
         ArrayList<Double> coords = new ArrayList<>(Arrays.asList(25.72088, 62.24147, 25.8, 62.3));
 
-        List<MaintenanceTask> tasks = RoadDataProvider.getMaintenanceData(coords, new ArrayList<>(), "", "");
+        List<MaintenanceTask> tasks = new ArrayList<>();
+        try {
+            tasks = RoadDataProvider.getMaintenanceData(coords, new ArrayList<>(), "", "");
+        } catch (IOException e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+        }
         Map<ArrayList<String>, ArrayList<String>> task_list = new HashMap<>();
         // get necessary data for feed
         for (MaintenanceTask t : tasks) {
@@ -89,7 +97,7 @@ public class UITest extends Application {
         }
         catch (Exception e){ // If there occurs any errors while creating the chart
             // from API data, creates a hardcoded chart to act as a placeholder
-            System.out.println("error");
+            //System.out.println("error");
             ChartViewer testChartViewer = GraphProvider.getTestChart(500,400);
             graph.getChildren().add(testChartViewer);
         }
@@ -107,7 +115,7 @@ public class UITest extends Application {
 
 
         // Possible nullPointerException throwing from .toExternalForm()
-        scene.getStylesheets().add(UITest.class.getResource("/stylesheet.css").toExternalForm());
+        scene.getStylesheets().add(TrafficPage.class.getResource("/stylesheet.css").toExternalForm());
 
         stage.setScene(scene);
         stage.setResizable(false);
@@ -120,7 +128,7 @@ public class UITest extends Application {
     }
 
     private static Parent loadFXML(String fxml) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(UITest.class.getResource(fxml + ".fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(TrafficPage.class.getResource(fxml + ".fxml"));
         return fxmlLoader.load();
     }
 
@@ -161,10 +169,12 @@ public class UITest extends Application {
         WeatherDataProvider.weatherURLCreator(places, new ArrayList<Double>(), params, stime, etime);
     }
 
-    /*
-     * public static void main(String[] args) {
-     * launch();
-     * }
-     */
+    
+       public static void main(String[] args) {
+            System.out.println("hep2");
+            launch();
+
+       }
+     
 
 }

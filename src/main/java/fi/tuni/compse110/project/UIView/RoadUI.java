@@ -58,7 +58,7 @@ public class RoadUI implements ActionListener{
         } else if (e.getSource()== SearchButton){
             Integer roadNumber = Integer.valueOf(RoadNumberField.getText());
 
-            System.out.println("Guys, this is a highway to hell number" + roadNumber);
+            //System.out.println("Guys, this is a highway to hell number" + roadNumber);
         }
     }
     }

@@ -178,12 +178,12 @@ public class RoadDataProvider {
         url += "&taskId=" + task;
       }
     }
-    System.out.println("GET MAINTENANCE DATA");
-    System.out.println(url);
+    //System.out.println("GET MAINTENANCE DATA");
+    //System.out.println(url);
     JSONObject maintenance = new JSONObject(APICall.getRequest(url, true));
 
     if(maintenance.has("message")) {
-      System.out.println(maintenance.getString("message"));
+      //System.out.println(maintenance.getString("message"));
       System.exit(0);
     }
 
@@ -201,14 +201,14 @@ public class RoadDataProvider {
       maintenanceTask.setEndTime(endTime);
       String source  = properties.getString("source");
       maintenanceTask.setSource(source);
-      System.out.println(startTime + " - " + endTime);
-      System.out.println(source);
+      //System.out.println(startTime + " - " + endTime);
+      //System.out.println(source);
       ArrayList<String> maintTasks = new ArrayList<>();
       for (int j = 0; j < properties.getJSONArray("tasks").length(); j++) {
         String task = tasks.get(properties.getJSONArray("tasks").get(j).toString());
-        System.out.print(task);
+        //System.out.print(task);
         maintTasks.add(task);
-        System.out.print(", ");
+        //System.out.print(", ");
         if(!amounts.containsKey(task)) {
           amounts.put(task, 1);
         } else {
@@ -217,10 +217,10 @@ public class RoadDataProvider {
       }
       maintenanceTask.setTasks(maintTasks);
       allTasks.add(maintenanceTask);
-      System.out.println();
-      System.out.println();
+      //System.out.println();
+      //System.out.println();
     }
-    amounts.forEach((key, value) -> System.out.println(key + " : " + value));
+    //amounts.forEach((key, value) -> System.out.println(key + " : " + value));
     return allTasks;
   }
 
@@ -272,14 +272,14 @@ public class RoadDataProvider {
     } else if(coords.size() == 4) {
       url += "/" + coords.get(0) + "/" + coords.get(1) + "/" + coords.get(2) + "/" + coords.get(3);
     }
-    System.out.println("GET ROAD CONDITIONS");
-    System.out.println(url);
+    //System.out.println("GET ROAD CONDITIONS");
+    //System.out.println(url);
     JSONObject data = new JSONObject(APICall.getRequest(url, true));
     JSONArray weatherData = data.getJSONArray("weatherData");
     for(int i = 0; i < weatherData.length(); i++) {
       JSONObject cond = (JSONObject) weatherData.get(i);
       String roadNumber = cond.get("id").toString().split("_")[0];
-      System.out.println("--" + roadNumber + "--");
+      //System.out.println("--" + roadNumber + "--");
       JSONArray roadConditions = cond.getJSONArray("roadConditions");
       for(int j = 0; j < roadConditions.length(); j++) {
         RoadCondition roadCondition = new RoadCondition(cond.get("id").toString(), Integer.parseInt(roadNumber));
@@ -300,59 +300,59 @@ public class RoadDataProvider {
         roadCondition.setDayLight(dayLight);
         String weatherSymbol = condition.getString("weatherSymbol");
         roadCondition.setWeatherSymbol(weatherSymbol);
-        System.out.println("In " + forecastTime + " road temperature is " + roadTemperature + " and temperature is " + temperature);
+        //System.out.println("In " + forecastTime + " road temperature is " + roadTemperature + " and temperature is " + temperature);
         if(dayLight) {
-          System.out.println("Sun is shining");
+          //System.out.println("Sun is shining");
         } else {
-          System.out.println("It's dark in here");
+          //System.out.println("It's dark in here");
         }
-        System.out.print("Overall road condition is " + overallRoadCondition);
+        //System.out.print("Overall road condition is " + overallRoadCondition);
         if(condition.has("forecastConditionReason")) {
           JSONObject jsonObject = condition.getJSONObject("forecastConditionReason");
           if(jsonObject.has("precipitationCondition")) {
             String roadSurface = jsonObject.getString("precipitationCondition");
             roadCondition.setPrecipitationCondition(roadSurface.toLowerCase());
-            System.out.print(" and surface of the road is " + roadCondition.getPrecipitationCondition());
+            //System.out.print(" and surface of the road is " + roadCondition.getPrecipitationCondition());
           }
           if(jsonObject.has("roadCondition")) {
             String roadSurface = jsonObject.getString("roadCondition");
             roadCondition.setRoadCondition(roadSurface.toLowerCase());
-            System.out.print(" and surface of the road is " + roadSurface.toLowerCase());
+            //System.out.print(" and surface of the road is " + roadSurface.toLowerCase());
           }
           if(jsonObject.has("windCondition")) {
             String roadSurface = jsonObject.getString("windCondition");
             roadCondition.setWindCondition(roadSurface.toLowerCase());
-            System.out.print(" and wind condition is " + roadSurface.toLowerCase());
+            //System.out.print(" and wind condition is " + roadSurface.toLowerCase());
           }
           if(jsonObject.has("freezingRainCondition")) {
             boolean roadSurface = jsonObject.getBoolean("freezingRainCondition");
             roadCondition.setFreezingRainCondition(roadSurface);
             if(roadSurface) {
-              System.out.println("There is freezing rain");
+              //System.out.println("There is freezing rain");
             }
           }
           if(jsonObject.has("winterSlipperiness")) {
             boolean roadSurface = jsonObject.getBoolean("winterSlipperiness");
             roadCondition.setWinterSlipperiness(roadSurface);
             if(roadSurface) {
-              System.out.println("Road is slippery");
+              //System.out.println("Road is slippery");
             }
           }
           if(jsonObject.has("visibilityCondition")) {
             String roadSurface = jsonObject.getString("visibilityCondition");
             roadCondition.setVisibilityCondition(roadSurface.toLowerCase());
-            System.out.println(" and visibility is " + roadSurface.toLowerCase());
+            //System.out.println(" and visibility is " + roadSurface.toLowerCase());
           }
           if(jsonObject.has("frictionCondition")) {
             String roadSurface = jsonObject.getString("frictionCondition");
             roadCondition.setFrictionCondition(roadSurface.toLowerCase());
-            System.out.println(" and surface of the road is " + roadSurface.toLowerCase());
+            //System.out.println(" and surface of the road is " + roadSurface.toLowerCase());
           }
         } else {
-          System.out.println();
+          //System.out.println();
         }
-        System.out.println();
-        System.out.println();
+        //System.out.println();
+        //System.out.println();
         HashMap<Integer, RoadCondition> h = new HashMap<>();
         h.put(Integer.parseInt(cond.get("id").toString().split("_")[1]), roadCondition);
         if(allValues.containsKey(Integer.parseInt(cond.get("id").toString().split("_")[0]))) {
@@ -380,38 +380,38 @@ public class RoadDataProvider {
       }
     }
     allValues.forEach((key, value) -> {
-      System.out.println(key);
+      //System.out.println(key);
       for(HashMap<Integer, RoadCondition> values : value){
         values.forEach((k, v) -> {
-          //System.out.println(v.getWindSpeed());
-          //System.out.println(v.getWindDirection());
+          ////System.out.println(v.getWindSpeed());
+          ////System.out.println(v.getWindDirection());
         });
       }
-      System.out.println();
+      //System.out.println();
     });
     testValues.forEach((key, value) -> {
-      System.out.println("KEY IS " + key);
+      //System.out.println("KEY IS " + key);
       value.forEach( (k, v) -> {
-        System.out.println("FORECAST TIME " + k);
+        //System.out.println("FORECAST TIME " + k);
         for(RoadCondition r : v) {
-          System.out.println(r.getForecastTime() + " " + r.getSection());
+          //System.out.println(r.getForecastTime() + " " + r.getSection());
         }
       });
-      System.out.println();
+      //System.out.println();
     });
     return sortRoadConditions(testValues);
   }
 
   private static TreeMap<Integer, LinkedHashMap<String, ArrayList<RoadCondition>>> sortRoadConditions(TreeMap<Integer, LinkedHashMap<String, ArrayList<RoadCondition>>> allValues) {
     allValues.forEach((k,v) -> {
-      System.out.println("Road: " + k);
+      //System.out.println("Road: " + k);
       v.forEach((key, value) -> {
-        System.out.println("Forecast time: " + key);
+        //System.out.println("Forecast time: " + key);
         value.sort(Comparator.comparing(RoadCondition::getSection));
-        value.forEach(ke -> System.out.println("Road condition object's id: " + ke.getId()));
-        System.out.println();
+        //value.forEach(ke -> System.out.println("Road condition object's id: " + ke.getId()));
+        //System.out.println();
       });
-      System.out.println();
+      //System.out.println();
     });
     return allValues;
   }
@@ -456,7 +456,7 @@ public class RoadDataProvider {
       JSONObject jo = (JSONObject) ja.get(i);
       tasks.put(jo.get("id").toString(), jo.get("nameEn").toString());
     }
-    System.out.println(tasks);
+    //System.out.println(tasks);
   }
 
   /**
@@ -474,8 +474,8 @@ public class RoadDataProvider {
   public static List<TrafficMessage> getTrafficMessages(int hours, String situationType) throws IOException {
 
     String url = message + iHours + hours + "&includeAreaGeometry=false" + sitType + situationType;
-    System.out.println("GET TRAFFIC MESSAGES");
-    System.out.println(url);
+    //System.out.println("GET TRAFFIC MESSAGES");
+    //System.out.println(url);
     JSONObject messages = new JSONObject(APICall.getRequest(url, true));
 
     List<TrafficMessage> allMessages = new ArrayList<>();
@@ -489,40 +489,40 @@ public class RoadDataProvider {
         JSONObject announcement = announcements.getJSONObject(j);
         String title = announcement.get("title").toString();
         trafficMessage.setTitle(title);
-        System.out.println(title);
+        //System.out.println(title);
         JSONObject location = announcement.getJSONObject("location");
         String description = location.getString("description");
         trafficMessage.setDescription(description);
-        System.out.println(description);
+        //System.out.println(description);
         if(announcement.has("comment")) {
-          System.out.println(announcement.get("comment").toString());
+          //System.out.println(announcement.get("comment").toString());
           trafficMessage.setComment(announcement.get("comment").toString());
         }
         JSONObject locationDetail = announcement.getJSONObject("locationDetails");
         if(locationDetail.has("roadAddressLocation")) {
           JSONObject addressLocation = locationDetail.getJSONObject("roadAddressLocation");
           JSONObject primaryPoint = addressLocation.getJSONObject("primaryPoint");
-          System.out.println(primaryPoint.getString("municipality"));
+          //System.out.println(primaryPoint.getString("municipality"));
           trafficMessage.setMunicipality(primaryPoint.getString("municipality"));
         }
         JSONObject time = announcement.getJSONObject("timeAndDuration");
         String startTime = time.getString("startTime");
         trafficMessage.setStartTime(startTime);
-        System.out.println("Time stamp: " + startTime);
+        //System.out.println("Time stamp: " + startTime);
         JSONArray feats = announcement.getJSONArray("features");
         ArrayList<String> f = new ArrayList<>();
         for (int k = 0; k < feats.length(); k++) {
           JSONObject name = feats.getJSONObject(k);
           f.add(name.getString("name"));
-          System.out.println(name.get("name"));
+          //System.out.println(name.get("name"));
         }
         trafficMessage.setFeatures(f);
         allMessages.add(trafficMessage);
       }
-      System.out.println();
-      System.out.println();
+      //System.out.println();
+      //System.out.println();
     }
-    allMessages.forEach(e -> System.out.println(e.getTitle()));
+    //allMessages.forEach(e -> System.out.println(e.getTitle()));
     return allMessages;
   }
 }

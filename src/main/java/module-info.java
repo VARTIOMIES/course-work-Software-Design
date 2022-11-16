@@ -9,6 +9,7 @@ module fi.tuni.compse110.project {
     opens fi.tuni.compse110.project to javafx.fxml;
     exports fi.tuni.compse110.project;
     exports fi.tuni.compse110.project.API;
+    exports fi.tuni.compse110.project.UIView;
     opens fi.tuni.compse110.project.API to javafx.fxml;
     exports fi.tuni.compse110.project.Graph;
     opens fi.tuni.compse110.project.Graph to javafx.fxml;

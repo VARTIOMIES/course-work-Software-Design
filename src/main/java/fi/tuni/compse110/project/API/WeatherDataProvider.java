@@ -101,7 +101,7 @@ public class WeatherDataProvider {
     if(endingTime.length() > 0) {
       url += endtime + endingTime;
     }
-    System.out.println(url);
+    ////System.out.println(url);
     JSONObject jo = XML.toJSONObject(APICall.getRequest(url, false));
     return createParameterTimeValuePair(jo, params.size() > 1 || places.size() > 1);
   }
@@ -201,7 +201,7 @@ public class WeatherDataProvider {
         String parameterCopy = q.getKey();
         averageTemperature(q.getValue(), cityCopy, parameterCopy);
         minMaxTemperature(q.getValue(), cityCopy, parameterCopy);
-        System.out.println();
+        //System.out.println();
       }
     }
     return allData;
@@ -239,7 +239,7 @@ public class WeatherDataProvider {
       divider++;
     }
     for (Pair<String, Double> r : dailyAverages) {
-      System.out.println("Day: " + r.getKey() + "   Average " + parameter + " of " + city + " : " + Math.round(r.getValue() * 10) / 10.0);
+      //System.out.println("Day: " + r.getKey() + "   Average " + parameter + " of " + city + " : " + Math.round(r.getValue() * 10) / 10.0);
     }
     return dailyAverages;
   }
@@ -269,7 +269,7 @@ public class WeatherDataProvider {
       if(!previousDay.equals(day)) {
         Pair<Double, Double> t = new Pair<>(lowPoint, highPoint);
         temps.put(day, t);
-        System.out.println("Day: " + day + " in " + city + " highest " + parameter + ": " + highPoint + " and lowest " + parameter + ": " + lowPoint);
+        //System.out.println("Day: " + day + " in " + city + " highest " + parameter + ": " + highPoint + " and lowest " + parameter + ": " + lowPoint);
         highPoint = -100.0;
         lowPoint = 100.0;
         previousDay = day;
