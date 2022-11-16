@@ -1,37 +1,25 @@
-package fi.tuni.compse110.project.UIView;
+package fi.tuni.compse110.project.UIView.Scenes;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import javax.swing.GroupLayout.Alignment;
+import fi.tuni.compse110.project.UIView.UIController;
 
-import javafx.scene.Parent;
-import org.jfree.chart.fx.ChartViewer;
-
-import fi.tuni.compse110.project.API.MaintenanceTask;
-import fi.tuni.compse110.project.API.RoadCondition;
-import fi.tuni.compse110.project.API.RoadDataProvider;
 import fi.tuni.compse110.project.Graph.GraphProvider;
 import fi.tuni.compse110.project.components.Feed;
-import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
-import javafx.stage.Stage;
 
 public class WeatherPageScene extends Scene{
 
@@ -68,6 +56,12 @@ public class WeatherPageScene extends Scene{
         searchBar.setStyle("-fx-background-color: red");
         searchBar.setMinSize(800, 200);
         searchBar.setId("search-bar");
+
+        Button backButton = new Button("<- back to menu");
+        backButton.setPrefSize(120,40);
+        backButton.setOnAction(event->backToMenuClickHandle());
+        searchBar.getChildren().add(backButton);
+
 
 
         row.setId("row");
@@ -180,5 +174,14 @@ public class WeatherPageScene extends Scene{
         // Possible nullPointerException throwing from .toExternalForm()
         this.getStylesheets().add(WeatherPageScene.class.getResource("/stylesheet.css").toExternalForm());
 
+    }
+
+
+    /**
+     * lambda to go handle back button going back to menu
+     */
+    private void backToMenuClickHandle(){
+        // Stuff happening after the "back to menu" button click
+        controller.fromAnyPageToMenu();
     }
 }

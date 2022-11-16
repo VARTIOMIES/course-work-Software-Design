@@ -80,7 +80,13 @@ public class TrafficPageScene extends Scene{
         searchBar.setStyle("-fx-background-color: red");
         searchBar.setMinSize(800, 200);
         searchBar.setId("search-bar");
-        
+
+        Button backButton = new Button("<- back to menu");
+        backButton.setPrefSize(120,40);
+        backButton.setOnAction(event->backToMenuClickHandle());
+        searchBar.getChildren().add(backButton);
+
+
 
         row.setId("row");
         graph.setId("graph");
@@ -106,13 +112,9 @@ public class TrafficPageScene extends Scene{
             graph.getChildren().add(testChartViewer);
         }
 
-        Button backButton = new Button("<- back to menu");
-        backButton.setPrefSize(120,40);
-        backButton.setOnAction(event->backToMenuClickHandle());
-
         Region filler = new Region();
         filler.setPrefWidth(50);
-        row.getChildren().addAll(graph,filler, taskFeed.getElement(),backButton);
+        row.getChildren().addAll(graph,filler, taskFeed.getElement());
         
         vLayout.getChildren().addAll(searchBar, row);
 
@@ -127,7 +129,7 @@ public class TrafficPageScene extends Scene{
      */
     private void backToMenuClickHandle(){
         // Stuff happening after the "back to menu" button click
-        controller.fromTrafficPageToMenu();
+        controller.fromAnyPageToMenu();
     }
 
  /*   public static void setRoot(String fxml) throws IOException {

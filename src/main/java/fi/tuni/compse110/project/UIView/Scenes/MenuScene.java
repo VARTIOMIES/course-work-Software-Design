@@ -20,6 +20,7 @@ public class MenuScene extends Scene {
     private HBox buttonsContainer;
     private Button pointButton;
     private Button roadButton;
+    private Button weatherButton;
     private UIController controller;
 
 
@@ -38,7 +39,11 @@ public class MenuScene extends Scene {
         roadButton.setPrefSize(150,250);
         roadButton.setOnAction(event->buttonSelectRoadClicked());
 
-        buttonsContainer.getChildren().addAll(pointButton,roadButton);
+        weatherButton = new Button("Weather");
+        weatherButton.setPrefSize(150,250);
+        weatherButton.setOnAction(event->buttonWeatherClicked());
+
+        buttonsContainer.getChildren().addAll(pointButton,roadButton,weatherButton);
         root.getChildren().add(buttonsContainer);
 
     }
@@ -57,6 +62,10 @@ public class MenuScene extends Scene {
         // Stuff that happens after "Select a road" -button is clicked
         controller.fromMenuToTrafficPage();
 
+    }
+    private void buttonWeatherClicked(){
+        // Stuff that happens after "Weather" -button is clicked
+        controller.fromMenuToWeatherPage();
     }
 
 }

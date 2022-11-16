@@ -4,6 +4,7 @@ package fi.tuni.compse110.project.UIView;/*
 
 import fi.tuni.compse110.project.UIView.Scenes.MenuScene;
 import fi.tuni.compse110.project.UIView.Scenes.TrafficPageScene;
+import fi.tuni.compse110.project.UIView.Scenes.WeatherPageScene;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.ScrollPane;
@@ -20,10 +21,12 @@ public class UIController{
     private Stage stage;
     private Scene currentScene;
     private ScrollPane trafficSceneRoot;
+    private ScrollPane weatherSceneRoot;
     private Pane menuPane;
     private Group root;
     private MenuScene menuScene;
     private TrafficPageScene trafficScene;
+    private WeatherPageScene weatherScene;
 
 
     public UIController(Stage stage){
@@ -31,11 +34,13 @@ public class UIController{
         stage.setResizable(false);
 
         trafficSceneRoot = new ScrollPane();
+        weatherSceneRoot = new ScrollPane();
         menuPane = new Pane();
         menuPane.setPrefSize(1024,720);
         root = new Group();
         menuScene = new MenuScene(menuPane,this);
         trafficScene = new TrafficPageScene(trafficSceneRoot,1024,720,this);
+        weatherScene = new WeatherPageScene(weatherSceneRoot,1024,720,this);
 
         stage.setScene(menuScene);
         stage.show();
@@ -45,7 +50,11 @@ public class UIController{
         currentScene = trafficScene;
         refresh();
     }
-    public void fromTrafficPageToMenu(){
+    public void fromMenuToWeatherPage(){
+        currentScene = weatherScene;
+        refresh();
+    }
+    public void fromAnyPageToMenu(){
         currentScene = menuScene;
         refresh();
     }
