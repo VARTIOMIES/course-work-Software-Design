@@ -1,4 +1,4 @@
-package fi.tuni.compse110.project.UIView;
+package fi.tuni.compse110.project.UIView.Scenes;
 
 import fi.tuni.compse110.project.API.MaintenanceTask;
 import fi.tuni.compse110.project.API.RoadCondition;
@@ -6,42 +6,51 @@ import fi.tuni.compse110.project.API.RoadDataProvider;
 import fi.tuni.compse110.project.API.Utility;
 import fi.tuni.compse110.project.API.WeatherDataProvider;
 import fi.tuni.compse110.project.Graph.GraphProvider;
-import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
+import fi.tuni.compse110.project.UIView.UIController;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
 
-import java.io.Console;
-import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.*;
 
 import org.jfree.chart.fx.ChartViewer;
-import org.json.JSONArray;
-import org.json.JSONObject;
 import fi.tuni.compse110.project.components.Feed;
 
 /**
- * JavaFX App
+ * A SCENE
  */
-public class TrafficPage extends Application {
+public class TrafficPageScene extends Scene{
 
-    private static Scene scene;
-    
+    VBox vLayout;
+    Pane searchBar;
+    Feed taskFeed;
+    Region filler;
+    HBox row;
+    Pane graph;
+    UIController controller;
 
-    @Override
-    public void start(Stage stage)  {
+    public TrafficPageScene(ScrollPane root, double v, double v1,UIController controller) {
+        super(root,v,v1);
+        this.controller = controller;
+
+        vLayout = new VBox(20);
+        searchBar = new Pane();
+        //taskFeed = new Feed(new HashMap<>());
+        row = new HBox();
+        graph = new Pane();
+        stuff();
+        root.setContent(vLayout);
+
+    }
+
+    public void stuff()  {
         System.out.println("hep");
         //testCase();
         ArrayList<Double> coords = new ArrayList<>(Arrays.asList(25.72088, 62.24147, 25.8, 62.3));
@@ -58,27 +67,22 @@ public class TrafficPage extends Application {
         for (MaintenanceTask t : tasks) {
             task_list.put(t.getTasks(), new ArrayList<String>(Arrays.asList(t.getPrettyTimeRange(), t.getSource())));
         }
+        taskFeed = new Feed(task_list);
 
         // vertical layout
-        ScrollPane window = new ScrollPane();
-        VBox vLayout = new VBox(20);
+
         vLayout.setMinWidth(1024);
         vLayout.setAlignment(Pos.CENTER);
         vLayout.setId("background");
         // seachbar (not yet implemented)
-        Pane searchBar = new Pane();
+
         searchBar.setPadding(new Insets(0, 20, 10, 20)); 
         searchBar.setStyle("-fx-background-color: red");
         searchBar.setMinSize(800, 200);
         searchBar.setId("search-bar");
         
-        Feed taskFeed = new Feed(task_list);
-        HBox row = new HBox();
-        
+
         row.setId("row");
-
-
-        Pane graph = new Pane();
         graph.setId("graph");
 
         /*
@@ -102,35 +106,38 @@ public class TrafficPage extends Application {
             graph.getChildren().add(testChartViewer);
         }
 
+        Button backButton = new Button("<- back to menu");
+        backButton.setPrefSize(120,40);
+        backButton.setOnAction(event->backToMenuClickHandle());
 
         Region filler = new Region();
         filler.setPrefWidth(50);
-        row.getChildren().addAll(graph,filler, taskFeed.getElement());
+        row.getChildren().addAll(graph,filler, taskFeed.getElement(),backButton);
         
         vLayout.getChildren().addAll(searchBar, row);
-        window.setContent(vLayout);
-        
-        
-        scene = new Scene(window, 1024, 720);
 
 
         // Possible nullPointerException throwing from .toExternalForm()
-        scene.getStylesheets().add(TrafficPage.class.getResource("/stylesheet.css").toExternalForm());
-
-        stage.setScene(scene);
-        stage.setResizable(false);
-        stage.show();
+        this.getStylesheets().add(TrafficPageScene.class.getResource("/stylesheet.css").toExternalForm());
 
     }
 
-    public static void setRoot(String fxml) throws IOException {
+    /**
+     * lambda to go handle back button going back to menu
+     */
+    private void backToMenuClickHandle(){
+        // Stuff happening after the "back to menu" button click
+        controller.fromTrafficPageToMenu();
+    }
+
+ /*   public static void setRoot(String fxml) throws IOException {
         scene.setRoot(loadFXML(fxml));
-    }
+    }*/
 
-    private static Parent loadFXML(String fxml) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(TrafficPage.class.getResource(fxml + ".fxml"));
+    /*private static Parent loadFXML(String fxml) throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader(TrafficPageScene.class.getResource(fxml + ".fxml"));
         return fxmlLoader.load();
-    }
+    }*/
 
     // For test usage of RoadDataProvider's and WeatherDataProvider's functions
     private static void testCase() throws IOException {
@@ -169,12 +176,6 @@ public class TrafficPage extends Application {
         WeatherDataProvider.weatherURLCreator(places, new ArrayList<Double>(), params, stime, etime);
     }
 
-    
-       public static void main(String[] args) {
-            System.out.println("hep2");
-            launch();
-
-       }
      
 
 }

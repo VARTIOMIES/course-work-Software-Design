@@ -1,26 +1,29 @@
 package fi.tuni.compse110.project;
 
-import fi.tuni.compse110.project.API.APItest;
-import fi.tuni.compse110.project.API.RoadDataProvider;
-import fi.tuni.compse110.project.UIView.TrafficPage;
+import fi.tuni.compse110.project.UIView.UIController;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.util.Stack;
 
 /*
     @author - Onni Merila , onni.merila@tuni.fi , H299725
- */public class Main{
+ */public class Main extends Application {
+
+     public Main(){
+         super();
+     }
 
     public static void main(String[] args) throws IOException {
-        //TODO: launch menu instead of traffipage
-        APItest apitestSingleton = APItest.getInstance();
+        //APItest apitestSingleton = APItest.getInstance();
         //apitestSingleton.testing();
+        launch();
+        
+    }
 
-        Application.launch(TrafficPage.class, args);
-        
-        
-        
+    @Override
+    public void start(Stage stage) throws Exception {
+        UIController uiController = new UIController(stage);
+
     }
 }

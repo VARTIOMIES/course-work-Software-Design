@@ -1,17 +1,12 @@
 package fi.tuni.compse110.project.UIView;
 
-import javax.swing.*;
-
-import javafx.application.Application;
-import javafx.stage.Stage;
-
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.IOException;
-
-public class CoordinateUI implements ActionListener {
-
+/**
+ * Ignore for now
+ *
+ * Should be created as a scene, like MenuScene and TrafficPageScene
+ */
+public class CoordinateUI{
+/*
     JFrame frame = new JFrame();
     JLabel welcomeLabel = new JLabel("Select the coordinate to get the forecast");
     JButton BackButton = new JButton("Back");
@@ -103,5 +98,5 @@ public class CoordinateUI implements ActionListener {
 
            
         }
-    }
+    }*/
 }

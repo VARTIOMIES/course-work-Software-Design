@@ -1,13 +1,12 @@
 package fi.tuni.compse110.project.UIView;
 
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
-
-public class RoadUI implements ActionListener{
-    JFrame frame = new JFrame();
+/**
+ * Ignore for now
+ *
+ * Should be created as a scene, like MenuScene and TrafficPageScene
+ */
+public class RoadUI{
+    /*JFrame frame = new JFrame();
     JLabel welcomeLabel = new JLabel("Select the Road Number to get the forecast");
     JButton BackButton = new JButton("Back");
     JButton SearchButton = new JButton("Search");
@@ -60,6 +59,6 @@ public class RoadUI implements ActionListener{
 
             //System.out.println("Guys, this is a highway to hell number" + roadNumber);
         }
-    }
-    }
+    }*/
+}
 

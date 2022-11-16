@@ -5,6 +5,7 @@ package fi.tuni.compse110.project.Graph;/*
 
 /**
  * Gets just the lists of  data in x and Y and plots them, and returns a JFreeChart chart
+ * Builder!
  */
 public class ChartBuilder {
 
