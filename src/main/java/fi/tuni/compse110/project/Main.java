@@ -3,6 +3,7 @@ package fi.tuni.compse110.project;
 import fi.tuni.compse110.project.API.APItest;
 import fi.tuni.compse110.project.API.RoadDataProvider;
 import fi.tuni.compse110.project.UIView.TrafficPage;
+import fi.tuni.compse110.project.UIView.WeatherPage;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
@@ -18,7 +19,7 @@ import java.util.Stack;
         APItest apitestSingleton = APItest.getInstance();
         //apitestSingleton.testing();
 
-        Application.launch(TrafficPage.class, args);
+        Application.launch(WeatherPage.class, args);
         
         
         

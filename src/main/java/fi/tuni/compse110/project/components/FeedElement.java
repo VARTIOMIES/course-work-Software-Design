@@ -13,6 +13,7 @@ public class FeedElement {
 
     public FeedElement() {
         feed_obj = new VBox();
+        feed_obj.setPrefWidth(550);
         feed_obj.setId("feed-element");
         info_box = new VBox();
         title_obj = new Text();

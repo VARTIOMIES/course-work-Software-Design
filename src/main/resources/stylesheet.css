@@ -2,17 +2,24 @@
     
 }
 
-#background{
-    -fx-background-color: rgb(195, 195, 195);
+#background, #checkbox-stack{
+    -fx-background-color: rgb(231, 231, 231);
     -fx-padding: 20;
 }
 
+
+
+#feed-window, #sidepanel{
+    -fx-background-color: rgb(114, 190, 235);
+    -fx-padding: 20;
+    -fx-margin: 10px;
+}
+
 #search-bar, #graph {
-    -fx-background-color: white;
+    -fx-background-color: rgb(231, 231, 231);
 }
 #title {
     -fx-font-size: 20px;
-    -fx-color: wheat;
 }
 
 #box, #row {
