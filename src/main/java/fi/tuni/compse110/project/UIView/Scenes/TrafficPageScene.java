@@ -1,5 +1,6 @@
 package fi.tuni.compse110.project.UIView.Scenes;
 
+import fi.tuni.compse110.project.Main;
 import fi.tuni.compse110.project.API.MaintenanceTask;
 import fi.tuni.compse110.project.API.RoadCondition;
 import fi.tuni.compse110.project.API.RoadDataProvider;
@@ -11,11 +12,14 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
 
 import java.io.IOException;
 import java.util.*;
@@ -29,7 +33,6 @@ import fi.tuni.compse110.project.components.Feed;
 public class TrafficPageScene extends Scene{
 
     VBox vLayout;
-    Pane searchBar;
     Feed taskFeed;
     Region filler;
     HBox row;
@@ -41,16 +44,15 @@ public class TrafficPageScene extends Scene{
         this.controller = controller;
 
         vLayout = new VBox(20);
-        searchBar = new Pane();
         //taskFeed = new Feed(new HashMap<>());
         row = new HBox();
         graph = new Pane();
-        stuff();
+        createContent();
         root.setContent(vLayout);
 
     }
 
-    public void stuff()  {
+    public void createContent()  {
         System.out.println("hep");
         //testCase();
         ArrayList<Double> coords = new ArrayList<>(Arrays.asList(25.72088, 62.24147, 25.8, 62.3));
@@ -61,6 +63,15 @@ public class TrafficPageScene extends Scene{
         } catch (IOException e1) {
             // TODO Auto-generated catch block
             e1.printStackTrace();
+        }
+
+        if(tasks.isEmpty()){
+            System.out.println("no tasks");
+            MaintenanceTask t = new MaintenanceTask();
+            t.setTasks(new ArrayList<>(Arrays.asList("no tasks")));
+            t.setEndTime("2022-01-01T00:00:00Z");
+            t.setStartTime("2022-01-01T00:00:00Z");
+            tasks.add(t);
         }
         Map<ArrayList<String>, ArrayList<String>> task_list = new HashMap<>();
         // get necessary data for feed
@@ -74,19 +85,14 @@ public class TrafficPageScene extends Scene{
         vLayout.setMinWidth(1024);
         vLayout.setAlignment(Pos.CENTER);
         vLayout.setId("background");
-        // seachbar (not yet implemented)
-
-        searchBar.setPadding(new Insets(0, 20, 10, 20)); 
-        searchBar.setStyle("-fx-background-color: red");
-        searchBar.setMinSize(800, 200);
-        searchBar.setId("search-bar");
 
         Button backButton = new Button("<- back to menu");
         backButton.setPrefSize(120,40);
         backButton.setOnAction(event->backToMenuClickHandle());
-        searchBar.getChildren().add(backButton);
 
 
+        VBox mainContent = new VBox(20);
+        vLayout.getChildren().add(backButton);
 
         row.setId("row");
         graph.setId("graph");
@@ -102,7 +108,7 @@ public class TrafficPageScene extends Scene{
 
         try {
             List<RoadCondition> specificRCData = RoadDataProvider.getSpecificSectionRoadCondition(roadNumber,sectionArrayListIndex,coords);
-            ChartViewer dataChartViewer = GraphProvider.getRoadConditionChart(500,400,specificRCData, wantedData,titleForChart);
+            ChartViewer dataChartViewer = GraphProvider.getRoadConditionChart(634,500,specificRCData, wantedData,titleForChart);
             graph.getChildren().add(dataChartViewer);
         }
         catch (Exception e){ // If there occurs any errors while creating the chart
@@ -114,9 +120,103 @@ public class TrafficPageScene extends Scene{
 
         Region filler = new Region();
         filler.setPrefWidth(50);
-        row.getChildren().addAll(graph,filler, taskFeed.getElement());
+
+        VBox feed_window = new VBox(20);
+
+        // feed navigation bar top
+        HBox feed_navigation_bar = new HBox();
+        Button previous_road = new Button("<--");
+        previous_road.setId("title");
+        Button next_road = new Button("-->");
+        next_road.setId("title");
+        Text road_number_text = new Text("Road X");
+        road_number_text.setId("title");
         
-        vLayout.getChildren().addAll(searchBar, row);
+        Region fill_top = new Region();
+        fill_top.setPrefWidth(90);
+        feed_navigation_bar.setSpacing(30);
+        feed_navigation_bar.getChildren().addAll(fill_top, previous_road, road_number_text, next_road);
+
+
+        // feed navigation bottom
+        HBox feed_timerange_bar = new HBox();
+        
+        Button previus_timerange = new Button("<--");
+        previus_timerange.setId("title");
+        Button next_timerange = new Button("-->");
+        next_timerange.setId("title");
+        Text current_time_text = new Text("2h");
+        current_time_text.setId("title");
+
+        Region fill_bottom = new Region();
+        fill_bottom.setPrefWidth(100);
+        feed_timerange_bar.setSpacing(30);
+        feed_timerange_bar.getChildren().addAll(fill_bottom,previus_timerange, current_time_text, next_timerange);
+
+       
+        
+        feed_window.setId("feed-window");
+        feed_window.setAlignment(Pos.TOP_RIGHT);
+        feed_window.getChildren().addAll(feed_navigation_bar, taskFeed.getElement(), feed_timerange_bar);
+
+
+        //sidepanel
+        VBox sidepanel = new VBox(20);
+        sidepanel.setId("sidepanel");
+        sidepanel.setPrefWidth(300);
+
+        // text title with text "enter coordinates" followed by textfields for max and min lat and lon coordinates
+        VBox coordinate_input = new VBox(10);
+        coordinate_input.setId("coordinate-input");
+        Text coordinate_input_title = new Text("Enter coordinates");
+        coordinate_input_title.setId("title");
+        VBox coordinate_input_fields = new VBox(10);
+        coordinate_input_fields.setId("coordinate-input-fields");
+        Text coordinate_input_max_lat = new Text("Max lat");
+        coordinate_input_max_lat.setId("title");
+        Text coordinate_input_min_lat = new Text("Min lat");
+        coordinate_input_min_lat.setId("title");
+        Text coordinate_input_max_lon = new Text("Max lon");
+        coordinate_input_max_lon.setId("title");
+        Text coordinate_input_min_lon = new Text("Min lon");
+
+        coordinate_input_min_lon.setId("title");
+        TextField coordinate_input_max_lat_field = new TextField();
+        coordinate_input_max_lat_field.setId("coordinate-input-field");
+        TextField coordinate_input_min_lat_field = new TextField();
+        coordinate_input_min_lat_field.setId("coordinate-input-field");
+        TextField coordinate_input_max_lon_field = new TextField();
+        coordinate_input_max_lon_field.setId("coordinate-input-field");
+        TextField coordinate_input_min_lon_field = new TextField();
+        coordinate_input_min_lon_field.setId("coordinate-input-field");
+        coordinate_input_fields.getChildren().addAll(coordinate_input_max_lat, coordinate_input_max_lat_field, coordinate_input_min_lat, coordinate_input_min_lat_field, coordinate_input_max_lon, coordinate_input_max_lon_field, coordinate_input_min_lon, coordinate_input_min_lon_field);
+        coordinate_input.getChildren().addAll(coordinate_input_title, coordinate_input_fields);
+        
+
+        Text params_label = new Text("Choose parameters:");
+        params_label.setId("title");
+
+        VBox checkbox_stack = new VBox();
+        checkbox_stack.setId("checkbox-stack");
+
+        CheckBox precipitationCheckBox = new CheckBox("Precipitation");
+        CheckBox winter_slipperiness_checkbox = new CheckBox("Winter slipperiness");
+        CheckBox overall_road_condition_checkbox = new CheckBox("Overall road condition");
+        CheckBox additional_info_checkbox = new CheckBox("Additional information");
+
+        checkbox_stack.getChildren().addAll(precipitationCheckBox, winter_slipperiness_checkbox, overall_road_condition_checkbox, additional_info_checkbox);
+
+
+        // big centered search button
+        Button search_button = new Button("Search");
+        search_button.setId("search-button");
+        sidepanel.getChildren().addAll(coordinate_input, params_label, checkbox_stack, search_button);
+
+
+        mainContent.getChildren().addAll(graph, feed_window);
+        row.getChildren().addAll(mainContent,filler, sidepanel);
+        
+        vLayout.getChildren().addAll(row);
 
 
         // Possible nullPointerException throwing from .toExternalForm()

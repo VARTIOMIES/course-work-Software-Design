@@ -25,6 +25,13 @@
 #box, #row {
     -fx-background-color: rgb(75, 75, 75);
 }
+#search-button{
+    -fx-background-color: white;
+    -fx-font-size: 25px;
+    -fx-padding: 10px;
+
+    -fx-border-width: 2px;
+}
 
 #feed-element {
     -fx-width: 100%;
