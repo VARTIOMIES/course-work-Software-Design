@@ -55,12 +55,13 @@ public class MenuScene extends Scene {
         // Stuff that happens after "Select a point" -button is clicked
         controller.fromMenuToTrafficPage();
     }
+    
     /**
      * Lamda function for button click handling
      */
     private void buttonSelectRoadClicked(){
         // Stuff that happens after "Select a road" -button is clicked
-        controller.fromMenuToTrafficPage();
+        controller.fromMenuToTrafficPageRoad();
 
     }
     private void buttonWeatherClicked(){

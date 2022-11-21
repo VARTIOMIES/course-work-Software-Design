@@ -3,6 +3,7 @@ package fi.tuni.compse110.project.UIView;/*
  */
 
 import fi.tuni.compse110.project.UIView.Scenes.MenuScene;
+import fi.tuni.compse110.project.UIView.Scenes.TrafficPageRoadScene;
 import fi.tuni.compse110.project.UIView.Scenes.TrafficPageScene;
 import fi.tuni.compse110.project.UIView.Scenes.WeatherPageScene;
 import javafx.scene.Group;
@@ -21,11 +22,13 @@ public class UIController{
     private Stage stage;
     private Scene currentScene;
     private ScrollPane trafficSceneRoot;
+    private ScrollPane trafficRoadSceneRoot;
     private ScrollPane weatherSceneRoot;
     private Pane menuPane;
     private Group root;
     private MenuScene menuScene;
     private TrafficPageScene trafficScene;
+    private TrafficPageRoadScene trafficSceneRoad;
     private WeatherPageScene weatherScene;
 
 
@@ -34,12 +37,14 @@ public class UIController{
         stage.setResizable(false);
 
         trafficSceneRoot = new ScrollPane();
+        trafficRoadSceneRoot = new ScrollPane();
         weatherSceneRoot = new ScrollPane();
         menuPane = new Pane();
         menuPane.setPrefSize(1024,720);
         root = new Group();
         menuScene = new MenuScene(menuPane,this);
         trafficScene = new TrafficPageScene(trafficSceneRoot,1024,720,this);
+        trafficSceneRoad = new TrafficPageRoadScene(trafficRoadSceneRoot, 1024, 720, this);
         weatherScene = new WeatherPageScene(weatherSceneRoot,1024,720,this);
 
         stage.setScene(menuScene);
@@ -49,6 +54,12 @@ public class UIController{
     public void fromMenuToTrafficPage(){
         currentScene = trafficScene;
         refresh();
+    }
+
+    public void fromMenuToTrafficPageRoad(){
+        currentScene = trafficSceneRoad;
+        refresh();
+
     }
     public void fromMenuToWeatherPage(){
         currentScene = weatherScene;
