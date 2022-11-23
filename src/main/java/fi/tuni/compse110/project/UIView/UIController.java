@@ -33,18 +33,18 @@ public class UIController{
     private TrafficPageRoadScene trafficSceneRoad;
     private WeatherPageScene weatherScene;
 
-    private enum CurrentSceneEnum{
+    public enum CurrentSceneEnum{
         MENU_SCENE,
         TRAFFIC_SCENE,
         TRAFFIC_SCENE_ROAD,
         WEATHER_SCENE
     }
-    private CurrentSceneEnum currentSceneEnum;
+    public CurrentSceneEnum currentSceneEnum;
 
     public UIController(Stage stage){
         this.stage = stage;
         stage.setResizable(false);
-
+        currentSceneEnum = CurrentSceneEnum.MENU_SCENE;
         trafficSceneRoot = new ScrollPane();
         trafficRoadSceneRoot = new ScrollPane();
         weatherSceneRoot = new ScrollPane();
@@ -57,7 +57,6 @@ public class UIController{
         weatherScene = new WeatherPageScene(weatherSceneRoot,1024,720,this);
 
         stage.setScene(menuScene);
-        currentSceneEnum = CurrentSceneEnum.MENU_SCENE;
         stage.show();
     }
 
@@ -117,7 +116,8 @@ public class UIController{
         OVERALL_ROAD_CONDITION,
         ROAD_TEMPERATURE,
         TEMPERATURE,
-        WIND_SPEED
+        WIND_SPEED,
+        EMPTY
     }
 
 }

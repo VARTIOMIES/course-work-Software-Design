@@ -56,7 +56,7 @@ public class TrafficPageScene extends Scene{
         horizontalrootElementContainer = new HBox();
 
         mainContent = new VBox(20);
-        sidepanel = new SidePanel(20,this.controller);
+        sidepanel = new SidePanel(20,this.controller,UIController.CurrentSceneEnum.TRAFFIC_SCENE);
         graph = new Pane();
 
         feed_window = new VBox(20);
