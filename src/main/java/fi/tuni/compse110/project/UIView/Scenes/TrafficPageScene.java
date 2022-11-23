@@ -170,8 +170,7 @@ public class TrafficPageScene extends Scene{
         try {
             tasks = RoadDataProvider.getMaintenanceData(this.testCoords, new ArrayList<>(), "", "");
         } catch (IOException e1) {
-            // TODO Auto-generated catch block
-            e1.printStackTrace();
+            System.out.println(e1);
         }
 
         if(tasks.isEmpty()){
@@ -184,9 +183,19 @@ public class TrafficPageScene extends Scene{
         }
         Map<ArrayList<String>, ArrayList<String>> task_list = new HashMap<>();
         // get necessary data for feed
-        for (MaintenanceTask t : tasks) {
-            task_list.put(t.getTasks(), new ArrayList<String>(Arrays.asList(t.getPrettyTimeRange(), t.getSource())));
+        if(tasks.isEmpty()){
+            System.out.println("no tasks");
+            MaintenanceTask t = new MaintenanceTask();
+            t.setTasks(new ArrayList<>(Arrays.asList("no tasks")));
+            t.setEndTime("2022-01-01T00:00:00Z");
+            t.setStartTime("2022-01-01T00:00:00Z");
+            tasks.add(t);
+        }else{
+            for (MaintenanceTask t : tasks) {
+                task_list.put(t.getTasks(), new ArrayList<String>(Arrays.asList(t.getPrettyTimeRange(), t.getSource())));
+            }
         }
+
         taskFeed = new Feed(task_list);
 
         // vertical layout

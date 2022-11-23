@@ -1,12 +1,16 @@
 package fi.tuni.compse110.project.UIView.Scenes;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.jfree.chart.fx.ChartViewer;
 
 import fi.tuni.compse110.project.UIView.UIController;
+import fi.tuni.compse110.project.UIView.components.Feed;
 import fi.tuni.compse110.project.API.RoadCondition;
 import fi.tuni.compse110.project.API.RoadDataProvider;
 import fi.tuni.compse110.project.Graph.GraphProvider;
@@ -18,6 +22,7 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 
@@ -138,16 +143,58 @@ public class CombinedScene extends Scene{
         checkbox_stack.getChildren().addAll(precipitationCheckBox, winter_slipperiness_checkbox, overall_road_condition_checkbox, additional_info_checkbox);
 
 
-        // big centered search button
         Button search_button = new Button("Search");
         search_button.setId("search-button");
         sidepanel.getChildren().addAll(coordinate_input, params_label, checkbox_stack, search_button);
 
+        // maintenance feed
+        Map<ArrayList<String>, ArrayList<String>> task_list = new HashMap<>();
+        // get necessary data for feed
+        for (int t = 0; t < 5; ++t) {
+            task_list.put(new ArrayList<String>(Arrays.asList("Title here" + t)), new ArrayList<String>(Arrays.asList("Enter hourly maintenance data here")));
+        }
 
+        Text maintenance_feed_title = new Text("Maintenance feed");
+        maintenance_feed_title.setId("title");
+        Feed taskFeed = new Feed(task_list);
+        VBox mainContent = new VBox(10);
         
+        
+        Text road_data_title = new Text("Road data feed");
+        road_data_title.setId("title");
 
-        row.getChildren().addAll(graph, sidepanel);
+        Map<ArrayList<String>, ArrayList<String>> road_data_list = new HashMap<>();
 
+        // test coordinates
+        
+        try {
+            for(var t : RoadDataProvider.getMaintenanceData(coords, new ArrayList<>(), "", ""))
+                road_data_list.put(t.getTasks(), new ArrayList<String>(Arrays.asList(t.getPrettyTimeRange(), t.getSource())));
+            
+        } catch (IOException e) {
+            road_data_list.put(new ArrayList<String>(Arrays.asList("Title here")), new ArrayList<String>(Arrays.asList("Enter hourly maintenance data here")));
+        }
+
+        Feed roadDataFeed = new Feed(road_data_list);
+
+
+        // timerange bar top
+        //TODO: add timerange functionality
+        HBox feed_navigation_bar = new HBox();
+        Button previous_road = new Button("<--");
+        previous_road.setId("title");
+        Button next_road = new Button("-->");
+        next_road.setId("title");
+        Text road_number_text = new Text("From time xh to time x+1h");
+        road_number_text.setId("title");
+        feed_navigation_bar.setSpacing(30);
+        
+        Region fill_top = new Region();
+        fill_top.setPrefWidth(90);
+        feed_navigation_bar.getChildren().addAll(fill_top, previous_road, road_number_text, next_road);
+
+        mainContent.getChildren().addAll(feed_navigation_bar, graph, maintenance_feed_title, taskFeed.getElement(), road_data_title ,roadDataFeed.getElement());
+        row.getChildren().addAll(mainContent, sidepanel);
         vLayout.getChildren().addAll(backButton, row);
 
         // Possible nullPointerException throwing from .toExternalForm()

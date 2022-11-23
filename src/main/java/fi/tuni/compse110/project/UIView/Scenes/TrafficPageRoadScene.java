@@ -129,10 +129,11 @@ public class TrafficPageRoadScene extends Scene{
         next_road.setId("title");
         Text road_number_text = new Text("Road X");
         road_number_text.setId("title");
+        feed_navigation_bar.setSpacing(30);
         
         Region fill_top = new Region();
         fill_top.setPrefWidth(90);
-        feed_navigation_bar.setSpacing(30);
+        
         feed_navigation_bar.getChildren().addAll(fill_top, previous_road, road_number_text, next_road);
 
 
