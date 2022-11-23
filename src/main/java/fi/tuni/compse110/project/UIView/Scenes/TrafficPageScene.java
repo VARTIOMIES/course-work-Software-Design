@@ -56,7 +56,7 @@ public class TrafficPageScene extends Scene{
         horizontalrootElementContainer = new HBox();
 
         mainContent = new VBox(20);
-        sidepanel = new SidePanel(20);
+        sidepanel = new SidePanel(20,this.controller);
         graph = new Pane();
 
         feed_window = new VBox(20);
@@ -71,16 +71,43 @@ public class TrafficPageScene extends Scene{
         root.setContent(rootVerticalContainer);
 
     }
+    public void makeNewChartViewer(ArrayList<Double> coords, ArrayList<UIController.Plottable> selectedPlottables){
+        UIController.Plottable wantedData = UIController.Plottable.ROAD_TEMPERATURE;
+        int roadNumber = 1;
+        int sectionArrayListIndex = 1;
+        String titleForChart = "helo";
+        try {
+            List<RoadCondition> specificRCData = RoadDataProvider.getSpecificSectionRoadCondition(
+                    roadNumber,
+                    sectionArrayListIndex,
+                    coords
+            );
+            ChartViewer dataChartViewer = GraphProvider.getRoadConditionChart(
+                    634,
+                    500,
+                    specificRCData,
+                    wantedData,
+                    titleForChart
+            );
+            graph.getChildren().setAll(dataChartViewer);
+        }
+        catch (Exception e){ // If there occurs any errors while creating the chart
+            // from API data, creates a hardcoded chart to act as a placeholder
+            //System.out.println("error");
+            ChartViewer testChartViewer = GraphProvider.getTestChart(500,400);
+            graph.getChildren().setAll(testChartViewer);
+        }
 
+    }
 
-    private void initChartViewer(){
+    public void initChartViewer(){
         /*
             Here are some easily modifiable parameters to get different kinds of data,
             These are useful especially for the begin-phase of the program
          */
         int roadNumber = 5;
         int sectionArrayListIndex = 3;
-        GraphProvider.Plottable wantedData = GraphProvider.Plottable.ROAD_TEMPERATURE;
+        UIController.Plottable wantedData = UIController.Plottable.ROAD_TEMPERATURE;
         String titleForChart = "Road:" + roadNumber + "  Section:" + sectionArrayListIndex;
 
         try {
@@ -188,6 +215,8 @@ public class TrafficPageScene extends Scene{
         this.getStylesheets().add(TrafficPageScene.class.getResource("/stylesheet.css").toExternalForm());
 
     }
+
+
 
     /**
      * lambda to go handle back button going back to menu

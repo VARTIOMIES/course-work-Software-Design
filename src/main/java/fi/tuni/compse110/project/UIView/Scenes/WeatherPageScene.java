@@ -63,7 +63,7 @@ public class WeatherPageScene extends Scene{
          */
         int roadNumber = 5;
         int sectionArrayListIndex = 3;
-        GraphProvider.Plottable wantedData = GraphProvider.Plottable.ROAD_TEMPERATURE;
+        UIController.Plottable wantedData = UIController.Plottable.ROAD_TEMPERATURE;
         String titleForChart = "Road:" + roadNumber + "  Section:" + sectionArrayListIndex;
 
 

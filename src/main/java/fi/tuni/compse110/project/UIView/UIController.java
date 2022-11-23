@@ -12,6 +12,8 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
+import java.util.ArrayList;
+
 /**
  * This is the class that controls the one Stage of the application.
  *
@@ -31,6 +33,13 @@ public class UIController{
     private TrafficPageRoadScene trafficSceneRoad;
     private WeatherPageScene weatherScene;
 
+    private enum CurrentSceneEnum{
+        MENU_SCENE,
+        TRAFFIC_SCENE,
+        TRAFFIC_SCENE_ROAD,
+        WEATHER_SCENE
+    }
+    private CurrentSceneEnum currentSceneEnum;
 
     public UIController(Stage stage){
         this.stage = stage;
@@ -48,27 +57,47 @@ public class UIController{
         weatherScene = new WeatherPageScene(weatherSceneRoot,1024,720,this);
 
         stage.setScene(menuScene);
+        currentSceneEnum = CurrentSceneEnum.MENU_SCENE;
         stage.show();
     }
 
     public void fromMenuToTrafficPage(){
         currentScene = trafficScene;
+        currentSceneEnum = CurrentSceneEnum.TRAFFIC_SCENE;
         refresh();
     }
 
     public void fromMenuToTrafficPageRoad(){
         currentScene = trafficSceneRoad;
+        currentSceneEnum = CurrentSceneEnum.TRAFFIC_SCENE_ROAD;
         refresh();
 
     }
     public void fromMenuToWeatherPage(){
         currentScene = weatherScene;
+        currentSceneEnum = CurrentSceneEnum.WEATHER_SCENE;
         refresh();
     }
     public void fromAnyPageToMenu(){
         currentScene = menuScene;
+        currentSceneEnum = CurrentSceneEnum.MENU_SCENE;
         refresh();
     }
+    public void searchButtonPressed(ArrayList<Double> coords,
+                                    ArrayList<Plottable> selected){
+        switch (currentSceneEnum){
+            case MENU_SCENE:
+                break;
+            case TRAFFIC_SCENE:
+                trafficScene.makeNewChartViewer(coords,selected);
+                break;
+            case WEATHER_SCENE:
+                break;
+            case TRAFFIC_SCENE_ROAD:
+                break;
+        }
+    }
+
 
     /**
      * Used to put the changes visible (a little useless atm but maybe will
@@ -77,6 +106,18 @@ public class UIController{
     public void refresh(){
         stage.setScene(currentScene);
         stage.show();
+    }
+
+    /**
+     * All the different plottable data types.
+     */
+    public enum Plottable {
+        PRECIPITATION,
+        SLIPPERINESS,
+        OVERALL_ROAD_CONDITION,
+        ROAD_TEMPERATURE,
+        TEMPERATURE,
+        WIND_SPEED
     }
 
 }
