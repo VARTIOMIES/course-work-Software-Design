@@ -1,6 +1,5 @@
 package fi.tuni.compse110.project.UIView.Scenes;
 
-import fi.tuni.compse110.project.Main;
 import fi.tuni.compse110.project.API.MaintenanceTask;
 import fi.tuni.compse110.project.API.RoadCondition;
 import fi.tuni.compse110.project.API.RoadDataProvider;
@@ -8,7 +7,6 @@ import fi.tuni.compse110.project.API.Utility;
 import fi.tuni.compse110.project.API.WeatherDataProvider;
 import fi.tuni.compse110.project.Graph.GraphProvider;
 import fi.tuni.compse110.project.UIView.UIController;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -25,7 +23,7 @@ import java.io.IOException;
 import java.util.*;
 
 import org.jfree.chart.fx.ChartViewer;
-import fi.tuni.compse110.project.components.Feed;
+import fi.tuni.compse110.project.UIView.components.Feed;
 
 /**
  * A SCENE

@@ -1,10 +1,7 @@
-package fi.tuni.compse110.project.components;
+package fi.tuni.compse110.project.UIView.components;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.VBox;
 

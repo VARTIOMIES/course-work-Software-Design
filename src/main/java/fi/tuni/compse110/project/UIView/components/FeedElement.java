@@ -1,4 +1,4 @@
-package fi.tuni.compse110.project.components;
+package fi.tuni.compse110.project.UIView.components;
 
 import java.util.ArrayList;
 
