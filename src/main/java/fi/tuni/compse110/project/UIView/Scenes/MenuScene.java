@@ -21,6 +21,7 @@ public class MenuScene extends Scene {
     private Button pointButton;
     private Button roadButton;
     private Button weatherButton;
+    private Button combinedButton;
     private UIController controller;
 
 
@@ -43,7 +44,11 @@ public class MenuScene extends Scene {
         weatherButton.setPrefSize(150,250);
         weatherButton.setOnAction(event->buttonWeatherClicked());
 
-        buttonsContainer.getChildren().addAll(pointButton,roadButton,weatherButton);
+        combinedButton = new Button("Combined");
+        combinedButton.setPrefSize(150,250);
+        combinedButton.setOnAction(event->buttonCombinedClicked());
+
+        buttonsContainer.getChildren().addAll(pointButton,roadButton,weatherButton,combinedButton);
         root.getChildren().add(buttonsContainer);
 
     }
@@ -67,6 +72,10 @@ public class MenuScene extends Scene {
     private void buttonWeatherClicked(){
         // Stuff that happens after "Weather" -button is clicked
         controller.fromMenuToWeatherPage();
+    }
+
+    private void buttonCombinedClicked(){
+        controller.fromMenuToCombinedPage();
     }
 
 }

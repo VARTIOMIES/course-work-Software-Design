@@ -2,6 +2,7 @@ package fi.tuni.compse110.project.UIView;/*
     @author - Onni Merila , onni.merila@tuni.fi , H299725
  */
 
+import fi.tuni.compse110.project.UIView.Scenes.CombinedScene;
 import fi.tuni.compse110.project.UIView.Scenes.MenuScene;
 import fi.tuni.compse110.project.UIView.Scenes.TrafficPageRoadScene;
 import fi.tuni.compse110.project.UIView.Scenes.TrafficPageScene;
@@ -26,18 +27,21 @@ public class UIController{
     private ScrollPane trafficSceneRoot;
     private ScrollPane trafficRoadSceneRoot;
     private ScrollPane weatherSceneRoot;
+    private ScrollPane combinedSceneRoot;
     private Pane menuPane;
     private Group root;
     private MenuScene menuScene;
     private TrafficPageScene trafficScene;
     private TrafficPageRoadScene trafficSceneRoad;
     private WeatherPageScene weatherScene;
+    private CombinedScene combinedScene;
 
     public enum CurrentSceneEnum{
         MENU_SCENE,
         TRAFFIC_SCENE,
         TRAFFIC_SCENE_ROAD,
-        WEATHER_SCENE
+        WEATHER_SCENE,
+        COMBINED_SCENE
     }
     public CurrentSceneEnum currentSceneEnum;
 
@@ -48,6 +52,7 @@ public class UIController{
         trafficSceneRoot = new ScrollPane();
         trafficRoadSceneRoot = new ScrollPane();
         weatherSceneRoot = new ScrollPane();
+        combinedSceneRoot = new ScrollPane();
         menuPane = new Pane();
         menuPane.setPrefSize(1024,720);
         root = new Group();
@@ -55,9 +60,16 @@ public class UIController{
         trafficScene = new TrafficPageScene(trafficSceneRoot,1024,720,this);
         trafficSceneRoad = new TrafficPageRoadScene(trafficRoadSceneRoot, 1024, 720, this);
         weatherScene = new WeatherPageScene(weatherSceneRoot,1024,720,this);
+        combinedScene = new CombinedScene(combinedSceneRoot, 1024, 720, this);
 
         stage.setScene(menuScene);
         stage.show();
+    }
+
+    public void fromMenuToCombinedPage(){
+        currentScene = combinedScene;
+        currentSceneEnum = CurrentSceneEnum.COMBINED_SCENE;
+        refresh();
     }
 
     public void fromMenuToTrafficPage(){

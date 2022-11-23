@@ -21,7 +21,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 
-public class WeatherPageScene extends Scene{
+public class CombinedScene extends Scene{
 
     VBox vLayout;
     Pane searchBar;
@@ -29,7 +29,7 @@ public class WeatherPageScene extends Scene{
     Pane graph;
     UIController controller;
 
-    public WeatherPageScene(ScrollPane root,double v,double v1,UIController controller) {
+    public CombinedScene(ScrollPane root,double v,double v1,UIController controller) {
         super(root,v,v1);
         this.controller = controller;
         vLayout = new VBox(20);

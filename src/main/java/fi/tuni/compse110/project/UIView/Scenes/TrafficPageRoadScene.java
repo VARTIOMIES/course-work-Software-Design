@@ -101,7 +101,7 @@ public class TrafficPageRoadScene extends Scene{
          */
         int roadNumber = 5;
         int sectionArrayListIndex = 3;
-        UIController.Plottable wantedData = UIController.Plottable.ROAD_TEMPERATURE;
+        GraphProvider.Plottable wantedData = GraphProvider.Plottable.ROAD_TEMPERATURE;
         String titleForChart = "Road:" + roadNumber + "  Section:" + sectionArrayListIndex;
 
         try {

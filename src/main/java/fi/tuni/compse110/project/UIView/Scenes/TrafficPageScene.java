@@ -72,7 +72,7 @@ public class TrafficPageScene extends Scene{
 
     }
     public void makeNewChartViewer(ArrayList<Double> coords, ArrayList<UIController.Plottable> selectedPlottables){
-        UIController.Plottable wantedData = UIController.Plottable.ROAD_TEMPERATURE;
+        GraphProvider.Plottable wantedData = GraphProvider.Plottable.ROAD_TEMPERATURE;
         int roadNumber = 1;
         int sectionArrayListIndex = 1;
         String titleForChart = "helo";
@@ -107,7 +107,7 @@ public class TrafficPageScene extends Scene{
          */
         int roadNumber = 5;
         int sectionArrayListIndex = 3;
-        UIController.Plottable wantedData = UIController.Plottable.ROAD_TEMPERATURE;
+        GraphProvider.Plottable wantedData = GraphProvider.Plottable.ROAD_TEMPERATURE;
         String titleForChart = "Road:" + roadNumber + "  Section:" + sectionArrayListIndex;
 
         try {
