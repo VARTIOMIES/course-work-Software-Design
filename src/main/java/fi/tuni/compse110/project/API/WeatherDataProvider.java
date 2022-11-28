@@ -154,6 +154,9 @@ public class WeatherDataProvider {
     String currentCity = "";
     List<Pair<String, List<Pair<String, List<Pair<String, Double>>>>>> allData = new ArrayList<>();
     List<Pair<String, List<Pair<String, Double>>>> parameterDateValueListList = new ArrayList<>(); // List for parameter + (date + value) list pairs
+
+    ArrayList<WeatherData> listOfValues = new ArrayList<>();
+
     for (JSONObject j : jsonObjects) {
 
       JSONObject observation = j.getJSONObject("omso:PointTimeSeriesObservation");
@@ -181,6 +184,17 @@ public class WeatherDataProvider {
         String time = (String) innerElement.get("wml2:time");
         String value = innerElement.get("wml2:value").toString();
         Pair<String, Double> pair = new Pair<>(time, Double.valueOf(value)); // Pair of date + value
+        boolean notAdded = true;
+        for (WeatherData w : listOfValues) {
+          if(w.getCity().equals(city) && w.getParameter().equals(parameter)) {
+            w.addValue(pair);
+            notAdded = false;
+          }
+        }
+        if(notAdded) {
+          WeatherData w = new WeatherData(parameter, city, pair);
+          listOfValues.add(w);
+        }
         list.add(pair); // Add date + value to list
       }
 
@@ -199,10 +213,15 @@ public class WeatherDataProvider {
       String cityCopy = p.getKey();
       for (Pair<String, List<Pair<String, Double>>> q : p.getValue()) {
         String parameterCopy = q.getKey();
-        averageTemperature(q.getValue(), cityCopy, parameterCopy);
-        minMaxTemperature(q.getValue(), cityCopy, parameterCopy);
+        //averageTemperature(q.getValue(), cityCopy, parameterCopy);
+        //minMaxTemperature(q.getValue(), cityCopy, parameterCopy);
         //System.out.println();
       }
+    }
+    for (WeatherData w : listOfValues) {
+      System.out.println("Weather values");
+      w.calculateAverageValues();
+      w.calculateMinMaxValues();
     }
     return allData;
   }
@@ -239,7 +258,7 @@ public class WeatherDataProvider {
       divider++;
     }
     for (Pair<String, Double> r : dailyAverages) {
-      //System.out.println("Day: " + r.getKey() + "   Average " + parameter + " of " + city + " : " + Math.round(r.getValue() * 10) / 10.0);
+      System.out.println("Day: " + r.getKey() + "   Average " + parameter + " of " + city + " : " + Math.round(r.getValue() * 10) / 10.0);
     }
     return dailyAverages;
   }
@@ -269,7 +288,7 @@ public class WeatherDataProvider {
       if(!previousDay.equals(day)) {
         Pair<Double, Double> t = new Pair<>(lowPoint, highPoint);
         temps.put(day, t);
-        //System.out.println("Day: " + day + " in " + city + " highest " + parameter + ": " + highPoint + " and lowest " + parameter + ": " + lowPoint);
+        System.out.println("Day: " + day + " in " + city + " highest " + parameter + ": " + highPoint + " and lowest " + parameter + ": " + lowPoint);
         highPoint = -100.0;
         lowPoint = 100.0;
         previousDay = day;

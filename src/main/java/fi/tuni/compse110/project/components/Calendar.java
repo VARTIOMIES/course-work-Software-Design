@@ -118,8 +118,7 @@ public class Calendar {
     params.add("temperature");
     params.add("windspeedms");
 
-
-    //WeatherDataProvider.weatherURLCreator(places, new ArrayList<>(), params, startDate, endDate);
+    WeatherDataProvider.weatherURLCreator(places, new ArrayList<>(), params, startDate, endDate);
     System.out.println(startDate + "  -  " + endDate);
     return new Pair<>(startDate, endDate);
   }
