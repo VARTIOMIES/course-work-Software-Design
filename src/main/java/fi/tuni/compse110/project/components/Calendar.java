@@ -98,7 +98,7 @@ public class Calendar {
     for(int i = 0; i < months.length; i++) {
       if(months[i].equals(month)) {
         int m = i + 1;
-        if(i < 10) {
+        if(i < 9) {
           startDate = year + "-0" + m + "-01T00:00:00Z";
           if(month.equals("February") && year % 4 == 0) {
             endDate = year + "-0" + m + "-29T23:59:59Z";

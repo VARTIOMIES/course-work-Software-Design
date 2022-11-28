@@ -75,7 +75,7 @@ public class WeatherDataProvider {
    *         See the structure down below in createParameterTimeValuePair() function
    * @throws IOException In case of an error
    */
-  public static List<Pair<String, List<Pair<String, List<Pair<String, Double>>>>>> weatherURLCreator(ArrayList<String> places, ArrayList<Double> coordinates,
+  public static ArrayList<WeatherData> weatherURLCreator(ArrayList<String> places, ArrayList<Double> coordinates,
       ArrayList<String> params, String startingTime, String endingTime) throws IOException {
     String url = FMIBaseURL + hourlyObservation;
     if(places.size() > 0) {
@@ -101,7 +101,7 @@ public class WeatherDataProvider {
     if(endingTime.length() > 0) {
       url += endtime + endingTime;
     }
-    ////System.out.println(url);
+    System.out.println(url);
     JSONObject jo = XML.toJSONObject(APICall.getRequest(url, false));
     return createParameterTimeValuePair(jo, params.size() > 1 || places.size() > 1);
   }
@@ -138,7 +138,7 @@ public class WeatherDataProvider {
    *   ...
    * }
    */
-  public static List<Pair<String, List<Pair<String, List<Pair<String, Double>>>>>> createParameterTimeValuePair(JSONObject jo, Boolean multipleParams) {
+  public static ArrayList<WeatherData> createParameterTimeValuePair(JSONObject jo, Boolean multipleParams) {
     List<JSONObject> jsonObjects = new ArrayList<>();
     JSONObject info = jo.getJSONObject("wfs:FeatureCollection");
 
@@ -223,7 +223,7 @@ public class WeatherDataProvider {
       w.calculateAverageValues();
       w.calculateMinMaxValues();
     }
-    return allData;
+    return listOfValues;
   }
 
   /**
