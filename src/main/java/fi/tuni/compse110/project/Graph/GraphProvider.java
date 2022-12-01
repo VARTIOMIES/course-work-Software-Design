@@ -3,20 +3,16 @@ package fi.tuni.compse110.project.Graph;
     @author - Onni Merila , onni.merila@tuni.fi , H299725
  */
 
-import fi.tuni.compse110.project.API.APItest;
 import fi.tuni.compse110.project.API.RoadCondition;
+import fi.tuni.compse110.project.UIView.UIController;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
 import org.jfree.data.category.DefaultCategoryDataset;
-import org.jfree.data.statistics.BoxAndWhiskerItem;
 import org.jfree.data.statistics.HistogramDataset;
 import org.jfree.chart.fx.ChartViewer;
-import org.jfree.data.xy.XYDataset;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Function;
-import java.util.function.Supplier;
 
 /**
  * Provides ChartViews from data. Idea is that the raw data could be given to this provider class,
@@ -32,7 +28,6 @@ public class GraphProvider {
 
     }
 
-
     public GraphProvider getInstance(){
         if (singleInstance == null)
             singleInstance = new GraphProvider();
@@ -40,18 +35,22 @@ public class GraphProvider {
         return singleInstance;
     }
 
-    public enum Plottable {
-        ROAD_TEMPERATURE,
-        TEMPERATURE,
-        WIND_SPEED
-    }
 
+    /**
+     * @author Onni Merilä
+     *
+     * @param width int, (px)
+     * @param height int, (px)
+     * @param sameLocationConditions A list of RoadConditions, preferrably from
+     *                               a same location but different time
+     * @param plottedData (enum) the wanted data from the roadcondition
+     * @param title A title text for the chart
+     * @return ChartViewer object containing a JFreeChart of the data
+     */
     public static ChartViewer getRoadConditionChart(int width,int height,
                                                     List<RoadCondition> sameLocationConditions,
-                                                    Plottable plottedData,
+                                                    UIController.Plottable plottedData,
                                                     String title){
-        //function = (r)-> RoadCondition.getRoadTemperature();
-
         // Get values
         ArrayList<String> xdata = new ArrayList<>();
 
@@ -76,7 +75,6 @@ public class GraphProvider {
                 }
                 valueLabel = "Tuulen nopeus";
                 break;
-
         }
 
         for (RoadCondition r : sameLocationConditions){
@@ -94,6 +92,13 @@ public class GraphProvider {
         viewer.setPrefSize(width,height);
         return viewer;
 
+    }
+
+    public static ChartViewer getWeatherChart(int width,int height,
+                                              List<RoadCondition> sameLocationConditions,
+                                              UIController.Plottable plottedData,
+                                              String title){
+        return getTestChart(width,height);
     }
 
     public static JFreeChart createTestChart() {
