@@ -65,17 +65,17 @@ public class SidePanel extends VBox {
 
         switch (parentScene){
             case TRAFFIC_SCENE:
-                input = new CoordinateInput(10);
+                input = new CoordinateInput();
                 checkbox_stack = new RoadConditionCheckBoxes();
 
                 break;
             case WEATHER_SCENE:
-                input = new CoordinateInput(10);
+                input = new CoordinateInput();
                 checkbox_stack = new WeatherCheckBoxes();
                 break;
 
             case TRAFFIC_SCENE_ROAD:
-                input = new RoadInput(10);
+                input = new RoadInput();
                 checkbox_stack = new RoadConditionCheckBoxes();
                 break;
 
@@ -96,13 +96,8 @@ public class SidePanel extends VBox {
         private final Slider coordinate_input_max_lon_field;
         private final Slider coordinate_input_min_lon_field;
 
-        public CoordinateInput(double v){
-<<<<<<< HEAD
-
-            super(v);
-=======
+        public CoordinateInput(){
             super();
->>>>>>> 95698b194b6542c7a7b9a55efe3c592f55f5a3de
             this.setId("coordinate-input");
             coordinate_input_title = new Text("Enter coordinates");
             coordinate_input_title.setId("title");
@@ -207,7 +202,7 @@ public class SidePanel extends VBox {
         private Text road_input_text;
         private TextField road_input_field;
 
-        public RoadInput(double v){
+        public RoadInput(){
             super();
             this.setId("road-input");
             road_input_title = new Text("Enter road");
