@@ -1,50 +1,64 @@
 package fi.tuni.compse110.project.UIView.Scenes;
 
-
 import fi.tuni.compse110.project.UIView.UIController;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.Region;
+import javafx.scene.layout.VBox;
 
 /**
  * A SCENE
  */
 public class MenuScene extends Scene {
 
-    private HBox buttonsContainer;
+    private VBox buttonsContainer;
     private Button pointButton;
     private Button roadButton;
     private Button weatherButton;
     private Button combinedButton;
     private UIController controller;
-
+    private HBox row;
 
     public MenuScene(Pane root, UIController controller) {
         super(root);
+        root.setPrefSize(400, 300);
         this.controller = controller;
 
-        buttonsContainer = new HBox();
+        row = new HBox();
+        buttonsContainer = new VBox(10);
+
+        Region region = new Region();
+        Region region2 = new Region();
+        
+        region.setPrefWidth(45);
+        region2.setPrefHeight(30);
 
         // Create buttons
         pointButton = new Button("Select a Point");
-        pointButton.setPrefSize(150,250);
+        pointButton.setPrefSize(300, 50);
         pointButton.setOnAction(event -> buttonSelectPointClicked());
+        pointButton.setId("menubutton");
 
         roadButton = new Button("Select a Road");
-        roadButton.setPrefSize(150,250);
+        roadButton.setPrefSize(300, 50);
         roadButton.setOnAction(event->buttonSelectRoadClicked());
+        roadButton.setId("menubutton");
 
         weatherButton = new Button("Weather");
-        weatherButton.setPrefSize(150,250);
+        weatherButton.setPrefSize(300, 50);
         weatherButton.setOnAction(event->buttonWeatherClicked());
+        weatherButton.setId("menubutton");
 
         combinedButton = new Button("Combined");
-        combinedButton.setPrefSize(150,250);
+        combinedButton.setPrefSize(300, 50);
         combinedButton.setOnAction(event->buttonCombinedClicked());
+        combinedButton.setId("menubutton");
 
-        buttonsContainer.getChildren().addAll(pointButton,roadButton,weatherButton,combinedButton);
-        root.getChildren().add(buttonsContainer);
+        buttonsContainer.getChildren().addAll(region2, pointButton,roadButton,weatherButton,combinedButton);
+        row.getChildren().addAll(region, buttonsContainer);
+        root.getChildren().addAll(row);
 
     }
 
