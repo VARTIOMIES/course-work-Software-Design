@@ -94,17 +94,36 @@ public class UIController{
         currentSceneEnum = CurrentSceneEnum.MENU_SCENE;
         refresh();
     }
-    public void searchButtonPressed(ArrayList<Double> coords,
+
+    /**
+     * From stack overflow
+     * @author Kohler Fryer
+     */
+    public static <newType, oldType> ArrayList<newType> castArrayList(ArrayList<oldType> list){
+        ArrayList<newType> newlyCastedArrayList = new ArrayList<newType>();
+        for(oldType listObject : list){
+            newlyCastedArrayList.add((newType)listObject);
+        }
+        return newlyCastedArrayList;
+    }
+
+
+    public void searchButtonPressed(ArrayList<Object> data,
                                     ArrayList<Plottable> selected){
         switch (currentSceneEnum){
             case MENU_SCENE:
                 break;
             case TRAFFIC_SCENE:
+                ArrayList<Double> coords = castArrayList(data);
                 trafficScene.makeNewChartViewer(coords,selected);
                 break;
             case WEATHER_SCENE:
+                //ArrayList<Double> coords = castArrayList(data);
+                //weatherScene.makeNewChartViewer(coords,selected);
                 break;
             case TRAFFIC_SCENE_ROAD:
+                //ArrayList<Integer> road = castArrayList(data);
+                //trafficSceneRoad.makeNewChartViewer(road,selected);
                 break;
             default:
                 break;

@@ -6,6 +6,7 @@ import fi.tuni.compse110.project.UIView.UIController;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Slider;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 
@@ -13,9 +14,17 @@ import java.util.ArrayList;
 
 
 abstract class CheckBoxes extends VBox{
-    ArrayList<UIController.Plottable> getSelected(){
+    public ArrayList<UIController.Plottable> getSelected(){
         ArrayList<UIController.Plottable> temp = new ArrayList<>();
         temp.add(UIController.Plottable.EMPTY);
+        return temp;
+    }
+}
+
+abstract class Input extends VBox{
+    public ArrayList<Object> getInputData(){
+        ArrayList<Object> temp = new ArrayList<>();
+        temp.add(0);
         return temp;
     }
 }
@@ -23,11 +32,11 @@ abstract class CheckBoxes extends VBox{
  * The side panel VBOX used in all the scenes. Every scene uses this same class,
  * but can change the included fields according to the needs by giving different parameters
  * to the constructor ( feature to be added )
+ * @author Onni Merilä
  */
-
 public class SidePanel extends VBox {
 
-    private CoordinateInput coordinateInput;
+    private Input input;
     private final Text params_label;
     private CheckBoxes checkbox_stack;
 
@@ -53,20 +62,26 @@ public class SidePanel extends VBox {
 
         switch (parentScene){
             case TRAFFIC_SCENE:
-                coordinateInput = new CoordinateInput(10);
+                input = new CoordinateInput(10);
                 checkbox_stack = new RoadConditionCheckBoxes();
 
                 break;
             case WEATHER_SCENE:
-                coordinateInput = new CoordinateInput(10);
+                input = new CoordinateInput(10);
                 checkbox_stack = new WeatherCheckBoxes();
                 break;
+
+            case TRAFFIC_SCENE_ROAD:
+                input = new RoadInput(10);
+                checkbox_stack = new RoadConditionCheckBoxes();
+                break;
+
         }
 
-        this.getChildren().addAll(coordinateInput, params_label, checkbox_stack, search_button);
+        this.getChildren().addAll(input, params_label, checkbox_stack, search_button);
     }
 
-    private static class CoordinateInput extends VBox{
+    private static class CoordinateInput extends Input{
         private final Text coordinate_input_title;
         private final VBox coordinate_input_fields;
         private final Text coordinate_input_max_lat;
@@ -79,7 +94,7 @@ public class SidePanel extends VBox {
         private final Slider coordinate_input_min_lon_field;
 
         public CoordinateInput(double v){
-            super(v);
+            super();
             this.setId("coordinate-input");
             coordinate_input_title = new Text("Enter coordinates");
             coordinate_input_title.setId("title");
@@ -133,6 +148,55 @@ public class SidePanel extends VBox {
         public Double getMinLon(){
             return coordinate_input_min_lon_field.getValue();
         }
+
+        public ArrayList<Object> getInputData(){
+
+            ArrayList<Object> coords = new ArrayList<>();
+            coords.add(this.getMaxLat());
+            coords.add(this.getMinLat());
+            coords.add(this.getMaxLon());
+            coords.add(this.getMinLon());
+            return coords;
+        }
+
+
+    }
+
+    private static class RoadInput extends Input{
+
+        private Text road_input_title;
+        private Text road_input_text;
+        private TextField road_input_field;
+
+        public RoadInput(double v){
+            super();
+            this.setId("road-input");
+            road_input_title = new Text("Enter road");
+            road_input_title.setId("title");
+            road_input_field = new TextField();
+            road_input_field.setId("road-input-field");
+            road_input_text = new Text("Road number");
+            road_input_text.setId("title");
+            this.getChildren().addAll(
+                    road_input_title,
+                    road_input_text,
+                    road_input_field
+            );
+        }
+
+        public Integer getRoadNumber(){
+            return Integer.parseInt(road_input_field.getText());
+        }
+
+        @Override
+        public ArrayList<Object> getInputData(){
+            ArrayList<Object> roadnum = new ArrayList<>();
+            roadnum.add(this.getRoadNumber());
+            return roadnum;
+        }
+
+
+
     }
 
     protected static class RoadConditionCheckBoxes extends CheckBoxes{
@@ -216,13 +280,9 @@ public class SidePanel extends VBox {
     private void searchButtonClickHandle(){
         ArrayList<UIController.Plottable> selected = checkbox_stack.getSelected();
 
-        ArrayList<Double> coords = new ArrayList<>();
-        coords.add(coordinateInput.getMaxLat());
-        coords.add(coordinateInput.getMinLat());
-        coords.add(coordinateInput.getMaxLon());
-        coords.add(coordinateInput.getMinLon());
+        ArrayList<Object> data = input.getInputData();
 
-        controller.searchButtonPressed(coords,selected);
+        controller.searchButtonPressed(data,selected);
 
     }
 }
