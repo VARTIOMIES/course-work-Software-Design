@@ -99,12 +99,12 @@ public class TrafficPageRoadScene extends Scene {
         UIController.Plottable wantedData = UIController.Plottable.ROAD_TEMPERATURE;
         String titleForChart = "Road:" + roadNumber + "  Section:" + sectionArrayListIndex;
 
-        // load condition data for chart
+        // load condition data for chart and feed
         List<RoadCondition> specificRCData = new ArrayList<>();
         try {
-            System.out.println(roadNumber +" " + sectionArrayListIndex + coords.toString());
-            specificRCData = RoadDataProvider.getSpecificSectionRoadCondition(roadNumber, sectionArrayListIndex,
-                    coords);
+            for(int sectionIndex = 0; sectionIndex < 20 ; sectionIndex++){
+                specificRCData.addAll(RoadDataProvider.getSpecificSectionRoadCondition(roadNumber, sectionIndex, coords));
+            }
             ChartViewer dataChartViewer = GraphProvider.getRoadConditionChart(634, 500, specificRCData, wantedData,
                     titleForChart);
             graph.getChildren().add(dataChartViewer);

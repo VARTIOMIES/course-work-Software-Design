@@ -88,12 +88,14 @@ public class CombinedScene extends Scene {
          * Here are some easily modifiable parameters to get different kinds of data,
          * These are useful especially for the begin-phase of the program
          */
-
+        List<RoadCondition> specificRCData = new ArrayList<>();
         try {
             // TODO: weather data to graph
 
-            List<RoadCondition> specificRCData = RoadDataProvider.getSpecificSectionRoadCondition(roadNumber,
-                    sectionArrayListIndex, coords);
+            for (int sectionIndex = 0; sectionIndex < 20; sectionIndex++) {
+                specificRCData
+                        .addAll(RoadDataProvider.getSpecificSectionRoadCondition(roadNumber, sectionIndex, coords));
+            }
             ChartViewer dataChartViewer = GraphProvider.getRoadConditionChart(664, 500, specificRCData, wantedData,
                     titleForChart);
             graph.getChildren().add(dataChartViewer);
@@ -159,42 +161,41 @@ public class CombinedScene extends Scene {
         // maintenance feed
         Map<ArrayList<String>, ArrayList<String>> task_list = new HashMap<>();
         // get necessary data for feed
-        try{
+        try {
 
-        
-         // parse date from timerange
-         java.util.Calendar cal = java.util.Calendar.getInstance();
-         cal.setTime(new java.util.Date());
+            // parse date from timerange
+            java.util.Calendar cal = java.util.Calendar.getInstance();
+            cal.setTime(new java.util.Date());
 
-         // set hour to selected timerange and set minutes to 0
-         cal.set(java.util.Calendar.HOUR_OF_DAY, timerange);
-         cal.set(java.util.Calendar.MINUTE, 0);
+            // set hour to selected timerange and set minutes to 0
+            cal.set(java.util.Calendar.HOUR_OF_DAY, timerange);
+            cal.set(java.util.Calendar.MINUTE, 0);
 
-         var begin = Utility.dateFormatter(cal.get(java.util.Calendar.YEAR), cal.get(java.util.Calendar.MONTH),
-                 cal.get(java.util.Calendar.DAY_OF_MONTH),
-                 cal.get(java.util.Calendar.HOUR_OF_DAY), cal.get(java.util.Calendar.MINUTE));
-         cal.set(java.util.Calendar.HOUR_OF_DAY, timerange + 1);
-         var end = Utility.dateFormatter(cal.get(java.util.Calendar.YEAR), cal.get(java.util.Calendar.MONTH),
-                 cal.get(java.util.Calendar.DAY_OF_MONTH),
-                 cal.get(java.util.Calendar.HOUR_OF_DAY), cal.get(java.util.Calendar.MINUTE));
+            var begin = Utility.dateFormatter(cal.get(java.util.Calendar.YEAR), cal.get(java.util.Calendar.MONTH),
+                    cal.get(java.util.Calendar.DAY_OF_MONTH),
+                    cal.get(java.util.Calendar.HOUR_OF_DAY), cal.get(java.util.Calendar.MINUTE));
+            cal.set(java.util.Calendar.HOUR_OF_DAY, timerange + 1);
+            var end = Utility.dateFormatter(cal.get(java.util.Calendar.YEAR), cal.get(java.util.Calendar.MONTH),
+                    cal.get(java.util.Calendar.DAY_OF_MONTH),
+                    cal.get(java.util.Calendar.HOUR_OF_DAY), cal.get(java.util.Calendar.MINUTE));
 
-         // get road data
-         List<MaintenanceTask> maintenanceTasks = RoadDataProvider.getMaintenanceData(coords, new ArrayList<>(),
-                 begin, end);
+            // get road data
+            List<MaintenanceTask> maintenanceTasks = RoadDataProvider.getMaintenanceData(coords, new ArrayList<>(),
+                    begin, end);
 
-         // parse data for feed
-         for (var task : maintenanceTasks) {
-            task_list.put(task.getTasks(), new ArrayList<String>(Arrays.asList(
-                     task.getStartTime() + " - " + task.getEndTime(),
-                     task.getSource())));
-         }
+            // parse data for feed
+            for (var task : maintenanceTasks) {
+                task_list.put(task.getTasks(), new ArrayList<String>(Arrays.asList(
+                        task.getStartTime() + " - " + task.getEndTime(),
+                        task.getSource())));
+            }
 
-     } catch (IOException e) {
-        task_list.put(new ArrayList<String>(Arrays.asList("No data for selected timerange")),
-                 new ArrayList<String>(Arrays.asList("")));
-         System.out.println(e);
+        } catch (IOException e) {
+            task_list.put(new ArrayList<String>(Arrays.asList("No data for selected timerange")),
+                    new ArrayList<String>(Arrays.asList("")));
+            System.out.println(e);
 
-     }
+        }
 
         Text maintenance_feed_title = new Text("Maintenance feed");
         maintenance_feed_title.setId("title");
@@ -207,24 +208,19 @@ public class CombinedScene extends Scene {
         Map<ArrayList<String>, ArrayList<String>> road_data_list = new HashMap<>();
 
         // get necessary data for road data feed
-        try {
-            System.out.println(roadNumber + " " + sectionArrayListIndex + coords.toString());
-            var road_data = RoadDataProvider.getSpecificSectionRoadCondition(roadNumber, sectionArrayListIndex, coords);
 
+        if (!specificRCData.isEmpty()) {
             // parse data for feed
-            for (var condition : road_data) {
+            for (var condition : specificRCData) {
                 road_data_list.put(new ArrayList<String>(Arrays.asList("Section " + condition.getSection())),
-                new ArrayList<String>(Arrays.asList(
-                        "Precipitation: " + condition.getPrecipitationCondition(),
-                        "Overall road condition: " + condition.getOverallRoadCondition(),
-                        "Road condition: " + condition.getRoadCondition()
-                )));
+                        new ArrayList<String>(Arrays.asList(
+                                "Precipitation: " + condition.getPrecipitationCondition(),
+                                "Overall road condition: " + condition.getOverallRoadCondition(),
+                                "Road condition: " + condition.getRoadCondition())));
             }
-
-        } catch (IOException e) {
+        } else {
             road_data_list.put(new ArrayList<String>(Arrays.asList("No data for selected timerange")),
                     new ArrayList<String>(Arrays.asList("")));
-            System.out.println(e);
         }
 
         Feed roadDataFeed = new Feed(road_data_list);
