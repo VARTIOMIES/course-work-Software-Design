@@ -42,14 +42,14 @@ public class TrafficPageScene extends Scene{
     private VBox feed_window;
 
 
-    private ArrayList<Double> testCoords;
+    private ArrayList<Double> coords;
     private UIController controller;
 
     public TrafficPageScene(ScrollPane root, double v, double v1,UIController controller) {
         super(root,v,v1);
         this.controller = controller;
 
-        testCoords = new ArrayList<>(Arrays.asList(25.72088, 62.24147, 25.8, 62.3));
+        coords = new ArrayList<>(Arrays.asList(25.72088, 62.24147, 25.8, 62.3));
 
         rootVerticalContainer = new VBox(20);
         taskFeed = new Feed(new HashMap<>());
@@ -73,6 +73,7 @@ public class TrafficPageScene extends Scene{
     }
     public void makeNewChartViewer(ArrayList<Double> coords, ArrayList<UIController.Plottable> selectedPlottables){
         UIController.Plottable wantedData = UIController.Plottable.ROAD_TEMPERATURE;
+        this.coords = coords;
         int roadNumber = 1;
         int sectionArrayListIndex = 1;
         String titleForChart = "helo";
@@ -111,7 +112,7 @@ public class TrafficPageScene extends Scene{
         String titleForChart = "Road:" + roadNumber + "  Section:" + sectionArrayListIndex;
 
         try {
-            List<RoadCondition> specificRCData = RoadDataProvider.getSpecificSectionRoadCondition(roadNumber,sectionArrayListIndex,this.testCoords);
+            List<RoadCondition> specificRCData = RoadDataProvider.getSpecificSectionRoadCondition(roadNumber,sectionArrayListIndex,this.coords);
             ChartViewer dataChartViewer = GraphProvider.getRoadConditionChart(634,500,specificRCData, wantedData,titleForChart);
             graph.getChildren().add(dataChartViewer);
         }
@@ -163,11 +164,10 @@ public class TrafficPageScene extends Scene{
 
     private void createContent()  {
         //testCase();
-
-
+    
         List<MaintenanceTask> tasks = new ArrayList<>();
         try {
-            tasks = RoadDataProvider.getMaintenanceData(this.testCoords, new ArrayList<>(), "", "");
+            tasks = RoadDataProvider.getMaintenanceData(this.coords, new ArrayList<>(), "", "");
         } catch (IOException e1) {
             System.out.println(e1);
         }
@@ -214,6 +214,7 @@ public class TrafficPageScene extends Scene{
 
 
         mainContent.getChildren().addAll(graph, feed_window);
+
         horizontalrootElementContainer.getChildren().addAll(mainContent,filler, sidepanel);
         
         rootVerticalContainer.getChildren().addAll(horizontalrootElementContainer);

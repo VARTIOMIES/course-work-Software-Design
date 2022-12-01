@@ -34,7 +34,10 @@ public class SidePanel extends VBox {
     private final Button search_button;
     private Text coordinate;
     private UIController controller;
-
+    private static double LON_MIN = 21.3;
+    private static double LON_MAX = 31.0;
+    private static double LAT_MIN = 59.0;
+    private static double LAT_MAX = 70.0;
     public SidePanel(double v, UIController controller, UIController.CurrentSceneEnum parentScene){
         super(v);
         this.controller = controller;
@@ -79,14 +82,14 @@ public class SidePanel extends VBox {
         private final Slider coordinate_input_min_lon_field;
 
         public CoordinateInput(double v){
+
             super(v);
             this.setId("coordinate-input");
             coordinate_input_title = new Text("Enter coordinates");
             coordinate_input_title.setId("title");
             coordinate_input_fields = new VBox(10);
             coordinate_input_fields.setId("coordinate-input-fields");
-            coordinate_input_max_lat = new Text("Max lat");
-            coordinate_input_max_lat.setId("title");
+            
             coordinate_input_min_lat = new Text("Min lat");
             coordinate_input_min_lat.setId("title");
             coordinate_input_max_lon = new Text("Max lon");
@@ -94,16 +97,48 @@ public class SidePanel extends VBox {
             coordinate_input_min_lon = new Text("Min lon");
             coordinate_input_min_lon.setId("title");
 
-            // TODO: Add some minimum and maximum values for the sliders
-            // To make the coordinate inputting MUCH more user friendly
+
+            // MAX LAT FIELD
+            coordinate_input_max_lat = new Text("Max lat");
+            coordinate_input_max_lat.setId("title");
             coordinate_input_max_lat_field = new Slider();
             coordinate_input_max_lat_field.setId("coordinate-input-field");
+            coordinate_input_max_lat_field.setMin(LAT_MIN);
+            coordinate_input_max_lat_field.setMax(LAT_MAX);
+            coordinate_input_max_lat_field.valueProperty().addListener((observable, oldValue, newValue) -> {
+                double rounded = Math.round(newValue.doubleValue() * 100.0) / 100.0;
+                coordinate_input_max_lat.setText("Max lat: " + rounded);
+            });
+
+            // MIN LAT FIELD
             coordinate_input_min_lat_field = new Slider();
+            coordinate_input_min_lat_field.setMin(LAT_MIN);
+            coordinate_input_min_lat_field.setMax(LAT_MAX);
             coordinate_input_min_lat_field.setId("coordinate-input-field");
+            coordinate_input_min_lat_field.valueProperty().addListener((observable, oldValue, newValue) -> {
+                double rounded = Math.round(newValue.doubleValue() * 100.0) / 100.0;
+                coordinate_input_min_lat.setText("Min lat: " + rounded);
+            });
+
+            // MAX LON FIELD
             coordinate_input_max_lon_field = new Slider();
+            coordinate_input_max_lon_field.setMin(LON_MIN);
+            coordinate_input_max_lon_field.setMax(LON_MAX);
             coordinate_input_max_lon_field.setId("coordinate-input-field");
+            coordinate_input_max_lon_field.valueProperty().addListener((observable, oldValue, newValue) -> {
+                double rounded = Math.round(newValue.doubleValue() * 100.0) / 100.0;
+                coordinate_input_max_lon.setText("Max lon: " + rounded);
+            });
+
+            // MIN LON FIELD
             coordinate_input_min_lon_field = new Slider();
+            coordinate_input_min_lon_field.setMin(LON_MIN);
+            coordinate_input_min_lon_field.setMax(LON_MAX);
             coordinate_input_min_lon_field.setId("coordinate-input-field");
+            coordinate_input_min_lon_field.valueProperty().addListener((observable, oldValue, newValue) -> {
+                double rounded = Math.round(newValue.doubleValue() * 100.0) / 100.0;
+                coordinate_input_min_lon.setText("Min lon: " + rounded);
+            });
 
             coordinate_input_fields.getChildren().addAll(
                     coordinate_input_max_lat,
