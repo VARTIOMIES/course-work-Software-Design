@@ -162,7 +162,6 @@ public class TrafficPageScene extends Scene{
     }
 
     private void createContent()  {
-        System.out.println("hep");
         //testCase();
 
 
