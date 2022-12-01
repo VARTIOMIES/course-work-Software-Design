@@ -102,6 +102,7 @@ public class TrafficPageRoadScene extends Scene {
         // load condition data for chart
         List<RoadCondition> specificRCData = new ArrayList<>();
         try {
+            System.out.println(roadNumber +" " + sectionArrayListIndex + coords.toString());
             specificRCData = RoadDataProvider.getSpecificSectionRoadCondition(roadNumber, sectionArrayListIndex,
                     coords);
             ChartViewer dataChartViewer = GraphProvider.getRoadConditionChart(634, 500, specificRCData, wantedData,
