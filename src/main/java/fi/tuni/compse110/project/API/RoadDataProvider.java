@@ -6,6 +6,7 @@ package fi.tuni.compse110.project.API;
  */
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -444,9 +445,14 @@ public class RoadDataProvider {
     LinkedHashMap<String, ArrayList<RoadCondition>> forecastList = roadConditionData.get(roadNumber);
 
     List<RoadCondition> specificSectionForecast = new ArrayList<>();
-    for (ArrayList<RoadCondition> allSections:forecastList.values()) {
-      specificSectionForecast.add(allSections.get(sectionArrayIndex));
+    try {
+      for (ArrayList<RoadCondition> allSections:forecastList.values()) {
+        specificSectionForecast.add(allSections.get(sectionArrayIndex));
+      }
+    } catch (java.lang.NullPointerException e) {
+      System.out.println("Index out of bounds");
     }
+    
 
     return specificSectionForecast;
   }

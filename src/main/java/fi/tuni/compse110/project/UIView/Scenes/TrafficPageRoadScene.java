@@ -145,8 +145,9 @@ public class TrafficPageRoadScene extends Scene {
         backButton.setOnAction(event -> backToMenuClickHandle());
 
         vLayout.getChildren().add(backButton);
-
+        
         horizontalrootElementContainer.setId("row");
+
 
         // load roadcondition data for the feed
 

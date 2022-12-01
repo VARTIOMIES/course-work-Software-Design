@@ -82,13 +82,13 @@ public class WeatherPageScene extends Scene{
             // TODO: weather data to graph
             
             List<RoadCondition> specificRCData = RoadDataProvider.getSpecificSectionRoadCondition(roadNumber,sectionArrayListIndex,coords);
-            ChartViewer dataChartViewer = GraphProvider.getRoadConditionChart(664,500,specificRCData, wantedData,titleForChart);
+            ChartViewer dataChartViewer = GraphProvider.getRoadConditionChart(634,500,specificRCData, wantedData,titleForChart);
             graph.getChildren().add(dataChartViewer);
         }
         catch (Exception e){ // If there occurs any errors while creating the chart
             // from API data, creates a hardcoded chart to act as a placeholder
             System.out.println("test data");
-            ChartViewer testChartViewer = GraphProvider.getTestChart(500,400);
+            ChartViewer testChartViewer = GraphProvider.getTestChart(634,500);
             graph.getChildren().add(testChartViewer);
         }
 
