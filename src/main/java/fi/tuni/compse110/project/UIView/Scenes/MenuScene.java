@@ -2,15 +2,10 @@ package fi.tuni.compse110.project.UIView.Scenes;
 
 
 import fi.tuni.compse110.project.UIView.UIController;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
-
-import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.util.function.Consumer;
 
 /**
  * A SCENE

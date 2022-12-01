@@ -3,21 +3,14 @@ package fi.tuni.compse110.project.Graph;
     @author - Onni Merila , onni.merila@tuni.fi , H299725
  */
 
-import fi.tuni.compse110.project.API.APItest;
 import fi.tuni.compse110.project.API.RoadCondition;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
 import org.jfree.data.category.DefaultCategoryDataset;
-import org.jfree.data.statistics.BoxAndWhiskerItem;
 import org.jfree.data.statistics.HistogramDataset;
 import org.jfree.chart.fx.ChartViewer;
-import org.jfree.data.xy.XYDataset;
-
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Function;
-import java.util.function.Supplier;
-
 /**
  * Provides ChartViews from data. Idea is that the raw data could be given to this provider class,
  * and the data would be then parsed to wanted form by parameters given with

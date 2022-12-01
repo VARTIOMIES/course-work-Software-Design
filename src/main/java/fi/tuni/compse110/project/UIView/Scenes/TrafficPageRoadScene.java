@@ -3,8 +3,6 @@ package fi.tuni.compse110.project.UIView.Scenes;
 import fi.tuni.compse110.project.API.MaintenanceTask;
 import fi.tuni.compse110.project.API.RoadCondition;
 import fi.tuni.compse110.project.API.RoadDataProvider;
-import fi.tuni.compse110.project.API.Utility;
-import fi.tuni.compse110.project.API.WeatherDataProvider;
 import fi.tuni.compse110.project.Graph.GraphProvider;
 import fi.tuni.compse110.project.UIView.UIController;
 import javafx.geometry.Pos;
@@ -18,10 +16,8 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
-
 import java.io.IOException;
 import java.util.*;
-
 import org.jfree.chart.fx.ChartViewer;
 import fi.tuni.compse110.project.UIView.components.Feed;
 
@@ -260,41 +256,5 @@ public class TrafficPageRoadScene extends Scene {
      * }
      */
 
-    // For test usage of RoadDataProvider's and WeatherDataProvider's functions
-    private static void testCase() throws IOException {
-        ArrayList<String> places = new ArrayList<>();
-        places.add("Tampere");
-        places.add("Rovaniemi");
-
-        ArrayList<String> params = new ArrayList<>();
-        params.add("temperature");
-        params.add("windspeedms");
-        // params.add("winddirection");
-        // params.add("pressure");
-        // params.add("humidity");
-        // params.add("windgust");
-        // params.add("totalcloudcover");
-
-        String stime = Utility.dateFormatter(2022, 10, 12, 0, 0); // starttime
-        String etime = Utility.dateFormatter(2022, 10, 13, 0, 0); // endtime
-
-        double minLong = 24;
-        double minLat = 61;
-        double maxLong = 24.5;
-        double maxLat = 61.4;
-        ArrayList<Double> coord = new ArrayList<>();
-        coord.add(minLong);
-        coord.add(minLat);
-        coord.add(maxLong);
-        coord.add(maxLat);
-
-        ArrayList<String> taskIds = new ArrayList<>();
-        taskIds.add("ROAD_STATE_CHECKING");
-        taskIds.add("DITCHING");
-
-        RoadDataProvider.getMaintenanceData(coord, taskIds, stime, etime);
-        RoadDataProvider.getTrafficMessages(1, "TRAFFIC_ANNOUNCEMENT");
-        WeatherDataProvider.weatherURLCreator(places, new ArrayList<Double>(), params, stime, etime);
-    }
 
 }
