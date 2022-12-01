@@ -56,7 +56,10 @@ public class TrafficPageScene extends Scene{
         horizontalrootElementContainer = new HBox();
 
         mainContent = new VBox(20);
-        sidepanel = new SidePanel(20,this.controller,UIController.CurrentSceneEnum.TRAFFIC_SCENE);
+        sidepanel = new SidePanel(20,
+                this.controller,
+                UIController.CurrentSceneEnum.TRAFFIC_SCENE
+        );
         graph = new Pane();
 
         feed_window = new VBox(20);
@@ -65,13 +68,14 @@ public class TrafficPageScene extends Scene{
         graph.setId("graph");
 
         //initSidePanel();
-        initChartViewer();
+        initChartViewer("");
         initFeed();
         createContent();
         root.setContent(rootVerticalContainer);
 
     }
-    public void makeNewChartViewer(ArrayList<Double> coords, ArrayList<UIController.Plottable> selectedPlottables){
+    public void makeNewChartViewer(ArrayList<Double> coords,
+                                   ArrayList<UIController.Plottable> selectedPlottables){
         UIController.Plottable wantedData = UIController.Plottable.ROAD_TEMPERATURE;
         this.coords = coords;
         int roadNumber = 1;
@@ -95,13 +99,12 @@ public class TrafficPageScene extends Scene{
         catch (Exception e){ // If there occurs any errors while creating the chart
             // from API data, creates a hardcoded chart to act as a placeholder
             //System.out.println("error");
-            ChartViewer testChartViewer = GraphProvider.getTestChart(500,400);
-            graph.getChildren().setAll(testChartViewer);
+            initChartViewer("Error: code 69");
         }
 
     }
 
-    public void initChartViewer(){
+    public void initChartViewer(String info_text){
         /*
             Here are some easily modifiable parameters to get different kinds of data,
             These are useful especially for the begin-phase of the program
@@ -122,6 +125,12 @@ public class TrafficPageScene extends Scene{
             ChartViewer testChartViewer = GraphProvider.getTestChart(500,400);
             graph.getChildren().add(testChartViewer);
         }
+        if (info_text.isEmpty()){
+            info_text = "Nothing to show yet :(";
+        }
+        Text emptytext = new Text(info_text);
+        graph.getChildren().setAll(emptytext);
+        graph.setPrefSize(634,500);
     }
 
     private void initFeed(){

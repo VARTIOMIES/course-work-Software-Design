@@ -5,12 +5,11 @@ import fi.tuni.compse110.project.API.RoadCondition;
 import fi.tuni.compse110.project.API.RoadDataProvider;
 import fi.tuni.compse110.project.Graph.GraphProvider;
 import fi.tuni.compse110.project.UIView.UIController;
+import fi.tuni.compse110.project.UIView.components.SidePanel;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
@@ -26,53 +25,114 @@ import fi.tuni.compse110.project.UIView.components.Feed;
  */
 public class TrafficPageRoadScene extends Scene {
 
+
+    private VBox mainContent;
     VBox vLayout;
     Feed taskFeed;
+    private VBox feed_window;
     Region filler;
-    HBox row;
+    HBox horizontalrootElementContainer;
     Pane graph;
     UIController controller;
     int roadNumber;
+    private ArrayList<Double> testCoords;
+    private SidePanel sidepanel;
+
+    private List<RoadCondition> specificRCData;
+    private ArrayList<UIController.Plottable> wantedData;
 
     public TrafficPageRoadScene(ScrollPane root, double v, double v1, UIController controller) {
         super(root, v, v1);
         this.controller = controller;
 
+        testCoords = new ArrayList<>(Arrays.asList(25.72088, 62.24147, 25.8, 62.3));
+
+        mainContent = new VBox(20);
+
+        feed_window = new VBox(20);
+
         vLayout = new VBox(20);
         // taskFeed = new Feed(new HashMap<>());
-        row = new HBox();
+        horizontalrootElementContainer = new HBox();
+        sidepanel = new SidePanel(20,
+                this.controller,
+                UIController.CurrentSceneEnum.TRAFFIC_SCENE_ROAD
+        );
         graph = new Pane();
+        graph.setId("graph");
+
+        specificRCData = new ArrayList<>();
+
+        initFeed();
+
+        wantedData = new ArrayList<>();
+        wantedData.add(UIController.Plottable.ROAD_TEMPERATURE);
+        initChartViewer("");
+
+
         createContent();
         root.setContent(vLayout);
         roadNumber = 1;
 
     }
 
+    public void getDataFromApi(){
+        int roadNumber = 1;
+        int sectionArrayListIndex = 1;
+        String titleForChart = "helo";
+        try{
+            specificRCData = RoadDataProvider.getSpecificSectionRoadCondition(
+                    roadNumber,
+                    sectionArrayListIndex,
+                    testCoords
+            );
+        }
+        catch (Exception e){
+            System.out.println("Error with getting the data from api");
+        }
+
+    }
+
+    public void initChartViewer(String info_text){
+        if (info_text.isEmpty()){
+            info_text = "Nothing to show yet :(";
+        }
+        Text emptytext = new Text(info_text);
+        graph.getChildren().setAll(emptytext);
+        graph.setPrefSize(634,500);
+    }
+
+    public void makeNewChartViewer(ArrayList<Double> coords,
+                                   ArrayList<UIController.Plottable> selectedPlottables){
+        UIController.Plottable wantedData = UIController.Plottable.ROAD_TEMPERATURE;
+        int roadNumber = 1;
+        int sectionArrayListIndex = 1;
+        String titleForChart = "helo";
+        try {
+            getDataFromApi();
+            ChartViewer dataChartViewer = GraphProvider.getRoadConditionChart(
+                    634,
+                    500,
+                    specificRCData,
+                    wantedData,
+                    titleForChart
+            );
+            graph.getChildren().setAll(dataChartViewer);
+        }
+        catch (Exception e){ // If there occurs any errors while creating the chart
+            // from API data, creates a hardcoded chart to act as a placeholder
+            //System.out.println("error");
+            initChartViewer("Error: code 69");
+        }
+
+    }
+
     public void createContent() {
         vLayout.getChildren().clear();
-        row.getChildren().clear();
+        horizontalrootElementContainer.getChildren().clear();
         graph.getChildren().clear();
 
-
-        // testCase();
-        ArrayList<Double> coords = new ArrayList<>(Arrays.asList(25.72088, 62.24147, 25.8, 62.3));
-
-        List<MaintenanceTask> tasks = new ArrayList<>();
-        try {
-            tasks = RoadDataProvider.getMaintenanceData(coords, new ArrayList<>(), "", "");
-        } catch (IOException e1) {
-            // TODO Auto-generated catch block
-            e1.printStackTrace();
-        }
-
-        if (tasks.isEmpty()) {
-            System.out.println("no tasks");
-            MaintenanceTask t = new MaintenanceTask();
-            t.setTasks(new ArrayList<>(Arrays.asList("no tasks")));
-            t.setEndTime("2022-01-01T00:00:00Z");
-            t.setStartTime("2022-01-01T00:00:00Z");
-            tasks.add(t);
-        }
+        //ArrayList<Double> coords = new ArrayList<>(Arrays.asList(25.72088, 62.24147, 25.8, 62.3));
 
         // vertical layout
 
@@ -84,38 +144,33 @@ public class TrafficPageRoadScene extends Scene {
         backButton.setPrefSize(120, 40);
         backButton.setOnAction(event -> backToMenuClickHandle());
 
-        VBox mainContent = new VBox(20);
         vLayout.getChildren().add(backButton);
-
-        row.setId("row");
-        graph.setId("graph");
-
-        /*
-         * Here are some easily modifiable parameters to get different kinds of data,
-         * These are useful especially for the begin-phase of the program
-         */
         
-        int sectionArrayListIndex = 3;
-        UIController.Plottable wantedData = UIController.Plottable.ROAD_TEMPERATURE;
-        String titleForChart = "Road:" + roadNumber + "  Section:" + sectionArrayListIndex;
+        horizontalrootElementContainer.setId("row");
 
-        // load condition data for chart and feed
-        List<RoadCondition> specificRCData = new ArrayList<>();
-        try {
-            for(int sectionIndex = 0; sectionIndex < 20 ; sectionIndex++){
-                specificRCData.addAll(RoadDataProvider.getSpecificSectionRoadCondition(roadNumber, sectionIndex, coords));
-            }
-            ChartViewer dataChartViewer = GraphProvider.getRoadConditionChart(634, 500, specificRCData, wantedData,
-                    titleForChart);
-            graph.getChildren().add(dataChartViewer);
-        } catch (Exception e) { // If there occurs any errors while creating the chart
-            // from API data, creates a hardcoded chart to act as a placeholder
-            // System.out.println("error");
-            ChartViewer testChartViewer = GraphProvider.getTestChart(634, 500);
-            graph.getChildren().add(testChartViewer);
-        }
 
         // load roadcondition data for the feed
+
+        Region filler = new Region();
+        filler.setPrefWidth(50);
+
+
+        mainContent.getChildren().addAll(graph, feed_window);
+        horizontalrootElementContainer.getChildren().addAll(mainContent, filler, sidepanel);
+
+        vLayout.getChildren().addAll(horizontalrootElementContainer);
+
+        // Possible nullPointerException throwing from .toExternalForm()
+        this.getStylesheets().add(TrafficPageRoadScene.class.getResource("/stylesheet.css").toExternalForm());
+
+    }
+
+    private void searchButtonClicked(){
+        getDataFromApi();
+        refreshWithNewData();
+    }
+
+    private void populateFeed(){
         Map<ArrayList<String>, ArrayList<String>> task_list = new HashMap<>();
         if (!specificRCData.isEmpty()) {
             for (var condition : specificRCData) {
@@ -131,13 +186,18 @@ public class TrafficPageRoadScene extends Scene {
                     new ArrayList<String>(Arrays.asList(
                             "")));
         }
-
         taskFeed = new Feed(task_list);
+    }
 
-        Region filler = new Region();
-        filler.setPrefWidth(50);
+    private void refreshWithNewData(){
 
-        VBox feed_window = new VBox(20);
+        makeNewChartViewer(testCoords,wantedData);
+        populateFeed();
+        feed_window.getChildren().set(1,taskFeed.getElement());
+    }
+
+
+    private void initFeed(){
 
         // feed navigation bar top
         HBox feed_navigation_bar = new HBox();
@@ -147,17 +207,17 @@ public class TrafficPageRoadScene extends Scene {
         previous_road.setOnAction(event -> {
             if (roadNumber - 1 >= 0){
                 roadNumber = roadNumber - 1;
-                createContent();
+                refreshWithNewData();
                 controller.refresh();
             }
-            
+
         });
 
         Button next_road = new Button("-->");
         next_road.setId("title");
         next_road.setOnAction(event -> {
             roadNumber = roadNumber + 1;
-            createContent();
+            refreshWithNewData();
             controller.refresh();
         });
 
@@ -185,55 +245,14 @@ public class TrafficPageRoadScene extends Scene {
         feed_timerange_bar.setSpacing(30);
         feed_timerange_bar.getChildren().addAll(fill_bottom, previus_timerange, current_time_text, next_timerange);
 
+        populateFeed();
+
         feed_window.setId("feed-window");
         feed_window.setAlignment(Pos.TOP_RIGHT);
         feed_window.getChildren().addAll(feed_navigation_bar, taskFeed.getElement(), feed_timerange_bar);
 
-        // sidepanel
-        VBox sidepanel = new VBox(20);
-        sidepanel.setId("sidepanel");
-        sidepanel.setPrefWidth(300);
-
-        // text title with text "enter coordinates" followed by textfields for max and
-        // min lat and lon coordinates
-        VBox coordinate_input = new VBox(10);
-        coordinate_input.setId("road-input");
-        Text road_input_title = new Text("Enter road");
-        road_input_title.setId("title");
-
-        Text road_input = new Text("Road number");
-        TextField road_input_field = new TextField();
-
-        coordinate_input.getChildren().addAll(road_input_title, road_input, road_input_field);
-
-        Text params_label = new Text("Choose parameters:");
-        params_label.setId("title");
-
-        VBox checkbox_stack = new VBox();
-        checkbox_stack.setId("checkbox-stack");
-
-        CheckBox precipitationCheckBox = new CheckBox("Precipitation");
-        CheckBox winter_slipperiness_checkbox = new CheckBox("Winter slipperiness");
-        CheckBox overall_road_condition_checkbox = new CheckBox("Overall road condition");
-        CheckBox additional_info_checkbox = new CheckBox("Additional information");
-
-        checkbox_stack.getChildren().addAll(precipitationCheckBox, winter_slipperiness_checkbox,
-                overall_road_condition_checkbox, additional_info_checkbox);
-
-        // big centered search button
-        Button search_button = new Button("Search");
-        search_button.setId("search-button");
-        sidepanel.getChildren().addAll(coordinate_input, params_label, checkbox_stack, search_button);
-
-        mainContent.getChildren().addAll(graph, feed_window);
-        row.getChildren().addAll(mainContent, filler, sidepanel);
-
-        vLayout.getChildren().addAll(row);
-
-        // Possible nullPointerException throwing from .toExternalForm()
-        this.getStylesheets().add(TrafficPageRoadScene.class.getResource("/stylesheet.css").toExternalForm());
-
     }
+
 
     /**
      * lambda to go handle back button going back to menu
@@ -242,20 +261,5 @@ public class TrafficPageRoadScene extends Scene {
         // Stuff happening after the "back to menu" button click
         controller.fromAnyPageToMenu();
     }
-
-    /*
-     * public static void setRoot(String fxml) throws IOException {
-     * scene.setRoot(loadFXML(fxml));
-     * }
-     */
-
-    /*
-     * private static Parent loadFXML(String fxml) throws IOException {
-     * FXMLLoader fxmlLoader = new
-     * FXMLLoader(TrafficPageScene.class.getResource(fxml + ".fxml"));
-     * return fxmlLoader.load();
-     * }
-     */
-
 
 }

@@ -13,7 +13,6 @@ import org.jfree.chart.fx.ChartViewer;
 
 import fi.tuni.compse110.project.UIView.UIController;
 import fi.tuni.compse110.project.UIView.components.Feed;
-import fi.tuni.compse110.project.components.Calendar;
 import fi.tuni.compse110.project.API.MaintenanceTask;
 import fi.tuni.compse110.project.API.RoadCondition;
 import fi.tuni.compse110.project.API.RoadDataProvider;
