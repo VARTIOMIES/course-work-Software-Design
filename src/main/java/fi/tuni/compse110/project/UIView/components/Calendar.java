@@ -3,7 +3,7 @@
  *
  */
 
-package fi.tuni.compse110.project.components;
+package fi.tuni.compse110.project.UIView.components;
 
 import fi.tuni.compse110.project.API.WeatherDataProvider;
 import java.io.IOException;
