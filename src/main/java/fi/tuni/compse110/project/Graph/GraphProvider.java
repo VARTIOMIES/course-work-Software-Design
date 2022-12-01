@@ -10,7 +10,6 @@ import org.jfree.chart.JFreeChart;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.statistics.HistogramDataset;
 import org.jfree.chart.fx.ChartViewer;
-
 import java.util.ArrayList;
 import java.util.List;
 

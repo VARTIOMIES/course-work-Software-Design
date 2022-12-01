@@ -106,6 +106,8 @@ public class UIController{
                 break;
             case TRAFFIC_SCENE_ROAD:
                 break;
+            default:
+                break;
         }
     }
 
