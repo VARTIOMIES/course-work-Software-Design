@@ -33,9 +33,7 @@ import org.json.XML;
 public class APItest{
 
 
-  private static APItest single_instance = null;
-
-  private APItest(){
+  public APItest(){
 
   }
 
@@ -118,13 +116,6 @@ public class APItest{
 
   //Forecast for cities
   static final String forecast = "ecmwf::forecast::surface::point::timevaluepair";
-
-  public static APItest getInstance(){
-    if (single_instance == null)
-      single_instance = new APItest();
-
-    return single_instance;
-  }
 
 
   // This was start(Stage stage) before (not needed)

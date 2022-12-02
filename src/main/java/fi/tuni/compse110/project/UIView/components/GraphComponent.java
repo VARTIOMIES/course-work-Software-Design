@@ -3,6 +3,7 @@ package fi.tuni.compse110.project.UIView.components;/*
  */
 
 import fi.tuni.compse110.project.API.RoadCondition;
+import fi.tuni.compse110.project.API.WeatherData;
 import fi.tuni.compse110.project.Graph.GraphProvider;
 import fi.tuni.compse110.project.UIView.UIController;
 import javafx.geometry.Pos;
@@ -79,6 +80,16 @@ public class GraphComponent extends VBox{
                 break;
 
             case TRAFFIC_SCENE:
+                graph_section_selection_buttons.getChildren().addAll(
+                        previous_road,
+                        current_road,
+                        next_road,
+                        previous_section,
+                        current_section,
+                        next_section
+                );
+                break;
+            case WEATHER_SCENE:
                 graph_section_selection_buttons.getChildren().addAll(
                         previous_road,
                         current_road,
@@ -197,6 +208,29 @@ public class GraphComponent extends VBox{
                           ArrayList<UIController.Plottable> plottables){
         wantedData = plottables;
         conditions = data;
+
+        section_index = 0;
+        road_index = 0;
+
+        roads = new ArrayList<>(data.keySet());
+
+        sections = new ArrayList<>(data.get(roads.get(road_index)).keySet());
+
+        drawNewChart();
+
+        current_section.setText(sections.get(section_index));
+        current_road.setText(roads.get(road_index).toString());
+        next_section.setDisable(false);
+        previous_section.setDisable(true);
+        next_road.setDisable(false);
+        previous_road.setDisable(true);
+
+    }
+
+    public void give_weather_data(TreeMap<Integer,TreeMap<String,ArrayList<WeatherData>>> data,
+                          ArrayList<UIController.Plottable> plottables){
+        wantedData = plottables;
+        //conditions = data;
 
         section_index = 0;
         road_index = 0;

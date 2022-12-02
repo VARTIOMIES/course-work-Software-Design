@@ -2,10 +2,7 @@ package fi.tuni.compse110.project.UIView;/*
     @author - Onni Merila , onni.merila@tuni.fi , H299725
  */
 
-import fi.tuni.compse110.project.UIView.Scenes.CombinedScene;
-import fi.tuni.compse110.project.UIView.Scenes.MenuScene;
-import fi.tuni.compse110.project.UIView.Scenes.TrafficPageRoadScene;
-import fi.tuni.compse110.project.UIView.Scenes.TrafficPageScene;
+import fi.tuni.compse110.project.UIView.Scenes.*;
 //import fi.tuni.compse110.project.UIView.Scenes.WeatherPageScene;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Group;
@@ -35,7 +32,7 @@ public class UIController{
     private MenuScene menuScene;
     private TrafficPageScene trafficScene;
     private TrafficPageRoadScene trafficSceneRoad;
-    //private WeatherPageScene weatherScene;
+    private WeatherPageScene weatherScene;
     private CombinedScene combinedScene;
 
     private final double width = 1124;
@@ -67,7 +64,7 @@ public class UIController{
         menuScene = new MenuScene(menuPane,this);
         trafficScene = new TrafficPageScene(trafficSceneRoot,width,height,this);
         trafficSceneRoad = new TrafficPageRoadScene(trafficRoadSceneRoot, width, height, this);
-        //weatherScene = new WeatherPageScene(weatherSceneRoot,width,height,this);
+        weatherScene = new WeatherPageScene(weatherSceneRoot,width,height,this);
         combinedScene = new CombinedScene(combinedSceneRoot, width, height, this);
 
         this.stage.setScene(menuScene);
@@ -105,7 +102,7 @@ public class UIController{
         Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
         stage.setX((screenBounds.getWidth() - width) / 2);
         stage.setY((screenBounds.getHeight() - height) / 2);
-        //currentScene = weatherScene;
+        currentScene = weatherScene;
         currentSceneEnum = CurrentSceneEnum.WEATHER_SCENE;
         refresh();
     }
@@ -141,8 +138,8 @@ public class UIController{
                 trafficScene.handleSearchButtonClick(coords,selected);
                 break;
             case WEATHER_SCENE:
-                //ArrayList<Double> coords = castArrayList(data);
-                //weatherScene.makeNewChartViewer(coords,selected);
+                ArrayList<Double> coords2 = castArrayList(data);
+                weatherScene.handleSearchButtonClick(coords2,selected);
                 break;
             case TRAFFIC_SCENE_ROAD:
                 ArrayList<Integer> road = castArrayList(data);

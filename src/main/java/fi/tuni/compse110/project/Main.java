@@ -9,18 +9,16 @@ import java.io.IOException;
 /*
     @author - Onni Merila , onni.merila@tuni.fi , H299725
  */public class Main extends Application {
-
      public Main(){
          super();
      }
 
-    public static void main(String[] args) throws IOException {
-        //APItest apitestSingleton = APItest.getInstance();
-        //apitestSingleton.testing();
-        launch();
+     public static void main(String[] args) throws IOException {
+         //APItest apitestSingleton = APItest.getInstance();
+         //apitestSingleton.testing();
+         launch();
+     }
 
-        
-    }
 
     @Override
     public void start(Stage stage) throws Exception {

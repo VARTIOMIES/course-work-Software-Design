@@ -2,15 +2,14 @@ package fi.tuni.compse110.project.UIView.Scenes;
 
 import java.util.*;
 
-import fi.tuni.compse110.project.API.WeatherData;
+import fi.tuni.compse110.project.API.*;
 import fi.tuni.compse110.project.UIView.components.GraphComponent;
 import fi.tuni.compse110.project.UIView.components.SidePanel;
 import javafx.scene.layout.Region;
+import javafx.util.Pair;
 import org.jfree.chart.fx.ChartViewer;
 
 import fi.tuni.compse110.project.UIView.UIController;
-import fi.tuni.compse110.project.API.RoadCondition;
-import fi.tuni.compse110.project.API.RoadDataProvider;
 import fi.tuni.compse110.project.Graph.GraphProvider;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -101,14 +100,6 @@ public class WeatherPageScene extends Scene{
 
     /**
      *
-     * Getting the data from the api class and formatting into
-     * usable datastructure for plotting. Saves the data locally.
-     * Api class may have some restrictions with the
-     * coordinates. @see {@link RoadDataProvider#getRoadConditions}
-     * @param coords ArrayList<Double> 4 Doubles representing the area
-     *               given with the input sliders.
-     *
-     * @author Onni Merilä
      */
     public void getDataFromApi(ArrayList<Double> coords){
 
