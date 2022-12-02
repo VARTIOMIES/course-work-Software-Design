@@ -10,6 +10,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import org.jfree.chart.fx.ChartViewer;
@@ -52,7 +53,7 @@ public class GraphComponent extends VBox{
         empty = true;
 
         chart_area = new Pane();
-        chart_area.setPrefSize(634,500);
+        chart_area.setPrefSize(800,500);
         String info_text = "Nothing to show yet :(";
 
         Label emptytext = new Label(info_text);
@@ -62,7 +63,7 @@ public class GraphComponent extends VBox{
 
         chart_area.getChildren().setAll(emptytext);
 
-        graph_section_selection_buttons = new HBox();
+        graph_section_selection_buttons = new HBox(15);
         graph_section_selection_buttons.setAlignment(Pos.CENTER);
         initButtons();
 
@@ -90,13 +91,16 @@ public class GraphComponent extends VBox{
         }
 
 
-
-        this.getChildren().addAll(chart_area,graph_section_selection_buttons);
+        Region spacing_bottom = new Region();
+        Region spacing_top = new Region();
+        spacing_bottom.setPrefHeight(15);
+        spacing_top.setPrefHeight(15);
+        this.getChildren().addAll(chart_area,spacing_top,graph_section_selection_buttons,spacing_bottom);
 
     }
     private void initButtons(){
         previous_section = new Button("<--");
-        previous_section.setId("title");
+
         previous_section.setOnAction(event -> {
             if (section_index - 1 >= 0){
                 section_index--;
@@ -113,7 +117,7 @@ public class GraphComponent extends VBox{
         });
 
         next_section = new Button("-->");
-        next_section.setId("title");
+
         next_section.setOnAction(event->{
             if (section_index + 1 < sections.size()){
                 section_index++;
@@ -132,7 +136,7 @@ public class GraphComponent extends VBox{
         current_section.setId("title");
 
         previous_road = new Button("<--");
-        previous_road.setId("title");
+
         previous_road.setOnAction(event -> {
             if (road_index - 1 >= 0){
                 road_index--;
@@ -153,7 +157,6 @@ public class GraphComponent extends VBox{
         });
 
         next_road = new Button("-->");
-        next_road.setId("title");
         next_road.setOnAction(event->{
             if (road_index + 1 < roads.size()){
                 road_index++;

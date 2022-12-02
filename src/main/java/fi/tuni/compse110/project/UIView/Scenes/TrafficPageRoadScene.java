@@ -83,7 +83,7 @@ public class TrafficPageRoadScene extends Scene {
 
 
         graph = new GraphComponent(
-                634,
+            750,
                 500,
                 UIController.CurrentSceneEnum.TRAFFIC_SCENE_ROAD);
         graph.setId("graph");

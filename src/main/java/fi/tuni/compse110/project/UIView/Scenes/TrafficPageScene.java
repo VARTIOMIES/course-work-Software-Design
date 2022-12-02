@@ -82,7 +82,7 @@ public class TrafficPageScene extends Scene{
         rootVerticalContainer.getChildren().add(backButton);
 
         graph = new GraphComponent(
-                634,
+                750,
                 500,
                 UIController.CurrentSceneEnum.TRAFFIC_SCENE);
         graph.setId("graph");
