@@ -33,8 +33,6 @@ public class APICall {
     BufferedReader br;
     if (isDigiTraffic) {
       connection.setRequestMethod("GET");
-      //connection.setRequestProperty("Accept", "application/json");
-      //connection.setRequestProperty("Content-Type", "application/json");
       connection.setRequestProperty("Accept-Encoding", "gzip");
       if(connection.getResponseCode() != 200) {
         br = new BufferedReader(new InputStreamReader(connection.getErrorStream()));

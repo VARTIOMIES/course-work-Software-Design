@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.chart.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane fx:id="mainWindow" prefHeight="556.0" prefWidth="778.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fi.tuni.compse110.project.UIView.TestWindowController">
+   <children>
+      <HBox prefHeight="556.0" prefWidth="778.0">
+         <children>
+            <VBox prefHeight="556.0" prefWidth="565.0">
+               <children>
+                  <HBox alignment="CENTER" prefHeight="64.0" prefWidth="389.0" spacing="10.0">
+                     <children>
+                        <Button fx:id="previousRoadButton" mnemonicParsing="false" onAction="#previousRoad" text="&lt;-" textAlignment="CENTER">
+                           <font>
+                              <Font name="System Bold" size="14.0" />
+                           </font>
+                        </Button>
+                        <TextField fx:id="roadNumberText" alignment="CENTER" editable="false" maxWidth="1.7976931348623157E308" prefHeight="30.0" prefWidth="86.0" text="Road">
+                           <font>
+                              <Font name="System Bold" size="14.0" />
+                           </font></TextField>
+                        <Button fx:id="nextRoadButton" mnemonicParsing="false" onAction="#nextRoad" text="-&gt;" textAlignment="CENTER">
+                           <font>
+                              <Font name="System Bold Italic" size="14.0" />
+                           </font>
+                        </Button>
+                     </children></HBox>
+                  <ScrollPane fx:id="cellContainer" prefHeight="427.0" prefWidth="565.0" />
+                  <HBox alignment="CENTER" prefHeight="55.0" prefWidth="389.0" spacing="10.0">
+                     <children>
+                        <Button fx:id="previousForecastButton" mnemonicParsing="false" onAction="#previousSection" text="&lt;-">
+                           <font>
+                              <Font name="System Bold" size="14.0" />
+                           </font>
+                        </Button>
+                        <TextField fx:id="forecastText" alignment="CENTER" editable="false" prefHeight="30.0" prefWidth="54.0" text="2h">
+                           <font>
+                              <Font name="System Bold" size="14.0" />
+                           </font></TextField>
+                        <Button fx:id="nextForecastButton" mnemonicParsing="false" onAction="#nextSection" text="-&gt;">
+                           <font>
+                              <Font name="System Bold" size="14.0" />
+                           </font>
+                        </Button>
+                     </children></HBox>
+               </children></VBox>
+            <VBox prefHeight="400.0" prefWidth="212.0">
+               <children>
+                  <VBox prefHeight="116.0" prefWidth="212.0">
+                     <children>
+                        <TextField alignment="TOP_LEFT" text="Choose parameters:">
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                        </TextField>
+                        <CheckBox fx:id="precipitationChoice" mnemonicParsing="false" text="Precipitation">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </CheckBox>
+                        <CheckBox fx:id="slipperyChoice" mnemonicParsing="false" text="Winter slipperiness">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </CheckBox>
+                        <CheckBox fx:id="overallChoice" mnemonicParsing="false" text="Overall road condition">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </CheckBox>
+                        <CheckBox fx:id="conditionChoice" mnemonicParsing="false" text="Road contition">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </CheckBox>
+                        <CheckBox mnemonicParsing="false" text="Additional information">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </CheckBox>
+                     </children>
+                  </VBox>
+                  <VBox prefHeight="261.0" prefWidth="212.0">
+                     <children>
+                        <TextField text="Visualize:">
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                        </TextField>
+                        <ChoiceBox prefHeight="25.0" prefWidth="212.0" />
+                        <LineChart>
+                          <xAxis>
+                            <CategoryAxis side="BOTTOM" />
+                          </xAxis>
+                          <yAxis>
+                            <NumberAxis side="LEFT" />
+                          </yAxis>
+                        </LineChart>
+                     </children>
+                  </VBox>
+                  <VBox alignment="BOTTOM_RIGHT" prefHeight="200.0" prefWidth="100.0">
+                     <children>
+                        <Button fx:id="searchButton" mnemonicParsing="false" onAction="#start" prefHeight="67.0" prefWidth="213.0" text="Search">
+                           <font>
+                              <Font size="34.0" />
+                           </font>
+                        </Button>
+                     </children>
+                  </VBox>
+               </children></VBox>
+         </children>
+      </HBox>
+   </children>
+</AnchorPane>
