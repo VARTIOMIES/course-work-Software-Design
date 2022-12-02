@@ -6,7 +6,6 @@ package fi.tuni.compse110.project.API;
  */
 
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -75,12 +74,20 @@ public class RoadDataProvider {
   final static String iHours = "?inactiveHours=";
   final static String sitType = "&situationType=";
 
-
   /* Weather logos */
 
   final static HashMap<String, String> weatherSymbols = new HashMap<>();
   final static String symbolBaseURL = "https://www.vaisala.com/sites/default/files/2021-05/";
 
+
+  /**
+   * Created by Miikka Venäläinen
+   *
+   * A method for acquiring weather symbol image from vaisala
+   *
+   * @param symbol Is the symbol code of the weather
+   * @return Returns url address for the image of the weather symbol
+   */
   public static Image getSymbol(String symbol) {
     addSymbols();
     String url = symbolBaseURL + symbol + ".png";
@@ -90,6 +97,12 @@ public class RoadDataProvider {
     return new Image(url);
   }
 
+  /**
+   * Created by Miikka Venäläinen
+   *
+   * Method for saving few weather symbols from vaisala API into a HashMap
+   * because their url style doesn't match to others'
+   */
   private static void addSymbols() {
     weatherSymbols.clear();
     weatherSymbols.put("d000", "https://www.vaisala.com/sites/default/files/images/d000_0.png");
@@ -97,62 +110,6 @@ public class RoadDataProvider {
     weatherSymbols.put("d200", "https://www.vaisala.com/sites/default/files/2021-04/d200.png");
     weatherSymbols.put("d300", "https://www.vaisala.com/sites/default/files/images/d300.png");
     weatherSymbols.put("d400", "https://www.vaisala.com/sites/default/files/images/d400.png");
-//    weatherSymbols.put("D500", "https://www.vaisala.com/sites/default/files/2021-05/d500.png");
-//    weatherSymbols.put("D600", "https://www.vaisala.com/sites/default/files/2021-05/d600.png");
-//    weatherSymbols.put("D210", "https://www.vaisala.com/sites/default/files/2021-05/d210.png");
-//    weatherSymbols.put("D310", "https://www.vaisala.com/sites/default/files/2021-05/d310.png");
-//    weatherSymbols.put("D410", "https://www.vaisala.com/sites/default/files/2021-05/d410.png");
-//    weatherSymbols.put("D220", "https://www.vaisala.com/sites/default/files/2021-05/d220.png");
-//    weatherSymbols.put("D320", "https://www.vaisala.com/sites/default/files/2021-05/d320.png");
-//    weatherSymbols.put("D420", "https://www.vaisala.com/sites/default/files/2021-05/d420.png");
-//    weatherSymbols.put("D430", "https://www.vaisala.com/sites/default/files/2021-05/d430.png");
-//    weatherSymbols.put("D240", "https://www.vaisala.com/sites/default/files/2021-05/d240.png");
-//    weatherSymbols.put("D340", "https://www.vaisala.com/sites/default/files/2021-05/d340.png");
-//    weatherSymbols.put("D440", "https://www.vaisala.com/sites/default/files/2021-05/d440.png");
-//    weatherSymbols.put("D311", "https://www.vaisala.com/sites/default/files/2021-05/d311.png");
-//    weatherSymbols.put("D411", "https://www.vaisala.com/sites/default/files/2021-05/d411.png");
-//    weatherSymbols.put("D221", "https://www.vaisala.com/sites/default/files/2021-05/d221.png");
-//    weatherSymbols.put("D421", "https://www.vaisala.com/sites/default/files/2021-05/d421.png");
-//    weatherSymbols.put("D431", "https://www.vaisala.com/sites/default/files/2021-05/d431.png");
-//    weatherSymbols.put("D212", "https://www.vaisala.com/sites/default/files/2021-05/d212.png");
-//    weatherSymbols.put("D312", "https://www.vaisala.com/sites/default/files/2021-05/d312.png");
-//    weatherSymbols.put("D412", "https://www.vaisala.com/sites/default/files/2021-05/d412.png");
-//    weatherSymbols.put("D222", "https://www.vaisala.com/sites/default/files/2021-05/d222.png");
-//    weatherSymbols.put("D322", "https://www.vaisala.com/sites/default/files/2021-05/d322.png");
-//    weatherSymbols.put("D422", "https://www.vaisala.com/sites/default/files/2021-05/d422.png");
-//    weatherSymbols.put("D432", "https://www.vaisala.com/sites/default/files/2021-05/d432.png");
-//
-//    weatherSymbols.put("N000", "https://www.vaisala.com/sites/default/files/2021-05/n000.png");
-//    weatherSymbols.put("N100", "https://www.vaisala.com/sites/default/files/2021-05/n100.png");
-//    weatherSymbols.put("N200", "https://www.vaisala.com/sites/default/files/2021-05/n200.png");
-//    weatherSymbols.put("N300", "https://www.vaisala.com/sites/default/files/2021-05/n300.png");
-//    weatherSymbols.put("N400", "https://www.vaisala.com/sites/default/files/2021-05/n400.png");
-//    weatherSymbols.put("N500", "https://www.vaisala.com/sites/default/files/2021-05/n500.png");
-//    weatherSymbols.put("N600", "https://www.vaisala.com/sites/default/files/2021-05/n600.png");
-//    weatherSymbols.put("N210", "https://www.vaisala.com/sites/default/files/2021-05/n210.png");
-//    weatherSymbols.put("N310", "https://www.vaisala.com/sites/default/files/2021-05/n310.png");
-//    weatherSymbols.put("N410", "https://www.vaisala.com/sites/default/files/2021-05/n410.png");
-//    weatherSymbols.put("N220", "https://www.vaisala.com/sites/default/files/2021-05/n220.png");
-//    weatherSymbols.put("N320", "https://www.vaisala.com/sites/default/files/2021-05/n320.png");
-//    weatherSymbols.put("N420", "https://www.vaisala.com/sites/default/files/2021-05/n420.png");
-//    weatherSymbols.put("N430", "https://www.vaisala.com/sites/default/files/2021-05/n430.png");
-//    weatherSymbols.put("N240", "https://www.vaisala.com/sites/default/files/2021-05/n240.png");
-//    weatherSymbols.put("N340", "https://www.vaisala.com/sites/default/files/2021-05/n340.png");
-//    weatherSymbols.put("N440", "https://www.vaisala.com/sites/default/files/2021-05/n440.png");
-//    weatherSymbols.put("N311", "https://www.vaisala.com/sites/default/files/2021-05/n311.png");
-//    weatherSymbols.put("N411", "https://www.vaisala.com/sites/default/files/2021-05/n411.png");
-//    weatherSymbols.put("N221", "https://www.vaisala.com/sites/default/files/2021-05/n221.png");
-//    weatherSymbols.put("N421", "https://www.vaisala.com/sites/default/files/2021-05/n421.png");
-//    weatherSymbols.put("N431", "https://www.vaisala.com/sites/default/files/2021-05/n431.png");
-//    weatherSymbols.put("N212", "https://www.vaisala.com/sites/default/files/2021-05/n212.png");
-//    weatherSymbols.put("N312", "https://www.vaisala.com/sites/default/files/2021-05/n312.png");
-//    weatherSymbols.put("N412", "https://www.vaisala.com/sites/default/files/2021-05/n412.png");
-//    weatherSymbols.put("N222", "https://www.vaisala.com/sites/default/files/2021-05/n222.png");
-//    weatherSymbols.put("N322", "https://www.vaisala.com/sites/default/files/2021-05/n322.png");
-//    weatherSymbols.put("N422", "https://www.vaisala.com/sites/default/files/2021-05/n422.png");
-//    weatherSymbols.put("N432", "https://www.vaisala.com/sites/default/files/2021-05/n432.png");
-
-    //APICall.getRequest(symbolBaseURL + symbol + ".png", false);
   }
 
   /**
@@ -189,13 +146,11 @@ public class RoadDataProvider {
         url += "&taskId=" + task;
       }
     }
-    //System.out.println("GET MAINTENANCE DATA");
-    //System.out.println(url);
     JSONObject maintenance = new JSONObject(APICall.getRequest(url, true));
 
     if(maintenance.has("message")) {
-      //System.out.println(maintenance.getString("message"));
-      System.exit(0);
+      System.out.println(maintenance.getString("message"));
+      //System.exit(0);
     }
 
     HashMap<String, Integer> amounts = new HashMap<>();
@@ -212,14 +167,10 @@ public class RoadDataProvider {
       maintenanceTask.setEndTime(endTime);
       String source  = properties.getString("source");
       maintenanceTask.setSource(source);
-      //System.out.println(startTime + " - " + endTime);
-      //System.out.println(source);
       ArrayList<String> maintTasks = new ArrayList<>();
       for (int j = 0; j < properties.getJSONArray("tasks").length(); j++) {
         String task = tasks.get(properties.getJSONArray("tasks").get(j).toString());
-        //System.out.print(task);
         maintTasks.add(task);
-        //System.out.print(", ");
         if(!amounts.containsKey(task)) {
           amounts.put(task, 1);
         } else {
@@ -228,10 +179,7 @@ public class RoadDataProvider {
       }
       maintenanceTask.setTasks(maintTasks);
       allTasks.add(maintenanceTask);
-      //System.out.println();
-      //System.out.println();
     }
-    //amounts.forEach((key, value) -> System.out.println(key + " : " + value));
     return allTasks;
   }
 
@@ -251,7 +199,7 @@ public class RoadDataProvider {
    *
    * @param roadNum Integer value of the road number where user wants road condition data from
    * @param coords List of coordinates where user wants road condition data from
-   * @return Returns a HashMap which contains road numbers and for each road number
+   * @return Returns a TreeMap which contains road numbers and for each road number
    * there is a list of its road sections and forecasts for each of the section in a HashMap
    *
    * {roadNumber : sections {{
@@ -273,24 +221,18 @@ public class RoadDataProvider {
    */
   public static TreeMap<Integer, LinkedHashMap<String, ArrayList<RoadCondition>>> getRoadConditions(int roadNum, ArrayList<Double> coords) throws IOException {
     String url = roadForecast;
-    //For every road, list of road sections + its forecasts'
-    HashMap<Integer, ArrayList<HashMap<Integer, RoadCondition>>> allValues = new HashMap<>();
-
-    TreeMap<Integer, LinkedHashMap<String, ArrayList<RoadCondition>>> testValues = new TreeMap<>();
+    TreeMap<Integer, LinkedHashMap<String, ArrayList<RoadCondition>>> values = new TreeMap<>();
 
     if(roadNum > 0) {
       url += "/" + roadNum;
     } else if(coords.size() == 4) {
       url += "/" + coords.get(0) + "/" + coords.get(1) + "/" + coords.get(2) + "/" + coords.get(3);
     }
-    //System.out.println("GET ROAD CONDITIONS");
-    //System.out.println(url);
     JSONObject data = new JSONObject(APICall.getRequest(url, true));
     JSONArray weatherData = data.getJSONArray("weatherData");
     for(int i = 0; i < weatherData.length(); i++) {
       JSONObject cond = (JSONObject) weatherData.get(i);
       String roadNumber = cond.get("id").toString().split("_")[0];
-      //System.out.println("--" + roadNumber + "--");
       JSONArray roadConditions = cond.getJSONArray("roadConditions");
       for(int j = 0; j < roadConditions.length(); j++) {
         RoadCondition roadCondition = new RoadCondition(cond.get("id").toString(), Integer.parseInt(roadNumber));
@@ -311,100 +253,59 @@ public class RoadDataProvider {
         roadCondition.setDayLight(dayLight);
         String weatherSymbol = condition.getString("weatherSymbol");
         roadCondition.setWeatherSymbol(weatherSymbol);
-        //System.out.println("In " + forecastTime + " road temperature is " + roadTemperature + " and temperature is " + temperature);
-        if(dayLight) {
-          //System.out.println("Sun is shining");
-        } else {
-          //System.out.println("It's dark in here");
-        }
-        //System.out.print("Overall road condition is " + overallRoadCondition);
         if(condition.has("forecastConditionReason")) {
           JSONObject jsonObject = condition.getJSONObject("forecastConditionReason");
           if(jsonObject.has("precipitationCondition")) {
             String roadSurface = jsonObject.getString("precipitationCondition");
             roadCondition.setPrecipitationCondition(roadSurface.toLowerCase());
-            //System.out.print(" and surface of the road is " + roadCondition.getPrecipitationCondition());
           }
           if(jsonObject.has("roadCondition")) {
             String roadSurface = jsonObject.getString("roadCondition");
             roadCondition.setRoadCondition(roadSurface.toLowerCase());
-            //System.out.print(" and surface of the road is " + roadSurface.toLowerCase());
           }
           if(jsonObject.has("windCondition")) {
             String roadSurface = jsonObject.getString("windCondition");
             roadCondition.setWindCondition(roadSurface.toLowerCase());
-            //System.out.print(" and wind condition is " + roadSurface.toLowerCase());
           }
           if(jsonObject.has("freezingRainCondition")) {
             boolean roadSurface = jsonObject.getBoolean("freezingRainCondition");
             roadCondition.setFreezingRainCondition(roadSurface);
-            if(roadSurface) {
-              //System.out.println("There is freezing rain");
-            }
           }
           if(jsonObject.has("winterSlipperiness")) {
             boolean roadSurface = jsonObject.getBoolean("winterSlipperiness");
             roadCondition.setWinterSlipperiness(roadSurface);
-            if(roadSurface) {
-              //System.out.println("Road is slippery");
-            }
           }
           if(jsonObject.has("visibilityCondition")) {
             String roadSurface = jsonObject.getString("visibilityCondition");
             roadCondition.setVisibilityCondition(roadSurface.toLowerCase());
-            //System.out.println(" and visibility is " + roadSurface.toLowerCase());
           }
           if(jsonObject.has("frictionCondition")) {
             String roadSurface = jsonObject.getString("frictionCondition");
             roadCondition.setFrictionCondition(roadSurface.toLowerCase());
-            //System.out.println(" and surface of the road is " + roadSurface.toLowerCase());
           }
           if(jsonObject.has("time")){
             String time = jsonObject.getString("time");
             roadCondition.setTime(time.toLowerCase());
           }
-        } else {
-          //System.out.println();
         }
-        //System.out.println();
-        //System.out.println();
-        HashMap<Integer, RoadCondition> h = new HashMap<>();
-        h.put(Integer.parseInt(cond.get("id").toString().split("_")[1]), roadCondition);
-        if(allValues.containsKey(Integer.parseInt(cond.get("id").toString().split("_")[0]))) {
-          allValues.get(Integer.parseInt(cond.get("id").toString().split("_")[0])).add(h);
-        } else {
-          ArrayList<HashMap<Integer, RoadCondition>> a = new ArrayList<>();
-          a.add(h);
-          allValues.put(Integer.parseInt(cond.get("id").toString().split("_")[0]), a);
-        }
-        if(testValues.containsKey(Integer.parseInt(cond.get("id").toString().split("_")[0]))) {
-          if(testValues.get(Integer.parseInt(cond.get("id").toString().split("_")[0])).containsKey(forecastTime)){
-            testValues.get(Integer.parseInt(cond.get("id").toString().split("_")[0])).get(forecastTime).add(roadCondition);
+        if(values.containsKey(Integer.parseInt(cond.get("id").toString().split("_")[0]))) {
+          if(values.get(Integer.parseInt(cond.get("id").toString().split("_")[0])).containsKey(forecastTime)){
+            values.get(Integer.parseInt(cond.get("id").toString().split("_")[0])).get(forecastTime).add(roadCondition);
           } else {
             ArrayList<RoadCondition> r = new ArrayList<>();
             r.add(roadCondition);
-            testValues.get(Integer.parseInt(cond.get("id").toString().split("_")[0])).put(forecastTime, r);
+            values.get(Integer.parseInt(cond.get("id").toString().split("_")[0])).put(forecastTime, r);
           }
         } else {
           LinkedHashMap<String, ArrayList<RoadCondition>> a = new LinkedHashMap<>();
           ArrayList<RoadCondition> r = new ArrayList<>();
           r.add(roadCondition);
           a.put(forecastTime, r);
-          testValues.put(Integer.parseInt(cond.get("id").toString().split("_")[0]), a);
+          values.put(Integer.parseInt(cond.get("id").toString().split("_")[0]), a);
         }
       }
     }
-    allValues.forEach((key, value) -> {
-      //System.out.println(key);
-      for(HashMap<Integer, RoadCondition> values : value){
-        values.forEach((k, v) -> {
-          ////System.out.println(v.getWindSpeed());
-          ////System.out.println(v.getWindDirection());
-        });
-      }
-      //System.out.println();
-    });
-    testValues.forEach((key, value) -> {
+    values.forEach((key, value) -> {
       //System.out.println("KEY IS " + key);
       value.forEach( (k, v) -> {
         //System.out.println("FORECAST TIME " + k);
@@ -414,20 +315,16 @@ public class RoadDataProvider {
       });
       //System.out.println();
     });
-    return sortRoadConditions(testValues);
+    values.forEach((k,v) -> v.forEach((key, value) -> {
+      value.sort(Comparator.comparing(RoadCondition::getSection));
+    }));
+    return values;
   }
 
   private static TreeMap<Integer, LinkedHashMap<String, ArrayList<RoadCondition>>> sortRoadConditions(TreeMap<Integer, LinkedHashMap<String, ArrayList<RoadCondition>>> allValues) {
-    allValues.forEach((k,v) -> {
-      //System.out.println("Road: " + k);
-      v.forEach((key, value) -> {
-        //System.out.println("Forecast time: " + key);
-        value.sort(Comparator.comparing(RoadCondition::getSection));
-        //value.forEach(ke -> System.out.println("Road condition object's id: " + ke.getId()));
-        //System.out.println();
-      });
-      //System.out.println();
-    });
+    allValues.forEach((k,v) -> v.forEach((key, value) -> {
+      value.sort(Comparator.comparing(RoadCondition::getSection));
+    }));
     return allValues;
   }
 
@@ -436,7 +333,7 @@ public class RoadDataProvider {
    * Function used to parse the wanted data from the bigger data structure
    *
    * @param roadNumber the number of the road (used to get the data of the whole road from the above function
-   * @param sectionArrayIndex ,index of the section in the sorte darraylist of all sections
+   * @param sectionArrayIndex ,index of the section in the sorted arraylist of all sections
    * @param coords, coordinates used for the data fetching from getRoadConditions() function
    * @return Returns a list of one specific sections roadcondition data.
    *
@@ -476,7 +373,6 @@ public class RoadDataProvider {
       JSONObject jo = (JSONObject) ja.get(i);
       tasks.put(jo.get("id").toString(), jo.get("nameEn").toString());
     }
-    //System.out.println(tasks);
   }
 
   /**
@@ -494,8 +390,6 @@ public class RoadDataProvider {
   public static List<TrafficMessage> getTrafficMessages(int hours, String situationType) throws IOException {
 
     String url = message + iHours + hours + "&includeAreaGeometry=false" + sitType + situationType;
-    //System.out.println("GET TRAFFIC MESSAGES");
-    //System.out.println(url);
     JSONObject messages = new JSONObject(APICall.getRequest(url, true));
 
     List<TrafficMessage> allMessages = new ArrayList<>();
@@ -509,40 +403,31 @@ public class RoadDataProvider {
         JSONObject announcement = announcements.getJSONObject(j);
         String title = announcement.get("title").toString();
         trafficMessage.setTitle(title);
-        //System.out.println(title);
         JSONObject location = announcement.getJSONObject("location");
         String description = location.getString("description");
         trafficMessage.setDescription(description);
-        //System.out.println(description);
         if(announcement.has("comment")) {
-          //System.out.println(announcement.get("comment").toString());
           trafficMessage.setComment(announcement.get("comment").toString());
         }
         JSONObject locationDetail = announcement.getJSONObject("locationDetails");
         if(locationDetail.has("roadAddressLocation")) {
           JSONObject addressLocation = locationDetail.getJSONObject("roadAddressLocation");
           JSONObject primaryPoint = addressLocation.getJSONObject("primaryPoint");
-          //System.out.println(primaryPoint.getString("municipality"));
           trafficMessage.setMunicipality(primaryPoint.getString("municipality"));
         }
         JSONObject time = announcement.getJSONObject("timeAndDuration");
         String startTime = time.getString("startTime");
         trafficMessage.setStartTime(startTime);
-        //System.out.println("Time stamp: " + startTime);
         JSONArray feats = announcement.getJSONArray("features");
         ArrayList<String> f = new ArrayList<>();
         for (int k = 0; k < feats.length(); k++) {
           JSONObject name = feats.getJSONObject(k);
           f.add(name.getString("name"));
-          //System.out.println(name.get("name"));
         }
         trafficMessage.setFeatures(f);
         allMessages.add(trafficMessage);
       }
-      //System.out.println();
-      //System.out.println();
     }
-    //allMessages.forEach(e -> System.out.println(e.getTitle()));
     return allMessages;
   }
 }

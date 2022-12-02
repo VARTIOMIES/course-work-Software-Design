@@ -115,7 +115,7 @@ public class GraphProvider {
         //  doesnät work cause some time (r.getTime) are null.
         for (int i = 0;i<5;i++){
             Hour hour = new Hour(
-                    i,
+                    Utility.getHourIntFromDateSplitterString(xdata.get(i)),
                     Day.parseDay(Utility.dateSplitter(xdata.get(i),true))
             );
             series.add(hour,Double.parseDouble(ydata.get(i).toString()));

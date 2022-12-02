@@ -4,8 +4,11 @@ package fi.tuni.compse110.project.UIView;/*
 
 import fi.tuni.compse110.project.UIView.Scenes.CombinedScene;
 import fi.tuni.compse110.project.UIView.Scenes.MenuScene;
+import fi.tuni.compse110.project.UIView.Scenes.RoadCameraImageScene;
 import fi.tuni.compse110.project.UIView.Scenes.TrafficPageRoadScene;
 import fi.tuni.compse110.project.UIView.Scenes.TrafficPageScene;
+import fi.tuni.compse110.project.UIView.Scenes.WeatherPageScene;
+import java.io.IOException;
 //import fi.tuni.compse110.project.UIView.Scenes.WeatherPageScene;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Group;
@@ -30,6 +33,7 @@ public class UIController{
     private ScrollPane trafficRoadSceneRoot;
     private ScrollPane weatherSceneRoot;
     private ScrollPane combinedSceneRoot;
+    private ScrollPane extraStuffSceneRoot;
     private Pane menuPane;
     private Group root;
     private MenuScene menuScene;
@@ -37,6 +41,7 @@ public class UIController{
     private TrafficPageRoadScene trafficSceneRoad;
     //private WeatherPageScene weatherScene;
     private CombinedScene combinedScene;
+    private RoadCameraImageScene extraStuffScene;
 
     private final double width = 1124;
     private final double height = 720;
@@ -46,11 +51,12 @@ public class UIController{
         TRAFFIC_SCENE,
         TRAFFIC_SCENE_ROAD,
         WEATHER_SCENE,
-        COMBINED_SCENE
+        COMBINED_SCENE,
+        EXTRA_STUFF_SCENE
     }
     public CurrentSceneEnum currentSceneEnum;
 
-    public UIController(Stage stage){
+    public UIController(Stage stage) throws IOException {
         this.stage = stage;
         stage.setResizable(false);
         currentSceneEnum = CurrentSceneEnum.MENU_SCENE;
@@ -61,6 +67,7 @@ public class UIController{
         weatherSceneRoot = new ScrollPane();
         weatherSceneRoot.setFitToWidth(true);
         combinedSceneRoot = new ScrollPane();
+        extraStuffSceneRoot = new ScrollPane();
         combinedSceneRoot.setFitToWidth(true);
         menuPane = new Pane();
         root = new Group();
@@ -69,6 +76,9 @@ public class UIController{
         trafficSceneRoad = new TrafficPageRoadScene(trafficRoadSceneRoot, width, height, this);
         //weatherScene = new WeatherPageScene(weatherSceneRoot,width,height,this);
         combinedScene = new CombinedScene(combinedSceneRoot, width, height, this);
+        extraStuffSceneRoot.setMaxSize(1024, 720);
+        extraStuffSceneRoot.setMinSize(1024, 720);
+        extraStuffScene = new RoadCameraImageScene(extraStuffSceneRoot);
 
         this.stage.setScene(menuScene);
         this.stage.show();
@@ -107,6 +117,12 @@ public class UIController{
         stage.setY((screenBounds.getHeight() - height) / 2);
         //currentScene = weatherScene;
         currentSceneEnum = CurrentSceneEnum.WEATHER_SCENE;
+        refresh();
+    }
+
+    public void fromMenuToExtraStuffPage(){
+        currentScene = extraStuffScene;
+        currentSceneEnum = CurrentSceneEnum.EXTRA_STUFF_SCENE;
         refresh();
     }
     public void fromAnyPageToMenu(){

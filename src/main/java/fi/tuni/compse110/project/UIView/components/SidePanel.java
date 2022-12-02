@@ -235,6 +235,7 @@ public class SidePanel extends VBox {
 
     protected static class RoadConditionCheckBoxes extends CheckBoxes{
         private final CheckBox roadConditionCheckBox;
+        private final CheckBox roadAirTemperature;
         private final CheckBox roadTemperatureCheckBox;
         private final CheckBox windSpeedCheckBox;
         private final CheckBox additional_info_checkbox;
@@ -244,15 +245,17 @@ public class SidePanel extends VBox {
             this.setId("checkbox-stack");
 
             roadConditionCheckBox = new CheckBox("Road Condition");
+            roadAirTemperature = new CheckBox("Air Temperature");
             roadTemperatureCheckBox = new CheckBox("Road temperature");
             windSpeedCheckBox = new CheckBox("Wind speed");
             additional_info_checkbox = new CheckBox("Additional information");
 
             this.getChildren().addAll(
-                    roadConditionCheckBox,
+                    //roadConditionCheckBox,
+                    roadAirTemperature,
                     roadTemperatureCheckBox,
-                    windSpeedCheckBox,
-                    additional_info_checkbox
+                    windSpeedCheckBox
+                    //additional_info_checkbox
             );
 
         }
@@ -262,6 +265,9 @@ public class SidePanel extends VBox {
             ArrayList<UIController.Plottable> selected = new ArrayList<>();
             if (roadConditionCheckBox.isSelected()){
                 selected.add(UIController.Plottable.OVERALL_ROAD_CONDITION);
+            }
+            if (roadAirTemperature.isSelected()){
+                selected.add(UIController.Plottable.TEMPERATURE);
             }
             if (roadTemperatureCheckBox.isSelected()){
                 selected.add(UIController.Plottable.ROAD_TEMPERATURE);
