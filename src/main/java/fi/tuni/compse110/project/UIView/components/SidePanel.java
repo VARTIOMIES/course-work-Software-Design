@@ -205,12 +205,12 @@ public class SidePanel extends VBox {
         public RoadInput(){
             super();
             this.setId("road-input");
-            road_input_title = new Text("Enter road");
+            road_input_title = new Text("Enter road:");
             road_input_title.setId("title");
             road_input_field = new TextField();
             road_input_field.setId("road-input-field");
             road_input_text = new Text("Road number");
-            road_input_text.setId("title");
+            road_input_text.setId("header2");
             this.getChildren().addAll(
                     road_input_title,
                     road_input_text,

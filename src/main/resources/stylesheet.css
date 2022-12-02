@@ -24,6 +24,10 @@
     -fx-font-size: 20px;
 }
 
+#header2 {
+    -fx-font-size: 15px;
+}
+
 #box, #row {
     -fx-background-color: rgb(75, 75, 75);
 }
