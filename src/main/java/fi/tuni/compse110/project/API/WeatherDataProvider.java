@@ -217,7 +217,6 @@ public class WeatherDataProvider {
     if(endDate.length() > 0) {
       url += endtime + endDate;
     }
-    System.out.println(url);
     JSONObject jo = XML.toJSONObject(APICall.getRequest(url, false));
     return createParameterTimeValuePair(jo, params.size() > 1 || coordinates.size() == 4);
   }

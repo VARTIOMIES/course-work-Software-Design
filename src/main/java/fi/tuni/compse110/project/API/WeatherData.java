@@ -63,9 +63,6 @@ public class WeatherData {
       allValues += value;
       divider++;
     }
-    for (Pair<String, Double> r : dailyAverages) {
-      System.out.println("Day: " + r.getKey() + "   Average " + parameter + " of " + city + " : " + Math.round(r.getValue() * 10) / 10.0);
-    }
     return dailyAverages;
   }
 
@@ -90,7 +87,6 @@ public class WeatherData {
       if(!previousDay.equals(day)) {
         Pair<Double, Double> t = new Pair<>(lowPoint, highPoint);
         temps.put(day, t);
-        System.out.println("Day: " + day + " in " + city + " highest " + parameter + ": " + highPoint + " and lowest " + parameter + ": " + lowPoint);
         highPoint = -100.0;
         lowPoint = 100.0;
         previousDay = day;

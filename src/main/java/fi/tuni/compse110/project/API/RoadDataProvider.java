@@ -237,8 +237,6 @@ public class RoadDataProvider {
       for(int j = 0; j < roadConditions.length(); j++) {
         RoadCondition roadCondition = new RoadCondition(cond.get("id").toString(), Integer.parseInt(roadNumber));
         JSONObject condition= (JSONObject) roadConditions.get(j);
-        String time = condition.getString("time");
-        roadCondition.setTime(time);
         String forecastTime = condition.getString("forecastName");
         roadCondition.setForecastTime(forecastTime);
         String roadTemperature = condition.getString("roadTemperature");
