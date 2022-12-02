@@ -4,12 +4,19 @@ package fi.tuni.compse110.project.Graph;
  */
 
 import fi.tuni.compse110.project.API.RoadCondition;
+import fi.tuni.compse110.project.API.Utility;
 import fi.tuni.compse110.project.UIView.UIController;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.statistics.HistogramDataset;
 import org.jfree.chart.fx.ChartViewer;
+import org.jfree.data.time.Day;
+import org.jfree.data.time.Hour;
+import org.jfree.data.time.TimeSeries;
+import org.jfree.data.time.TimeSeriesCollection;
+import org.jfree.data.xy.XYSeries;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,22 +42,44 @@ public class GraphProvider {
     }
 
 
+
     /**
      * @author Onni Merilä
      *
-     * @param width int, (px)
-     * @param height int, (px)
+     * @param width double, (px)
+     * @param height double, (px)
      * @param sameLocationConditions A list of RoadConditions, preferrably from
      *                               a same location but different time
-     * @param plottedData (enum) the wanted data from the roadcondition
-     * @param title A title text for the chart
+     * @param plottedData ArrayList<>enum the wanted data from the roadcondition in a list
      * @return ChartViewer object containing a JFreeChart of the data
      */
-    public static ChartViewer getRoadConditionChart(int width,int height,
+    public static ChartViewer getRoadConditionChart(double width,double height,
                                                     List<RoadCondition> sameLocationConditions,
-                                                    UIController.Plottable plottedData,
-                                                    String title){
+                                                    ArrayList<UIController.Plottable> plottedData){
         // Get values
+        TimeSeriesCollection dataset = new TimeSeriesCollection();
+
+        for (UIController.Plottable plottable : plottedData){
+            dataset.addSeries(createSeries(sameLocationConditions,plottable));
+        }
+
+
+
+
+        JFreeChart chart = ChartFactory.createTimeSeriesChart(
+                "Chart title",
+                "Tunnit",
+                "Valuet",
+                dataset);
+
+        ChartViewer viewer = new ChartViewer(chart);
+        viewer.setPrefSize(width,height);
+        return viewer;
+
+    }
+
+    private static TimeSeries createSeries(List<RoadCondition> sameLocationConditions,
+                                 UIController.Plottable plottedData){
         ArrayList<String> xdata = new ArrayList<>();
 
         ArrayList<Object> ydata = new ArrayList<>();
@@ -77,20 +106,21 @@ public class GraphProvider {
         }
 
         for (RoadCondition r : sameLocationConditions){
-            xdata.add(r.getForecastTime());
+            xdata.add(r.getTime());
         }
 
-        DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+        TimeSeries series = new TimeSeries(valueLabel);
 
+        // TODO: Fix timeresies Hour creation (needs better parsing or smth)
+        //  doesnät work cause some time (r.getTime) are null.
         for (int i = 0;i<5;i++){
-            dataset.addValue(Double.parseDouble(ydata.get(i).toString()),"Dataset",xdata.get(i));
+            Hour hour = new Hour(
+                    i,
+                    Day.parseDay(Utility.dateSplitter(xdata.get(i),true))
+            );
+            series.add(hour,Double.parseDouble(ydata.get(i).toString()));
         }
-        JFreeChart forecast = ChartFactory.createLineChart(title,"Tunnit",valueLabel,dataset);
-
-        ChartViewer viewer = new ChartViewer(forecast);
-        viewer.setPrefSize(width,height);
-        return viewer;
-
+        return series;
     }
 
     public static ChartViewer getWeatherChart(int width,int height,

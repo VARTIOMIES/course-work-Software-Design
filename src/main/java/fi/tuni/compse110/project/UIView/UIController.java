@@ -6,11 +6,13 @@ import fi.tuni.compse110.project.UIView.Scenes.CombinedScene;
 import fi.tuni.compse110.project.UIView.Scenes.MenuScene;
 import fi.tuni.compse110.project.UIView.Scenes.TrafficPageRoadScene;
 import fi.tuni.compse110.project.UIView.Scenes.TrafficPageScene;
-import fi.tuni.compse110.project.UIView.Scenes.WeatherPageScene;
+//import fi.tuni.compse110.project.UIView.Scenes.WeatherPageScene;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.Pane;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
@@ -33,8 +35,11 @@ public class UIController{
     private MenuScene menuScene;
     private TrafficPageScene trafficScene;
     private TrafficPageRoadScene trafficSceneRoad;
-    private WeatherPageScene weatherScene;
+    //private WeatherPageScene weatherScene;
     private CombinedScene combinedScene;
+
+    private final double width = 1124;
+    private final double height = 720;
 
     public enum CurrentSceneEnum{
         MENU_SCENE,
@@ -50,46 +55,64 @@ public class UIController{
         stage.setResizable(false);
         currentSceneEnum = CurrentSceneEnum.MENU_SCENE;
         trafficSceneRoot = new ScrollPane();
+        trafficSceneRoot.setFitToWidth(true);
         trafficRoadSceneRoot = new ScrollPane();
+        trafficSceneRoot.setFitToWidth(true);
         weatherSceneRoot = new ScrollPane();
+        weatherSceneRoot.setFitToWidth(true);
         combinedSceneRoot = new ScrollPane();
+        combinedSceneRoot.setFitToWidth(true);
         menuPane = new Pane();
-        menuPane.setPrefSize(1024,720);
         root = new Group();
         menuScene = new MenuScene(menuPane,this);
-        trafficScene = new TrafficPageScene(trafficSceneRoot,1024,720,this);
-        trafficSceneRoad = new TrafficPageRoadScene(trafficRoadSceneRoot, 1024, 720, this);
-        weatherScene = new WeatherPageScene(weatherSceneRoot,1024,720,this);
-        combinedScene = new CombinedScene(combinedSceneRoot, 1024, 720, this);
+        trafficScene = new TrafficPageScene(trafficSceneRoot,width,height,this);
+        trafficSceneRoad = new TrafficPageRoadScene(trafficRoadSceneRoot, width, height, this);
+        //weatherScene = new WeatherPageScene(weatherSceneRoot,width,height,this);
+        combinedScene = new CombinedScene(combinedSceneRoot, width, height, this);
 
-        stage.setScene(menuScene);
-        stage.show();
+        this.stage.setScene(menuScene);
+        this.stage.show();
     }
 
     public void fromMenuToCombinedPage(){
+        Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
+        stage.setX((screenBounds.getWidth() - width) / 2);
+        stage.setY((screenBounds.getHeight() - height) / 2);
         currentScene = combinedScene;
         currentSceneEnum = CurrentSceneEnum.COMBINED_SCENE;
         refresh();
     }
 
     public void fromMenuToTrafficPage(){
+        Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
+        stage.setX((screenBounds.getWidth() - width) / 2);
+        stage.setY((screenBounds.getHeight() - height) / 2);
         currentScene = trafficScene;
         currentSceneEnum = CurrentSceneEnum.TRAFFIC_SCENE;
         refresh();
     }
 
     public void fromMenuToTrafficPageRoad(){
+        Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
+        stage.setX((screenBounds.getWidth() - width) / 2);
+        stage.setY((screenBounds.getHeight() - height) / 2);
         currentScene = trafficSceneRoad;
         currentSceneEnum = CurrentSceneEnum.TRAFFIC_SCENE_ROAD;
         refresh();
 
     }
     public void fromMenuToWeatherPage(){
-        currentScene = weatherScene;
+        Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
+        stage.setX((screenBounds.getWidth() - width) / 2);
+        stage.setY((screenBounds.getHeight() - height) / 2);
+        //currentScene = weatherScene;
         currentSceneEnum = CurrentSceneEnum.WEATHER_SCENE;
         refresh();
     }
     public void fromAnyPageToMenu(){
+        Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
+        stage.setX((screenBounds.getWidth() - 400) / 2);
+        stage.setY((screenBounds.getHeight() - 300) / 2);
         currentScene = menuScene;
         currentSceneEnum = CurrentSceneEnum.MENU_SCENE;
         refresh();
@@ -122,8 +145,8 @@ public class UIController{
                 //weatherScene.makeNewChartViewer(coords,selected);
                 break;
             case TRAFFIC_SCENE_ROAD:
-                //ArrayList<Integer> road = castArrayList(data);
-                //trafficSceneRoad.makeNewChartViewer(road,selected);
+                ArrayList<Integer> road = castArrayList(data);
+                trafficSceneRoad.handleSearchButtonClick(road,selected);
                 break;
             default:
                 break;

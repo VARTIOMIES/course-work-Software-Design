@@ -55,6 +55,8 @@ public class TrafficPageScene extends Scene{
                             double v1,
                             UIController controller) {
         super(root,v,v1);
+        //root.setFitToWidth(true);
+        root.setPannable(false);
         this.controller = controller;
 
 
@@ -79,7 +81,7 @@ public class TrafficPageScene extends Scene{
         );
 
 
-        feed_window = new VBox(20);
+        feed_window = new VBox(50);
 
         graph = new Pane();
         graph.setId("graph");
@@ -215,9 +217,7 @@ public class TrafficPageScene extends Scene{
                     634,
                     500,
                     specificRCData,
-                    wantedData,
-                    titleForChart
-            );
+                    selectedPlottables);
             graph.getChildren().setAll(dataChartViewer);
         }
         catch (Exception e){ // If there occurs any errors while creating the chart

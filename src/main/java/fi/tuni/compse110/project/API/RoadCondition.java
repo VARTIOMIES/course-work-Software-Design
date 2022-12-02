@@ -10,6 +10,7 @@ package fi.tuni.compse110.project.API;
 
 public class RoadCondition {
 
+  private String time;
   private String id;
   private String section;
   private int roadNumber;
@@ -34,6 +35,10 @@ public class RoadCondition {
     setRoadNumber(roadNumber);
     setSection(id);
   }
+  public String getTime(){return time;}
+
+  public void setTime(String time){this.time = time;}
+
 
   public String getId() {
     return id;

@@ -5,6 +5,7 @@ import fi.tuni.compse110.project.API.RoadCondition;
 import fi.tuni.compse110.project.API.RoadDataProvider;
 import fi.tuni.compse110.project.Graph.GraphProvider;
 import fi.tuni.compse110.project.UIView.UIController;
+import fi.tuni.compse110.project.UIView.components.GraphComponent;
 import fi.tuni.compse110.project.UIView.components.SidePanel;
 import javafx.geometry.Pos;
 import javafx.geometry.VPos;
@@ -29,30 +30,34 @@ import fi.tuni.compse110.project.UIView.components.Feed;
  */
 public class TrafficPageRoadScene extends Scene {
 
+    private VBox vLayout;
+
+    private HBox horizontalrootElementContainer;
 
     private VBox mainContent;
-    VBox vLayout;
-    Feed taskFeed;
+
+    private Feed taskFeed;
     private VBox feed_window;
-    Region filler;
-    HBox horizontalrootElementContainer;
-    Pane graph;
-    UIController controller;
+
+    private UIController controller;
     private int roadNumber;
-    private ArrayList<Double> testCoords;
     private SidePanel sidepanel;
+    private GraphComponent graph;
 
     private List<RoadCondition> specificRCData;
     private ArrayList<UIController.Plottable> wantedData;
+    private TreeMap<String,ArrayList<RoadCondition>> data;
 
     public TrafficPageRoadScene(ScrollPane root,
                                 double v,
                                 double v1,
                                 UIController controller) {
         super(root, v, v1);
+        root.setFitToWidth(true);
+        root.setPannable(false);
         this.controller = controller;
 
-        testCoords = new ArrayList<>(Arrays.asList(25.72088, 62.24147, 25.8, 62.3));
+        //testCoords = new ArrayList<>(Arrays.asList(25.72088, 62.24147, 25.8, 62.3));
 
         mainContent = new VBox(20);
 
@@ -64,9 +69,11 @@ public class TrafficPageRoadScene extends Scene {
         horizontalrootElementContainer = new HBox();
         horizontalrootElementContainer.setId("row");
 
+        // TODO:: this should be removed after feed populating
+        //  is done with the new datastructure
         specificRCData = new ArrayList<>();
 
-        roadNumber = 1;
+        //roadNumber = 1;
 
 
         //createContent();
@@ -78,14 +85,13 @@ public class TrafficPageRoadScene extends Scene {
         vLayout.getChildren().add(backButton);
 
 
-        graph = new Pane();
+        graph = new GraphComponent(634,500);
         graph.setId("graph");
         wantedData = new ArrayList<>();
         wantedData.add(UIController.Plottable.ROAD_TEMPERATURE);
-        initChartViewer("");
+        //initChartViewer("");
 
         initFeed();
-
 
         mainContent.getChildren().addAll(graph, feed_window);
 
@@ -109,23 +115,51 @@ public class TrafficPageRoadScene extends Scene {
 
     }
 
-    public void getDataFromApi(){
-        int roadNumber = 1;
-        int sectionArrayListIndex = 1;
+    public void getDataFromApi(ArrayList<Integer> road){
+        TreeMap<Integer, LinkedHashMap<String, ArrayList<RoadCondition>>> monster;
+        int road_number = road.get(0);
         try{
-            specificRCData = RoadDataProvider.getSpecificSectionRoadCondition(
-                    roadNumber,
-                    sectionArrayListIndex,
-                    testCoords
-            );
+            ArrayList<Double> empty_coords = new ArrayList<>();
+            monster = RoadDataProvider.getRoadConditions(road_number,empty_coords);
+
         }
         catch (Exception e){
             System.out.println("Error with getting the data from api");
+            return;
         }
+        monster.size();
+
+
+        //baby_monster.size();
+        int section_amount = monster.get(road_number).get("0h").size();
+        // Change baby monster to be in lists of one specific location
+        String[] keys = {"0h","2h","4h","6h","12h"};
+
+        // String is the id of the section
+        TreeMap<String,ArrayList<RoadCondition>> section_conditions = new TreeMap<>();
+        for (int i = 0;i<section_amount;i++) {
+            System.out.println(i);
+            String section = monster.get(road_number).get("0h").get(i).getSection();
+            ArrayList<RoadCondition> section_forecast_list = new ArrayList<>();
+
+            for (String key : keys) {
+                RoadCondition iterated_road_condition = monster.get(road_number).get(key).get(i);
+                section_forecast_list.add(iterated_road_condition);
+            }
+            section_conditions.put(section,section_forecast_list);
+        }
+        this.data =  section_conditions;
+
+        //ArrayList<String> sections = new ArrayList<>(section_conditions.keySet());
+
+
+
+
+
 
     }
 
-    public void initChartViewer(String info_text){
+    /*public void initChartViewer(String info_text){
         if (info_text.isEmpty()){
             info_text = "Nothing to show yet :(";
         }
@@ -137,7 +171,7 @@ public class TrafficPageRoadScene extends Scene {
         emptytext.minHeightProperty().bind(graph.heightProperty());
 
         graph.getChildren().setAll(emptytext);
-    }
+    }*/
 
     /**
      * Assumes that this.roadNumber,this.controller are already initiated
@@ -198,21 +232,19 @@ public class TrafficPageRoadScene extends Scene {
     }
 
 
-    public void makeNewChartViewer(ArrayList<Double> coords,
+    /*public void makeNewChartViewer(ArrayList<Integer> road,
                                    ArrayList<UIController.Plottable> selectedPlottables){
         UIController.Plottable wantedData = UIController.Plottable.ROAD_TEMPERATURE;
         int roadNumber = 1;
         int sectionArrayListIndex = 1;
         String titleForChart = "helo";
         try {
-            getDataFromApi();
+            getDataFromApi(road);
             ChartViewer dataChartViewer = GraphProvider.getRoadConditionChart(
                     634,
                     500,
                     specificRCData,
-                    wantedData,
-                    titleForChart
-            );
+                    selectedPlottables);
             graph.getChildren().setAll(dataChartViewer);
         }
         catch (Exception e){ // If there occurs any errors while creating the chart
@@ -221,12 +253,13 @@ public class TrafficPageRoadScene extends Scene {
             initChartViewer("Error: code 69");
         }
 
-    }
+    }*/
 
 
 
     private void populateFeed(){
         Map<ArrayList<String>, ArrayList<String>> task_list = new HashMap<>();
+        // TODO:: use the data gotten from getDataFromApi
         if (!specificRCData.isEmpty()) {
             for (var condition : specificRCData) {
                 task_list.put(new ArrayList<String>(Arrays.asList("Section " + condition.getSection())),
@@ -247,7 +280,7 @@ public class TrafficPageRoadScene extends Scene {
 
     private void refreshWithNewData(){
 
-        makeNewChartViewer(testCoords,wantedData);
+        //makeNewChartViewer(road,wantedData);
         populateFeed();
         feed_window.getChildren().set(1,taskFeed.getElement());
     }
@@ -261,8 +294,11 @@ public class TrafficPageRoadScene extends Scene {
         controller.fromAnyPageToMenu();
     }
 
-    private void handleSearchButtonClick(){
-        getDataFromApi();
+    public void handleSearchButtonClick(ArrayList<Integer> road,
+                                        ArrayList<UIController.Plottable> selected){
+        getDataFromApi(road);
+        this.wantedData = selected;
+        graph.give_data(this.data,this.wantedData);
         refreshWithNewData();
     }
 

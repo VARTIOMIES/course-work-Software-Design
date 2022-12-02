@@ -21,6 +21,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 
+
 public class WeatherPageScene extends Scene{
 
     VBox vLayout;
@@ -57,13 +58,16 @@ public class WeatherPageScene extends Scene{
 
         row.setId("row");
 
-        /*
+
+/*
          * Here are some easily modifiable parameters to get different kinds of data,
          * These are useful especially for the begin-phase of the program
          */
+
         int roadNumber = 5;
         int sectionArrayListIndex = 3;
-        UIController.Plottable wantedData = UIController.Plottable.ROAD_TEMPERATURE;
+        ArrayList<UIController.Plottable> wantedData = new ArrayList<>();
+        wantedData.add(UIController.Plottable.ROAD_TEMPERATURE);
         String titleForChart = "Road:" + roadNumber + "  Section:" + sectionArrayListIndex;
 
 
@@ -72,17 +76,23 @@ public class WeatherPageScene extends Scene{
         graph.setId("graph");
         graph.setMaxHeight(500);
 
-        /*
+
+/*
             Here are some easily modifiable parameters to get different kinds of data,
             These are useful especially for the begin-phase of the program
          */
+
 
 
         try {
             // TODO: weather data to graph
             
             List<RoadCondition> specificRCData = RoadDataProvider.getSpecificSectionRoadCondition(roadNumber,sectionArrayListIndex,coords);
-            ChartViewer dataChartViewer = GraphProvider.getRoadConditionChart(634,500,specificRCData, wantedData,titleForChart);
+            ChartViewer dataChartViewer = GraphProvider.getRoadConditionChart(
+                    634,
+                    500,
+                    specificRCData,
+                    wantedData);
             graph.getChildren().add(dataChartViewer);
         }
         catch (Exception e){ // If there occurs any errors while creating the chart
@@ -156,11 +166,14 @@ public class WeatherPageScene extends Scene{
     }
 
 
-    /**
+
+/**
      * lambda to go handle back button going back to menu
      */
+
     private void backToMenuClickHandle(){
         // Stuff happening after the "back to menu" button click
         controller.fromAnyPageToMenu();
     }
 }
+

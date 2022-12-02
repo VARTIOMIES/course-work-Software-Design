@@ -359,6 +359,10 @@ public class RoadDataProvider {
             roadCondition.setFrictionCondition(roadSurface.toLowerCase());
             //System.out.println(" and surface of the road is " + roadSurface.toLowerCase());
           }
+          if(jsonObject.has("time")){
+            String time = jsonObject.getString("time");
+            roadCondition.setTime(time.toLowerCase());
+          }
         } else {
           //System.out.println();
         }

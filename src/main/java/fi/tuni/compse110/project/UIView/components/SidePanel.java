@@ -52,7 +52,7 @@ public class SidePanel extends VBox {
         this.controller = controller;
 
         this.setId("sidepanel");
-        this.setPrefWidth(300);
+        this.setWidth(600);
         // text title with text "enter coordinates" followed by textfields for max and min lat and lon coordinates
 
         params_label = new Text("Choose parameters:");

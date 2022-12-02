@@ -42,6 +42,8 @@ public class CombinedScene extends Scene {
     public CombinedScene(ScrollPane root, double v, double v1, UIController controller) {
         super(root, v, v1);
         this.controller = controller;
+
+
         vLayout = new VBox(20);
         searchBar = new Pane();
         row = new HBox(20);
@@ -76,7 +78,8 @@ public class CombinedScene extends Scene {
          */
         int roadNumber = 2;
         int sectionArrayListIndex = 3;
-        UIController.Plottable wantedData = UIController.Plottable.ROAD_TEMPERATURE;
+        ArrayList<UIController.Plottable> wantedData = new ArrayList<>();
+        wantedData.add(UIController.Plottable.ROAD_TEMPERATURE);
         String titleForChart = "Road:" + roadNumber + "  Section:" + sectionArrayListIndex;
 
         // graph
@@ -95,8 +98,7 @@ public class CombinedScene extends Scene {
                 specificRCData
                         .addAll(RoadDataProvider.getSpecificSectionRoadCondition(roadNumber, sectionIndex, coords));
             }
-            ChartViewer dataChartViewer = GraphProvider.getRoadConditionChart(664, 500, specificRCData, wantedData,
-                    titleForChart);
+            ChartViewer dataChartViewer = GraphProvider.getRoadConditionChart(664, 500, specificRCData, wantedData);
             graph.getChildren().add(dataChartViewer);
         } catch (Exception e) { // If there occurs any errors while creating the chart
             // from API data, creates a hardcoded chart to act as a placeholder
