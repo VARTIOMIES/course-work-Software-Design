@@ -2,6 +2,8 @@
 Group 1
 Aaron Hirvi, Onni Merilä, Miikka Venäläinen, Samundra Dhakal
 ## Structure
+
+### Latest working version is in working_program branch!
 This project is a JavaFX Maven project. As environment, we used IntelliJ IDEA and Visual Studio Code. Dependencies include JavaFX, org.json and JFreeChart.
 
 ## Running
