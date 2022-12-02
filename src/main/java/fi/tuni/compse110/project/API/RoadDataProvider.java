@@ -295,6 +295,8 @@ public class RoadDataProvider {
       for(int j = 0; j < roadConditions.length(); j++) {
         RoadCondition roadCondition = new RoadCondition(cond.get("id").toString(), Integer.parseInt(roadNumber));
         JSONObject condition= (JSONObject) roadConditions.get(j);
+        String time = condition.getString("time");
+        roadCondition.setTime(time);
         String forecastTime = condition.getString("forecastName");
         roadCondition.setForecastTime(forecastTime);
         String roadTemperature = condition.getString("roadTemperature");
@@ -359,10 +361,7 @@ public class RoadDataProvider {
             roadCondition.setFrictionCondition(roadSurface.toLowerCase());
             //System.out.println(" and surface of the road is " + roadSurface.toLowerCase());
           }
-          if(jsonObject.has("time")){
-            String time = jsonObject.getString("time");
-            roadCondition.setTime(time.toLowerCase());
-          }
+
         } else {
           //System.out.println();
         }

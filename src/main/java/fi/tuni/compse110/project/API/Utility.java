@@ -46,4 +46,15 @@ public class Utility {
     return date;
   }
 
+    /**
+     *
+     * @param dateStr
+     * @return
+     */
+  public static int getHourIntFromDateSplitterString(String dateStr){
+      String time = dateSplitter(dateStr,false);
+      String[] timeArray = time.split(":");
+      return Integer.parseInt(timeArray[0]);
+  }
+
 }
