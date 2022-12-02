@@ -6,8 +6,9 @@ package fi.tuni.compse110.project.API;
  */
 
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import javafx.util.Pair;
 import org.json.JSONArray;
@@ -21,7 +22,7 @@ public class WeatherDataProvider {
   final static String starttime = "&starttime=";
   final static String endtime = "&endtime=";
   final static String timestep = "&timestep=";
-  final static String parameters = "&parameters="; //temperature, windspeedms
+  final static String parameters = "&parameters="; //temperature, windspeedms, winddirection, pressure, humidity, windgust, totalcloudcover
   final static String crs = "&crs=";
   final static String bbox = "&bbox=";
   final static String fmisid = "&fmisid=";
@@ -117,26 +118,8 @@ public class WeatherDataProvider {
    *
    * @param jo JSONObject from API call
    * @param multipleParams Boolean which tells if JSONObject contains data from multiple cities and/or parameters
-   * @return Returns a list of dates/times and respected values for every city
+   * @return Returns a list of WeatherData objects which contains dates/times and respected values for every city
    *
-   * {city : parameters {
-   *                      parameter1 : {
-   *                                    { time1 : value1 },
-   *                                    { time2 : value2 },
-   *                                    { time3 : value3 },
-   *                                    ...
-   *                                   },
-   *                      parameter2 : {
-   *                                    { time1 : value1 },
-   *                                    { time2 : value2 },
-   *                                    { time3 : value3 },
-   *                                    ...
-   *                                   },
-   *                                   ...
-   *                    }
-   * },{
-   *   ...
-   * }
    */
   public static ArrayList<WeatherData> createParameterTimeValuePair(JSONObject jo, Boolean multipleParams) {
     List<JSONObject> jsonObjects = new ArrayList<>();
@@ -151,10 +134,6 @@ public class WeatherDataProvider {
     }
 
     String city;
-    String currentCity = "";
-    List<Pair<String, List<Pair<String, List<Pair<String, Double>>>>>> allData = new ArrayList<>();
-    List<Pair<String, List<Pair<String, Double>>>> parameterDateValueListList = new ArrayList<>(); // List for parameter + (date + value) list pairs
-
     ArrayList<WeatherData> listOfValues = new ArrayList<>();
 
     for (JSONObject j : jsonObjects) {
@@ -168,16 +147,12 @@ public class WeatherDataProvider {
       JSONArray location = (JSONArray) member.getJSONObject("target:Location").get("gml:name");
       JSONObject locContent = (JSONObject) location.get(0);
       city = locContent.get("content").toString();
-      if(currentCity.equals("")) {
-        currentCity = city;
-      }
 
       JSONObject results = observation.getJSONObject("om:result");
       JSONObject timeSeries = results.getJSONObject("wml2:MeasurementTimeseries");
       String parameter = sampling.get("gml:id").toString().split("-")[sampling.get("gml:id").toString().split("-").length - 1];
       JSONArray points = timeSeries.getJSONArray("wml2:point");
 
-      List<Pair<String, Double>> list = new ArrayList<>(); // List for date + value pairs
       for(int i = 0; i < points.length(); i++) {
         JSONObject element = (JSONObject) points.get(i);
         JSONObject innerElement = (JSONObject) element.get("wml2:MeasurementTVP");
@@ -195,27 +170,6 @@ public class WeatherDataProvider {
           WeatherData w = new WeatherData(parameter, city, pair);
           listOfValues.add(w);
         }
-        list.add(pair); // Add date + value to list
-      }
-
-      Pair<String, List<Pair<String, Double>>> parameterDateValuePair = new Pair<>(parameter, list); // Pair for parameter + (date + value) list
-      if(!city.equals(currentCity)) {
-        Pair<String, List<Pair<String, List<Pair<String, Double>>>>> pair = new Pair<>(currentCity, parameterDateValueListList);
-        allData.add(pair);
-        parameterDateValueListList = new ArrayList<>();
-      }
-      currentCity = city;
-      parameterDateValueListList.add(parameterDateValuePair);
-    }
-    Pair<String, List<Pair<String, List<Pair<String, Double>>>>> pair = new Pair<>(currentCity, parameterDateValueListList);
-    allData.add(pair);
-    for (Pair<String, List<Pair<String, List<Pair<String, Double>>>>> p : allData) {
-      String cityCopy = p.getKey();
-      for (Pair<String, List<Pair<String, Double>>> q : p.getValue()) {
-        String parameterCopy = q.getKey();
-        //averageTemperature(q.getValue(), cityCopy, parameterCopy);
-        //minMaxTemperature(q.getValue(), cityCopy, parameterCopy);
-        //System.out.println();
       }
     }
     for (WeatherData w : listOfValues) {
@@ -229,77 +183,41 @@ public class WeatherDataProvider {
   /**
    * Created by Miikka Venäläinen
    *
-   * Method for calculations of daily average values like temperature
+   * A method for acquiring weather forecast for a given location and with given parameters
    *
-   * @param list List of Pair which contains time and value information
    * @param city Name of the city
-   * @param parameter Name of the parameter
-   * @return Returns a list of day + average value pairs.
+   * @param coordinates Coordinates of the location
+   * @param params List of wanted parameters
+   * @param endDate Last day of the forecast
+   * @throws IOException In case of an exception
+   * @return Returns a list of WeatherData objects
    */
-  public static List<Pair<String, Double>> averageTemperature(List<Pair<String, Double>> list, String city, String parameter) {
-    Double allValues = 0.0;
-    int divider = 0;
-    String previousDay = "";
-    List<Pair<String, Double>> dailyAverages = new ArrayList<>();
+  public static ArrayList<WeatherData> weatherForecast(String city, ArrayList<Double> coordinates, ArrayList<String> params, String endDate)
+      throws IOException {
+    String url = FMIBaseURL + forecast;
 
-    for (Pair<String, Double> pair : list) {
-      String day = Utility.dateSplitter(pair.getKey(), true);
-      if(previousDay.equals("")) {
-        previousDay = day;
-      }
-      if(!previousDay.equals(day)) {
-        dailyAverages.add(new Pair<>(previousDay, allValues / divider));
-        divider = 0;
-        allValues = 0.0;
-        previousDay = day;
-      }
-      Double value = pair.getValue();
-      allValues += value;
-      divider++;
+    if(!city.isEmpty()) {
+      url += place + city;
     }
-    for (Pair<String, Double> r : dailyAverages) {
-      System.out.println("Day: " + r.getKey() + "   Average " + parameter + " of " + city + " : " + Math.round(r.getValue() * 10) / 10.0);
+    // lon, lon, lat, lat
+    else if(coordinates.size() == 4) {
+      url += bbox + coordinates.get(0) + "," + coordinates.get(1) + "," + coordinates.get(2) + "," + coordinates.get(3);
     }
-    return dailyAverages;
-  }
-
-  /**
-   * Created by Miikka Venäläinen
-   *
-   * Method for calculating daily minimum and maximum temperatures
-   *
-   * @param list List of Pair which contains time and value information
-   * @param city Name of the city
-   * @param parameter Name of the parameter
-   * @return Returns a HashMap which contains min and max values for each day
-   */
-  public static HashMap<String, Pair<Double, Double>> minMaxTemperature(
-      List<Pair<String, Double>> list, String city, String parameter) {
-    double highPoint = -100.0;
-    double lowPoint = 100.0;
-    String previousDay = "";
-    HashMap<String, Pair<Double, Double>> temps = new HashMap<>();
-
-    for (Pair<String, Double> pair : list) {
-      String day = Utility.dateSplitter(pair.getKey(), true);
-      if(previousDay.equals("")) {
-        previousDay = day;
+    if(params.size() > 0) {
+      url += parameters;
+      for(String p : params) {
+        url += p + ",";
       }
-      if(!previousDay.equals(day)) {
-        Pair<Double, Double> t = new Pair<>(lowPoint, highPoint);
-        temps.put(day, t);
-        System.out.println("Day: " + day + " in " + city + " highest " + parameter + ": " + highPoint + " and lowest " + parameter + ": " + lowPoint);
-        highPoint = -100.0;
-        lowPoint = 100.0;
-        previousDay = day;
-      }
-      if(pair.getValue() > highPoint || highPoint == -100.0) {
-        highPoint = pair.getValue();
-      }
-      if(pair.getValue() < lowPoint || lowPoint == 100.0) {
-        lowPoint = pair.getValue();
-      }
+      url = url.substring(0, url.length() - 1);
     }
-    return temps;
+    DateTimeFormatter day = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    DateTimeFormatter hours = DateTimeFormatter.ofPattern("HH:mm:ss");
+    LocalDateTime now = LocalDateTime.now();
+    url += starttime + day.format(now) + "T" + hours.format(now) + "Z";
+    if(endDate.length() > 0) {
+      url += endtime + endDate;
+    }
+    JSONObject jo = XML.toJSONObject(APICall.getRequest(url, false));
+    return createParameterTimeValuePair(jo, params.size() > 1 || coordinates.size() == 4);
   }
 }

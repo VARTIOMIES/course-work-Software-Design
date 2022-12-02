@@ -39,7 +39,6 @@ public class RoadCondition {
 
   public void setTime(String time){this.time = time;}
 
-
   public String getId() {
     return id;
   }
@@ -50,8 +49,7 @@ public class RoadCondition {
 
   public String getSection() { return section; }
 
-  public void setSection(String section) {
-    this.section = section.split("_")[1] + "_" + section.split("_")[2]; }
+  public void setSection(String section) { this.section = section.split("_")[1] + "_" + section.split("_")[2]; }
 
   public int getRoadNumber() {
     return roadNumber;

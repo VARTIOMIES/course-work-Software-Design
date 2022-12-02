@@ -18,6 +18,7 @@ public class MenuScene extends Scene {
     private Button roadButton;
     private Button weatherButton;
     private Button combinedButton;
+    private Button extraStuff;
     private UIController controller;
     private HBox row;
 
@@ -31,7 +32,7 @@ public class MenuScene extends Scene {
 
         Region region = new Region();
         Region region2 = new Region();
-        
+
         region.setPrefWidth(45);
         region2.setPrefHeight(30);
 
@@ -56,7 +57,11 @@ public class MenuScene extends Scene {
         combinedButton.setOnAction(event->buttonCombinedClicked());
         combinedButton.setId("menubutton");
 
-        buttonsContainer.getChildren().addAll(region2, pointButton,roadButton,weatherButton,combinedButton);
+        extraStuff = new Button("Extra Stuff");
+        extraStuff.setPrefSize(150,250);
+        extraStuff.setOnAction(event->extraStuffClicked());
+
+        buttonsContainer.getChildren().addAll(region2, pointButton,roadButton,weatherButton,combinedButton, extraStuff);
         row.getChildren().addAll(region, buttonsContainer);
         root.getChildren().addAll(row);
 
@@ -85,6 +90,11 @@ public class MenuScene extends Scene {
 
     private void buttonCombinedClicked(){
         controller.fromMenuToCombinedPage();
+    }
+
+    private void extraStuffClicked(){
+        // Stuff that happens after "Weather" -button is clicked
+        controller.fromMenuToExtraStuffPage();
     }
 
 }
