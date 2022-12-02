@@ -264,10 +264,10 @@ public class TrafficPageScene extends Scene{
             // iterate "data" treemap
             for(var x: data.keySet()){
                 for(var y: data.get(x).keySet()){
-                    for(var z: data.get(x).get(y)){
-                        var task = data.get(x).get(y).get(0);
-                        specificRCData.add(task);
-                    }
+
+                    var task = data.get(x).get(y).get(0);
+                    specificRCData.add(task);
+                
                 }
             }
 
@@ -286,9 +286,11 @@ public class TrafficPageScene extends Scene{
             for (var condition : specificRCData) {
                 task_list.put(new ArrayList<String>(Arrays.asList("Road: " + condition.getRoadNumber() +" Section " + condition.getSection())),
                         new ArrayList<String>(Arrays.asList(
-                                "Precipitation: " + condition.getPrecipitationCondition(),
+                                "Time: " + condition.getTime().substring(11, 16),
+                                "Road temperature: " + condition.getRoadTemperature() + "°C",
+                                "Air temperature: " + condition.getTemperature() + "°C",
                                 "Overall road condition: " + condition.getOverallRoadCondition(),
-                                "Road condition: " + condition.getRoadCondition()
+                                "Wind speed: " + condition.getWindSpeed() + "m/s"
                         )));
             }
         } else {

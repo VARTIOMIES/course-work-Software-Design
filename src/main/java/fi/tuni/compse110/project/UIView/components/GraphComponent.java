@@ -103,10 +103,13 @@ public class GraphComponent extends VBox{
 
 
         Region spacing_bottom = new Region();
+        Region spacing_tooltip = new Region();
+        spacing_tooltip.setPrefHeight(5);
         Region spacing_top = new Region();
         spacing_bottom.setPrefHeight(15);
         spacing_top.setPrefHeight(15);
-        this.getChildren().addAll(chart_area,spacing_top,graph_section_selection_buttons,spacing_bottom);
+        Text save_tip = new Text("Tip: You can save the graph by right clicking it and selecting \"Export as...\"");
+        this.getChildren().addAll(chart_area,spacing_tooltip,save_tip,spacing_top,graph_section_selection_buttons,spacing_bottom);
 
     }
     private void initButtons(){
@@ -198,6 +201,8 @@ public class GraphComponent extends VBox{
                 conditions.get(roads.get(road_index)).get(sections.get(section_index)),
                 wantedData
         );
+
+
         chart_area.getChildren().setAll(chartviewer);
     }
     private void change_section_array(){

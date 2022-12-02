@@ -164,14 +164,13 @@ public class TrafficPageRoadScene extends Scene {
         // feed navigation bar top
         HBox feed_navigation_bar = new HBox();
 
-        Text road_number_text = new Text("Road " + roadNumber);
-        road_number_text.setId("title");
+        
         feed_navigation_bar.setSpacing(30);
 
         Region fill_top = new Region();
         fill_top.setPrefWidth(90);
 
-        feed_navigation_bar.getChildren().addAll(fill_top, road_number_text);
+        feed_navigation_bar.getChildren().addAll(fill_top);
 
         // feed navigation bottom
         HBox feed_timerange_bar = new HBox();
@@ -199,10 +198,10 @@ public class TrafficPageRoadScene extends Scene {
             // iterate "data" treemap
             for(var x: data.keySet()){
                 for(var y: data.get(x).keySet()){
-                    for(var z: data.get(x).get(y)){
-                        var task = data.get(x).get(y).get(0);
-                        specificRCData.add(task);
-                    }
+                   
+                    var task = data.get(x).get(y).get(0);
+                    specificRCData.add(task);
+                    
                 }
             }
 
@@ -220,9 +219,11 @@ public class TrafficPageRoadScene extends Scene {
             for (var condition : specificRCData) {
                 task_list.put(new ArrayList<String>(Arrays.asList("Road: " + condition.getRoadNumber() +" Section " + condition.getSection())),
                         new ArrayList<String>(Arrays.asList(
-                                "Precipitation: " + condition.getPrecipitationCondition(),
-                                "Overall road condition: " + condition.getOverallRoadCondition(),
-                                "Road condition: " + condition.getRoadCondition()
+                            "Time: " + condition.getTime().substring(11, 16),
+                            "Road temperature: " + condition.getRoadTemperature() + "°C",
+                            "Air temperature: " + condition.getTemperature() + "°C",
+                            "Overall road condition: " + condition.getOverallRoadCondition(),
+                            "Wind speed: " + condition.getWindSpeed() + "m/s"
                         )));
             }
         } else {

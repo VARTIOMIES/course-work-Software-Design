@@ -205,12 +205,12 @@ public class SidePanel extends VBox {
         public RoadInput(){
             super();
             this.setId("road-input");
-            road_input_title = new Text("Enter road");
+            road_input_title = new Text("Enter road:");
             road_input_title.setId("title");
             road_input_field = new TextField();
             road_input_field.setId("road-input-field");
             road_input_text = new Text("Road number");
-            road_input_text.setId("title");
+            road_input_text.setId("header2");
             this.getChildren().addAll(
                     road_input_title,
                     road_input_text,
@@ -219,7 +219,14 @@ public class SidePanel extends VBox {
         }
 
         public Integer getRoadNumber(){
-            return Integer.parseInt(road_input_field.getText());
+            try{
+                System.out.println(road_input_field.getText());
+                return Integer.parseInt(road_input_field.getText());
+            }catch(NumberFormatException e){
+                System.out.println("Error parsing number, defaulting to 1");
+                return Integer.valueOf(1);
+            }
+            
         }
 
         @Override
