@@ -199,47 +199,24 @@ public class TrafficPageScene extends Scene{
 
         // feed navigation bar top
         HBox feed_navigation_bar = new HBox();
-        Button previous_road = new Button("<--");
-        previous_road.setId("title");
 
-        previous_road.setOnAction(event -> {
-            if (roadNumber - 1 >= 0){
-                roadNumber = roadNumber - 1;
-                refreshWithNewData();
-            }
-
-        });
-
-        Button next_road = new Button("-->");
-        next_road.setId("title");
-        next_road.setOnAction(event -> {
-            roadNumber = roadNumber + 1;
-            refreshWithNewData();
-        });
-
-        Text road_number_text = new Text("Road " + roadNumber);
-        road_number_text.setId("title");
+        
         feed_navigation_bar.setSpacing(30);
 
         Region fill_top = new Region();
         fill_top.setPrefWidth(90);
 
-        feed_navigation_bar.getChildren().addAll(fill_top, previous_road, road_number_text, next_road);
+        feed_navigation_bar.getChildren().addAll(fill_top);
 
         // feed navigation bottom
         HBox feed_timerange_bar = new HBox();
 
-        Button previus_timerange = new Button("<--");
-        previus_timerange.setId("title");
-        Button next_timerange = new Button("-->");
-        next_timerange.setId("title");
-        Text current_time_text = new Text("2h");
-        current_time_text.setId("title");
+      
 
         Region fill_bottom = new Region();
         fill_bottom.setPrefWidth(100);
         feed_timerange_bar.setSpacing(30);
-        feed_timerange_bar.getChildren().addAll(fill_bottom, previus_timerange, current_time_text, next_timerange);
+        feed_timerange_bar.getChildren().addAll(fill_bottom);
 
         populateFeed();
 
@@ -282,11 +259,31 @@ public class TrafficPageScene extends Scene{
 */
 
     private void populateFeed(){
+        try{
+            // iterate "data" treemap
+            for(var x: data.keySet()){
+                for(var y: data.get(x).keySet()){
+                    for(var z: data.get(x).get(y)){
+                        var task = data.get(x).get(y).get(0);
+                        specificRCData.add(task);
+                    }
+                }
+            }
+
+            
+        }catch (Exception e){
+            System.out.println("Error with getting the data from api");
+            System.out.println(e);
+            return;
+        }
+        
+
+
         Map<ArrayList<String>, ArrayList<String>> task_list = new HashMap<>();
-        // TODO:: use the data gotten from getDataFromApi
+
         if (!specificRCData.isEmpty()) {
             for (var condition : specificRCData) {
-                task_list.put(new ArrayList<String>(Arrays.asList("Section " + condition.getSection())),
+                task_list.put(new ArrayList<String>(Arrays.asList("Road: " + condition.getRoadNumber() +" Section " + condition.getSection())),
                         new ArrayList<String>(Arrays.asList(
                                 "Precipitation: " + condition.getPrecipitationCondition(),
                                 "Overall road condition: " + condition.getOverallRoadCondition(),
@@ -353,6 +350,7 @@ public class TrafficPageScene extends Scene{
     public void handleSearchButtonClick(ArrayList<Double> coords,
                                          ArrayList<UIController.Plottable> selected){
         getDataFromApi(coords);
+        this.coords = coords;
         this.wantedData = selected;
         graph.give_data(this.data,this.wantedData);
         refreshWithNewData();
