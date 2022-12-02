@@ -219,7 +219,14 @@ public class SidePanel extends VBox {
         }
 
         public Integer getRoadNumber(){
-            return Integer.parseInt(road_input_field.getText());
+            try{
+                System.out.println(road_input_field.getText());
+                return Integer.parseInt(road_input_field.getText());
+            }catch(NumberFormatException e){
+                System.out.println("Error parsing number, defaulting to 1");
+                return Integer.valueOf(1);
+            }
+            
         }
 
         @Override

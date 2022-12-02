@@ -68,7 +68,8 @@ public class GraphProvider {
                 "Tunnit",
                 "Valuet",
                 dataset);
-
+        
+        
         ChartViewer viewer = new ChartViewer(chart);
         viewer.setPrefSize(width,height);
         return viewer;
