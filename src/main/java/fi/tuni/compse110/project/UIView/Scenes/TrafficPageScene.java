@@ -259,6 +259,7 @@ public class TrafficPageScene extends Scene{
 */
 
     private void populateFeed(){
+        specificRCData.clear();
         try{
             // iterate "data" treemap
             for(var x: data.keySet()){
@@ -274,7 +275,7 @@ public class TrafficPageScene extends Scene{
         }catch (Exception e){
             System.out.println("Error with getting the data from api");
             System.out.println(e);
-            return;
+
         }
         
 
