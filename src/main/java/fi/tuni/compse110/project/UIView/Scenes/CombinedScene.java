@@ -93,13 +93,13 @@ public class CombinedScene extends Scene {
         List<RoadCondition> specificRCData = new ArrayList<>();
         try {
             // TODO: weather data to graph
-
-            for (int sectionIndex = 0; sectionIndex < 20; sectionIndex++) {
+            throw new Exception("");
+            /*for (int sectionIndex = 0; sectionIndex < 20; sectionIndex++) {
                 specificRCData
                         .addAll(RoadDataProvider.getSpecificSectionRoadCondition(roadNumber, sectionIndex, coords));
             }
             ChartViewer dataChartViewer = GraphProvider.getRoadConditionChart(664, 500, specificRCData, wantedData);
-            graph.getChildren().add(dataChartViewer);
+            graph.getChildren().add(dataChartViewer);*/
         } catch (Exception e) { // If there occurs any errors while creating the chart
             // from API data, creates a hardcoded chart to act as a placeholder
             System.out.println("test data");

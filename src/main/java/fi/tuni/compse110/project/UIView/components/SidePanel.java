@@ -186,10 +186,10 @@ public class SidePanel extends VBox {
         public ArrayList<Object> getInputData(){
 
             ArrayList<Object> coords = new ArrayList<>();
-            coords.add(this.getMaxLat());
+            coords.add(this.getMinLon());
             coords.add(this.getMinLat());
             coords.add(this.getMaxLon());
-            coords.add(this.getMinLon());
+            coords.add(this.getMaxLat());
             return coords;
         }
 

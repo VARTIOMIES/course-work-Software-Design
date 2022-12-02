@@ -18,25 +18,36 @@ import java.util.ArrayList;
 import java.util.TreeMap;
 
 public class GraphComponent extends VBox{
-    private TreeMap<String,ArrayList<RoadCondition>> section_conditions;
+    private TreeMap<Integer,
+            TreeMap<String,
+                    ArrayList<RoadCondition>>> conditions;
     private ArrayList<String> sections;
+    private ArrayList<Integer> roads;
     private Pane chart_area;
     private double width;
     private double height;
     private HBox graph_section_selection_buttons;
     private ArrayList<UIController.Plottable> wantedData;
-    private int section_index;
+
     private boolean empty;
+
+    private int section_index;
     private Button next_section;
     private Button previous_section;
     private Text current_section;
 
+    private int road_index;
+    private Button next_road;
+    private Button previous_road;
+    private Text current_road;
+
     public GraphComponent(double width,
-                   double height){
+                   double height,
+                          UIController.CurrentSceneEnum currentScene){
         super();
         this.width = width;
         this.height = height;
-        section_conditions = new TreeMap<>();
+        conditions = new TreeMap<>();
         section_index = 0;
         empty = true;
 
@@ -51,8 +62,39 @@ public class GraphComponent extends VBox{
 
         chart_area.getChildren().setAll(emptytext);
 
-
         graph_section_selection_buttons = new HBox();
+        graph_section_selection_buttons.setAlignment(Pos.CENTER);
+        initButtons();
+
+
+
+        switch (currentScene){
+            case TRAFFIC_SCENE_ROAD:
+                graph_section_selection_buttons.getChildren().addAll(
+                        previous_section,
+                        current_section,
+                        next_section
+                );
+                break;
+
+            case TRAFFIC_SCENE:
+                graph_section_selection_buttons.getChildren().addAll(
+                        previous_road,
+                        current_road,
+                        next_road,
+                        previous_section,
+                        current_section,
+                        next_section
+                );
+                break;
+        }
+
+
+
+        this.getChildren().addAll(chart_area,graph_section_selection_buttons);
+
+    }
+    private void initButtons(){
         previous_section = new Button("<--");
         previous_section.setId("title");
         previous_section.setOnAction(event -> {
@@ -69,6 +111,7 @@ public class GraphComponent extends VBox{
             }
 
         });
+
         next_section = new Button("-->");
         next_section.setId("title");
         next_section.setOnAction(event->{
@@ -87,39 +130,86 @@ public class GraphComponent extends VBox{
 
         current_section = new Text("Section:");
         current_section.setId("title");
-        graph_section_selection_buttons.getChildren().addAll(
-                previous_section,
-                current_section,
-                next_section
-        );
 
-        this.getChildren().addAll(chart_area,graph_section_selection_buttons);
+        previous_road = new Button("<--");
+        previous_road.setId("title");
+        previous_road.setOnAction(event -> {
+            if (road_index - 1 >= 0){
+                road_index--;
+                current_road.setText(roads.get(road_index).toString());
+                section_index = 0;
+
+                change_section_array();
+                drawNewChart();
+                if (next_road.isDisabled()){
+                    next_road.setDisable(false);
+                }
+
+
+            }else{
+                previous_road.setDisable(true);
+            }
+
+        });
+
+        next_road = new Button("-->");
+        next_road.setId("title");
+        next_road.setOnAction(event->{
+            if (road_index + 1 < roads.size()){
+                road_index++;
+                current_road.setText(roads.get(road_index).toString());
+                section_index = 0;
+
+                change_section_array();
+                drawNewChart();
+                if (previous_road.isDisabled()){
+                    previous_road.setDisable(false);
+                }
+
+
+            }else{
+                next_road.setDisable(true);
+            }
+        });
+
+        current_road = new Text("Road:");
+        current_road.setId("title");
 
     }
+
     private void drawNewChart(){
         ChartViewer chartviewer = GraphProvider.getRoadConditionChart(
                 width,
                 height,
-                section_conditions.get(sections.get(section_index)),
+                conditions.get(roads.get(road_index)).get(sections.get(section_index)),
                 wantedData
         );
         chart_area.getChildren().setAll(chartviewer);
     }
+    private void change_section_array(){
+        sections = new ArrayList<>(conditions.get(roads.get(road_index)).keySet());
+    }
 
-    public void give_data(TreeMap<String,ArrayList<RoadCondition>> data,
+    public void give_data(TreeMap<Integer,TreeMap<String,ArrayList<RoadCondition>>> data,
                           ArrayList<UIController.Plottable> plottables){
         wantedData = plottables;
-        section_conditions = data;
+        conditions = data;
 
         section_index = 0;
+        road_index = 0;
 
-        sections = new ArrayList<>(section_conditions.keySet());
+        roads = new ArrayList<>(data.keySet());
+
+        sections = new ArrayList<>(data.get(roads.get(road_index)).keySet());
 
         drawNewChart();
 
         current_section.setText(sections.get(section_index));
+        current_road.setText(roads.get(road_index).toString());
         next_section.setDisable(false);
         previous_section.setDisable(true);
+        next_road.setDisable(false);
+        previous_road.setDisable(true);
 
     }
 

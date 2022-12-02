@@ -138,7 +138,7 @@ public class UIController{
                 break;
             case TRAFFIC_SCENE:
                 ArrayList<Double> coords = castArrayList(data);
-                trafficScene.makeNewChartViewer(coords,selected);
+                trafficScene.handleSearchButtonClick(coords,selected);
                 break;
             case WEATHER_SCENE:
                 //ArrayList<Double> coords = castArrayList(data);

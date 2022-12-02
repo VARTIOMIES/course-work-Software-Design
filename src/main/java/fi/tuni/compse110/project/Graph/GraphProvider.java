@@ -63,9 +63,6 @@ public class GraphProvider {
             dataset.addSeries(createSeries(sameLocationConditions,plottable));
         }
 
-
-
-
         JFreeChart chart = ChartFactory.createTimeSeriesChart(
                 "Chart title",
                 "Tunnit",
@@ -111,8 +108,6 @@ public class GraphProvider {
 
         TimeSeries series = new TimeSeries(valueLabel);
 
-        // TODO: Fix timeresies Hour creation (needs better parsing or smth)
-        //  doesnät work cause some time (r.getTime) are null.
         for (int i = 0;i<5;i++){
             Hour hour = new Hour(
                     Utility.getHourIntFromDateSplitterString(xdata.get(i)),
