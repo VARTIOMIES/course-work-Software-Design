@@ -1,9 +1,11 @@
 package fi.tuni.compse110.project.UIView.Scenes;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
+import fi.tuni.compse110.project.API.WeatherData;
+import fi.tuni.compse110.project.UIView.components.GraphComponent;
+import fi.tuni.compse110.project.UIView.components.SidePanel;
+import javafx.scene.layout.Region;
 import org.jfree.chart.fx.ChartViewer;
 
 import fi.tuni.compse110.project.UIView.UIController;
@@ -24,146 +26,95 @@ import javafx.scene.text.Text;
 
 public class WeatherPageScene extends Scene{
 
-    VBox vLayout;
-    Pane searchBar;
-    HBox row;
-    Pane graph;
-    UIController controller;
+    // The main container
+    private VBox rootVerticalContainer;
+    // Is inside the VBox
+    private HBox horizontalrootElementContainer;
 
-    public WeatherPageScene(ScrollPane root,double v,double v1,UIController controller) {
+
+    private SidePanel sidepanel;
+    private VBox mainContent;
+
+    private Region filler;
+
+    private UIController controller;
+    private GraphComponent graph;
+
+    private ArrayList<UIController.Plottable> wantedData;
+    private TreeMap<Integer, TreeMap<String,ArrayList<WeatherData>>> data;
+
+
+    public WeatherPageScene(ScrollPane root,
+                            double v,
+                            double v1,
+                            UIController controller) {
         super(root,v,v1);
+        root.setFitToWidth(true);
+        root.setPannable(false);
         this.controller = controller;
-        vLayout = new VBox(20);
-        searchBar = new Pane();
-        row = new HBox(20);
-        graph = new Pane();
-        createContent();
-        root.setContent(vLayout);
-    }
 
-    public void createContent(){
+        mainContent = new VBox(20);
 
-        ArrayList<Double> coords = new ArrayList<>(Arrays.asList(25.72088, 62.24147, 25.8, 62.3));
+        rootVerticalContainer = new VBox(20);
+        rootVerticalContainer.setMinWidth(1024);
+        rootVerticalContainer.setAlignment(Pos.CENTER);
+        rootVerticalContainer.setId("background");
 
-        // vertical layout
-        vLayout.setMinWidth(1024);
-        vLayout.setAlignment(Pos.CENTER);
-        vLayout.setId("background");
+        horizontalrootElementContainer = new HBox();
+        horizontalrootElementContainer.setId("row");
+
 
         Button backButton = new Button("<- back to menu");
         backButton.setPrefSize(120,40);
         backButton.setOnAction(event->backToMenuClickHandle());
+        rootVerticalContainer.getChildren().add(backButton);
 
-
-
-        row.setId("row");
-
-
-/*
-         * Here are some easily modifiable parameters to get different kinds of data,
-         * These are useful especially for the begin-phase of the program
-         */
-
-        int roadNumber = 5;
-        int sectionArrayListIndex = 3;
-        ArrayList<UIController.Plottable> wantedData = new ArrayList<>();
-        wantedData.add(UIController.Plottable.ROAD_TEMPERATURE);
-        String titleForChart = "Road:" + roadNumber + "  Section:" + sectionArrayListIndex;
-
-
-
-        // graph
+        graph = new GraphComponent(
+                634,
+                500,
+                UIController.CurrentSceneEnum.WEATHER_SCENE);
         graph.setId("graph");
-        graph.setMaxHeight(500);
+
+        wantedData = new ArrayList<>();
+
+        mainContent.getChildren().addAll(graph);
+
+        filler = new Region();
+        filler.setPrefWidth(50);
+        sidepanel = new SidePanel(20,
+                this.controller,
+                UIController.CurrentSceneEnum.WEATHER_SCENE
+        );
 
 
-/*
-            Here are some easily modifiable parameters to get different kinds of data,
-            These are useful especially for the begin-phase of the program
-         */
+        horizontalrootElementContainer.getChildren().addAll(mainContent,filler, sidepanel);
 
-
-
-        try {
-            // TODO: weather data to graph
-            
-            List<RoadCondition> specificRCData = RoadDataProvider.getSpecificSectionRoadCondition(roadNumber,sectionArrayListIndex,coords);
-            ChartViewer dataChartViewer = GraphProvider.getRoadConditionChart(
-                    634,
-                    500,
-                    specificRCData,
-                    wantedData);
-            graph.getChildren().add(dataChartViewer);
-        }
-        catch (Exception e){ // If there occurs any errors while creating the chart
-            // from API data, creates a hardcoded chart to act as a placeholder
-            System.out.println("test data");
-            ChartViewer testChartViewer = GraphProvider.getTestChart(634,500);
-            graph.getChildren().add(testChartViewer);
-        }
-
-        VBox sidepanel = new VBox(20);
-        sidepanel.setId("sidepanel");
-        sidepanel.setPrefWidth(300);
-
-        // text title with text "enter coordinates" followed by textfields for max and min lat and lon coordinates
-        VBox coordinate_input = new VBox(10);
-        coordinate_input.setId("coordinate-input");
-        Text coordinate_input_title = new Text("Enter coordinates");
-        coordinate_input_title.setId("title");
-        VBox coordinate_input_fields = new VBox(10);
-        coordinate_input_fields.setId("coordinate-input-fields");
-        Text coordinate_input_max_lat = new Text("Max lat");
-        coordinate_input_max_lat.setId("title");
-        Text coordinate_input_min_lat = new Text("Min lat");
-        coordinate_input_min_lat.setId("title");
-        Text coordinate_input_max_lon = new Text("Max lon");
-        coordinate_input_max_lon.setId("title");
-        Text coordinate_input_min_lon = new Text("Min lon");
-
-        coordinate_input_min_lon.setId("title");
-        TextField coordinate_input_max_lat_field = new TextField();
-        coordinate_input_max_lat_field.setId("coordinate-input-field");
-        TextField coordinate_input_min_lat_field = new TextField();
-        coordinate_input_min_lat_field.setId("coordinate-input-field");
-        TextField coordinate_input_max_lon_field = new TextField();
-        coordinate_input_max_lon_field.setId("coordinate-input-field");
-        TextField coordinate_input_min_lon_field = new TextField();
-        coordinate_input_min_lon_field.setId("coordinate-input-field");
-        coordinate_input_fields.getChildren().addAll(coordinate_input_max_lat, coordinate_input_max_lat_field, coordinate_input_min_lat, coordinate_input_min_lat_field, coordinate_input_max_lon, coordinate_input_max_lon_field, coordinate_input_min_lon, coordinate_input_min_lon_field);
-        coordinate_input.getChildren().addAll(coordinate_input_title, coordinate_input_fields);
-        
-
-        Text params_label = new Text("Choose parameters:");
-        params_label.setId("title");
-
-        VBox checkbox_stack = new VBox();
-        checkbox_stack.setId("checkbox-stack");
-
-        CheckBox precipitationCheckBox = new CheckBox("Precipitation");
-        CheckBox winter_slipperiness_checkbox = new CheckBox("Winter slipperiness");
-        CheckBox overall_road_condition_checkbox = new CheckBox("Overall road condition");
-        CheckBox additional_info_checkbox = new CheckBox("Additional information");
-
-        checkbox_stack.getChildren().addAll(precipitationCheckBox, winter_slipperiness_checkbox, overall_road_condition_checkbox, additional_info_checkbox);
-
-
-        // big centered search button
-        Button search_button = new Button("Search");
-        search_button.setId("search-button");
-        sidepanel.getChildren().addAll(coordinate_input, params_label, checkbox_stack, search_button);
-
-
-        
-
-        row.getChildren().addAll(graph, sidepanel);
-
-        vLayout.getChildren().addAll(backButton, row);
+        rootVerticalContainer.getChildren().addAll(horizontalrootElementContainer);
 
         // Possible nullPointerException throwing from .toExternalForm()
-        this.getStylesheets().add(WeatherPageScene.class.getResource("/stylesheet.css").toExternalForm());
+        this.getStylesheets().add(TrafficPageScene.class.getResource("/stylesheet.css").toExternalForm());
+
+        root.setContent(rootVerticalContainer);
 
     }
+
+
+    /**
+     *
+     * Getting the data from the api class and formatting into
+     * usable datastructure for plotting. Saves the data locally.
+     * Api class may have some restrictions with the
+     * coordinates. @see {@link RoadDataProvider#getRoadConditions}
+     * @param coords ArrayList<Double> 4 Doubles representing the area
+     *               given with the input sliders.
+     *
+     * @author Onni Merilä
+     */
+    public void getDataFromApi(ArrayList<Double> coords){
+
+    }
+
+
 
 
 
@@ -174,6 +125,12 @@ public class WeatherPageScene extends Scene{
     private void backToMenuClickHandle(){
         // Stuff happening after the "back to menu" button click
         controller.fromAnyPageToMenu();
+    }
+    public void handleSearchButtonClick(ArrayList<Double> coords,
+                                        ArrayList<UIController.Plottable> selected){
+        getDataFromApi(coords);
+        this.wantedData = selected;
+        //graph.give_data(this.data,this.wantedData);
     }
 }
 
